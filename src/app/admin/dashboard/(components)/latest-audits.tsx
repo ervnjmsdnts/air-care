@@ -1,0 +1,63 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import UserPop from '@/components/user-pop';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+
+function Audit({ user = 'John Doe' }: { user?: string }) {
+  return (
+    <Card className='p-4'>
+      <div className='flex items-center justify-between'>
+        <div>
+          <CardHeader className='space-y-0 p-0'>
+            <UserPop>
+              <CardTitle className='text-lg font-semibold text-primary'>
+                {user}
+              </CardTitle>
+            </UserPop>
+          </CardHeader>
+          <CardContent className='p-0'>
+            <p className='text-muted-foreground text-sm'>
+              Logged in to the system
+            </p>
+          </CardContent>
+        </div>
+        <div className='flex flex-col text-xs text-muted-foreground font-medium'>
+          <p>02-01-23</p>
+          <p>10:41 PM</p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export default function LatestAudits() {
+  return (
+    <Card className='flex flex-col'>
+      <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+        <CardTitle className='font-medium text-xl'>Latest Audits</CardTitle>
+        <Button
+          asChild
+          variant='link'
+          className='flex gap-2 font-medium items-center'>
+          <Link href='/admin/records/audits'>
+            More <ArrowRight size={14} />
+          </Link>
+        </Button>
+      </CardHeader>
+      <CardContent className='flex flex-col gap-2 overflow-y-auto h-0 flex-grow'>
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit />
+        <Audit user='Jane Doe' />
+      </CardContent>
+    </Card>
+  );
+}
