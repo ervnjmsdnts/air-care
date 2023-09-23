@@ -1,11 +1,5 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { useRouter } from 'next/navigation';
-
-export default function Admin() {
-  const router = useRouter();
-
-  router.push('/admin/dashboard');
-
-  return null;
+export default async function Admin() {
+  redirect('/admin/dashboard');
 }
