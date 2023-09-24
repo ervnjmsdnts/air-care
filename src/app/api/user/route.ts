@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const value = req.cookies.get('jwt')?.value;
 
   if (!value) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return new Response(JSON.stringify({ error: 'Unauthorized' }));
   }
 
   const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
