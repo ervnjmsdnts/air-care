@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const value = req.cookies.get('jwt')?.value;
 
   if (!value) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }));
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   try {
     const user = (await jose.jwtVerify(value, secret)) as User;
 
-    return NextResponse.json(user?.payload?.data);
+    return Response.json(user?.payload?.data);
   } catch (e: unknown) {
     console.log(e);
   }
