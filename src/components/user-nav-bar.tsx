@@ -142,7 +142,7 @@ export default function UserNavbar({
   user,
   children,
 }: {
-  user: UserType;
+  user: UsersColumnType;
   children: React.ReactNode;
 }) {
   const router = useRouter();
