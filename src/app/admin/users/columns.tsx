@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { DataTableColumnHeader } from '@/components/ui/data-table';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,17 +12,20 @@ import {
 import UserPop from '@/components/user-pop';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
+import UserEditDialog from './(components)/edit-dialog';
+import React from 'react';
+import UserDeleteDialog from './(components)/delete-dialog';
 
 export type UsersColumnType = {
   id: string;
   name: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   address: string;
   role: 'user' | 'admin';
 };
 
-export const userColumns: ColumnDef<UsersColumnType>[] = [
+export const userColumns: ({}: {}) => ColumnDef<UsersColumnType>[] = () => [
   {
     accessorKey: 'name',
     header: ({ column }) => (
@@ -40,7 +44,7 @@ export const userColumns: ColumnDef<UsersColumnType>[] = [
     ),
   },
   {
-    accessorKey: 'phoneNumber',
+    accessorKey: 'phone_number',
     header: 'Phone Number',
   },
   {
@@ -58,7 +62,7 @@ export const userColumns: ColumnDef<UsersColumnType>[] = [
     id: 'action',
     enableSorting: false,
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -68,12 +72,26 @@ export const userColumns: ColumnDef<UsersColumnType>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuItem className='flex flex-row gap-2 items-center'>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem className='flex flex-row gap-2 items-center'>
-              Delete
-            </DropdownMenuItem>
+            <Dialog>
+              <DialogTrigger asChild>
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className='flex flex-row gap-2 items-center'>
+                  Edit
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <UserEditDialog detail={row} />
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className='flex flex-row gap-2 items-center'>
+                  Delete
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <UserDeleteDialog rowId={row.original.id} />
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -35,6 +35,7 @@ import { Separator } from './ui/separator';
 import { usePathname, useRouter } from 'next/navigation';
 import { ElementType, useState } from 'react';
 import Link from 'next/link';
+import { UsersColumnType } from '@/app/admin/users/columns';
 
 type AdminRouteType = {
   href: string;
@@ -137,11 +138,17 @@ function AdminNavItem({ label, href, Icon, children }: AdminRouteType) {
 }
 
 export default function UserNavbar({
+  user,
   children,
 }: {
+  user: UsersColumnType | null;
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  async function logOut() {
+    router.replace('/');
+  }
+
   return (
     <div className='flex flex-col w-full h-full'>
       <div className='flex border-b py-4 px-6 justify-between items-center'>
@@ -150,6 +157,7 @@ export default function UserNavbar({
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
+                {!user && <p>No User</p>}
                 <AvatarFallback>
                   <User />
                 </AvatarFallback>
@@ -160,9 +168,7 @@ export default function UserNavbar({
                 <DropdownMenuItem>Profile</DropdownMenuItem>
               </DialogTrigger>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.replace('/')}>
-                Log out
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={logOut}>Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <DialogContent className='max-w-lg'>
@@ -177,7 +183,7 @@ export default function UserNavbar({
                     <Input
                       id='name'
                       placeholder='Enter name...'
-                      value='John Doe'
+                      value={user?.name}
                       disabled
                     />
                     <Button variant='outline'>Edit</Button>
@@ -185,7 +191,7 @@ export default function UserNavbar({
                 </div>
                 <div>
                   <Label htmlFor='email'>Email Address</Label>
-                  <Input id='email' value='johndoe@gmail.com' disabled />
+                  <Input id='email' value={user?.email} disabled />
                 </div>
                 <div>
                   <Label htmlFor='phone-number'>Phone Number</Label>
@@ -193,7 +199,7 @@ export default function UserNavbar({
                     <Input
                       id='phone-number'
                       placeholder='Enter phone number...'
-                      value='09123456789'
+                      value={user?.phone_number}
                       disabled
                     />
                     <Button variant='outline'>Edit</Button>
@@ -205,7 +211,7 @@ export default function UserNavbar({
                     <Input
                       id='address'
                       placeholder='Enter address...'
-                      value='Somewhere'
+                      value={user?.address}
                       disabled
                     />
                     <Button variant='outline'>Edit</Button>
@@ -228,14 +234,6 @@ export default function UserNavbar({
                   <Input
                     id='new-password'
                     placeholder='Enter new password...'
-                    type='password'
-                  />
-                </div>
-                <div>
-                  <Label htmlFor='conirm-password'>Confirm Password</Label>
-                  <Input
-                    id='conirm-password'
-                    placeholder='Enter confirmation password...'
                     type='password'
                   />
                 </div>

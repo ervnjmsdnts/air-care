@@ -1,9 +1,10 @@
 import UserTable from './(components)/user-table';
+import { UsersColumnType } from './columns';
 
-export default function Users() {
+export default async function Users() {
   return (
     <div className='h-full'>
-      <UserTable />
+      <UserTable profiles={{} as UsersColumnType[]} />
     </div>
   );
 }

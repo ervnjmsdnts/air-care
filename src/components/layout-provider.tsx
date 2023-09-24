@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import DefaultNavbar from './default-nav-bar';
 import UserNavbar from './user-nav-bar';
+import { UsersColumnType } from '@/app/admin/users/columns';
 
 export default function LayoutProvider({
   children,
@@ -11,11 +12,12 @@ export default function LayoutProvider({
 }) {
   const pathname = usePathname();
 
+  if (pathname.includes('auth')) return children;
+
   return (
     <>
-      {pathname.includes('auth') && children}
       {pathname.includes('admin') ? (
-        <UserNavbar>{children}</UserNavbar>
+        <UserNavbar user={{} as UsersColumnType}>{children}</UserNavbar>
       ) : (
         <>
           <DefaultNavbar />
