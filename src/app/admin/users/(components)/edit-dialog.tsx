@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 const schema = z.object({
   name: z.string(),
@@ -32,6 +33,10 @@ export default function UserEditDialog({
   const router = useRouter();
 
   async function submit(formData: EditUserSchemaType) {
+    const respone = await supabase
+      .from('users')
+      .update({ ...formData })
+      .eq('id', detail.original.id);
     router.refresh();
   }
 

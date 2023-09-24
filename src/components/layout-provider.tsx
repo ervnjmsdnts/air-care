@@ -3,12 +3,14 @@
 import { usePathname } from 'next/navigation';
 import DefaultNavbar from './default-nav-bar';
 import UserNavbar from './user-nav-bar';
-import { UsersColumnType } from '@/app/admin/users/columns';
+import { User } from '@/types/user';
 
 export default function LayoutProvider({
   children,
+  user,
 }: {
   children: React.ReactNode;
+  user: User;
 }) {
   const pathname = usePathname();
 
@@ -17,7 +19,7 @@ export default function LayoutProvider({
   return (
     <>
       {pathname.includes('admin') ? (
-        <UserNavbar user={{} as UsersColumnType}>{children}</UserNavbar>
+        <UserNavbar user={user}>{children}</UserNavbar>
       ) : (
         <>
           <DefaultNavbar />

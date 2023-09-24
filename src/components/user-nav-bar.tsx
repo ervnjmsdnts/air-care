@@ -36,6 +36,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ElementType, useState } from 'react';
 import Link from 'next/link';
 import { UsersColumnType } from '@/app/admin/users/columns';
+import { User as UserType } from '@/types/user';
 
 type AdminRouteType = {
   href: string;
@@ -141,12 +142,13 @@ export default function UserNavbar({
   user,
   children,
 }: {
-  user: UsersColumnType | null;
+  user: UserType;
   children: React.ReactNode;
 }) {
   const router = useRouter();
   async function logOut() {
-    router.replace('/');
+    await fetch('/api/user', { method: 'POST' });
+    router.replace('/auth');
   }
 
   return (

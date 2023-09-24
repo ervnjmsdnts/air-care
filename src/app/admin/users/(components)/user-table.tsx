@@ -2,25 +2,19 @@
 
 import { DataTable } from '@/components/ui/data-table';
 import { UsersColumnType, userColumns } from '../columns';
-import React, { useState } from 'react';
-import UserEditDialog from './edit-dialog';
-import UserDeleteDialog from './delete-dialog';
+import React from 'react';
 
 export default function UserTable({
-  profiles,
+  users,
+  userId,
 }: {
-  profiles: UsersColumnType[];
+  users: UsersColumnType[];
+  userId: string;
 }) {
-  const [openEdit, setOpenEdit] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-
   return (
     <DataTable
-      data={profiles}
-      columns={userColumns({
-        EditDialog: UserEditDialog as () => React.JSX.Element,
-        DeleteDialog: UserDeleteDialog,
-      })}
+      data={users}
+      columns={userColumns({ userId: userId })}
       hasFilterInput
       filterPlaceholder='Search emails...'
       filterInputColumn='email'
