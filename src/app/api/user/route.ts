@@ -3,7 +3,7 @@ import * as jose from 'jose';
 import { User } from '@/types/user';
 import { cookies } from 'next/headers';
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<any> {
   const value = req.cookies.get('jwt')?.value;
 
   if (!value) {
