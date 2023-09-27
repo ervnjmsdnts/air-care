@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Row } from '@tanstack/react-table';
-import { UsersColumnType } from '../columns';
+import { Row as SupabaseRow } from '@/types';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Input } from '@/components/ui/input';
@@ -27,7 +27,7 @@ type EditUserSchemaType = z.infer<typeof schema>;
 export default function UserEditDialog({
   detail,
 }: {
-  detail: Row<UsersColumnType>;
+  detail: Row<SupabaseRow<'users'> | null>;
 }) {
   const form = useForm<EditUserSchemaType>({ resolver: zodResolver(schema) });
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function UserEditDialog({
     const respone = await supabase
       .from('users')
       .update({ ...formData })
-      .eq('id', detail.original.id);
+      .eq('id', detail.original!.id);
     router.refresh();
   }
 
