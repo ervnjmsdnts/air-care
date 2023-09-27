@@ -35,7 +35,7 @@ import { Separator } from './ui/separator';
 import { usePathname, useRouter } from 'next/navigation';
 import { ElementType, useState } from 'react';
 import Link from 'next/link';
-import { UsersColumnType } from '@/app/admin/users/columns';
+import { Row } from '@/types';
 
 type AdminRouteType = {
   href: string;
@@ -141,7 +141,7 @@ export default function UserNavbar({
   user,
   children,
 }: {
-  user: UsersColumnType;
+  user: Row<'users'>;
   children: React.ReactNode;
 }) {
   const router = useRouter();
