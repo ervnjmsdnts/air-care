@@ -1,20 +1,43 @@
-import { DataTable } from '@/components/ui/data-table';
-import { AuditColumnType, auditColumn } from '../columns';
+'use client';
 
-export default function AuditTable() {
-  const data: AuditColumnType[] = [
-    {
-      id: '1234',
-      date: '02-02-23',
-      time: '10:41 PM',
-      user: 'John Doe',
-      description: 'Logged in to the system',
-    },
-  ];
+import { DataTable } from '@/components/ui/data-table';
+import { auditColumn } from '../columns';
+import { NestedRow } from '@/types';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+
+export default function AuditTable({
+  audits,
+}: {
+  audits: NestedRow<'audits', 'users'>[];
+}) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime_audits')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audits',
+        },
+        () => {
+          router.refresh();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [router]);
 
   return (
     <DataTable
-      data={data}
+      data={audits}
       columns={auditColumn}
       hasFilterInput
       filterInputColumn='user'

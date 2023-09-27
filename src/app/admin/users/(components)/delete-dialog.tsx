@@ -5,7 +5,7 @@ import { DialogContent, DialogFooter } from '@/components/ui/dialog';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
-export default function UserDeleteDialog({ rowId }: { rowId: string }) {
+export default function UserDeleteDialog({ rowId }: { rowId: number }) {
   const router = useRouter();
   async function deleteRow() {
     await supabase.from('users').delete().eq('id', rowId);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import * as jose from 'jose';
-import { User } from './types/user';
+import { User } from './types';
 
 export default async function middleware(req: NextRequest) {
   const cookie = cookies().get('session');

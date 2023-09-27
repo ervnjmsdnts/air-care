@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as jose from 'jose';
-import { User } from '@/types/user';
+import { User } from '@/types';
 import { cookies } from 'next/headers';
 
 export async function GET(req: NextRequest): Promise<any> {

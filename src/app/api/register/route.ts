@@ -17,7 +17,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const user = await supabase.from('users').insert({ ...body });
+  const user = await supabase
+    .from('users')
+    .insert({ ...body })
+    .select()
+    .limit(1);
 
   return NextResponse.json(user);
 }

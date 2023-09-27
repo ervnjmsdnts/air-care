@@ -36,7 +36,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ElementType, useState } from 'react';
 import Link from 'next/link';
 import { UsersColumnType } from '@/app/admin/users/columns';
-import { User as UserType } from '@/types/user';
 
 type AdminRouteType = {
   href: string;

@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import UserTable from './(components)/user-table';
-import { UsersColumnType } from './columns';
 import { getUser } from '@/lib/session';
+import { Row } from '@/types';
 
 export default async function Users() {
   const { data: users } = await supabase.from('users').select('*');
@@ -11,7 +11,7 @@ export default async function Users() {
 
   return (
     <div className='h-full'>
-      <UserTable users={users as UsersColumnType[]} userId={currentUser.id} />
+      <UserTable users={users as Row<'users'>[]} userId={currentUser?.id} />
     </div>
   );
 }

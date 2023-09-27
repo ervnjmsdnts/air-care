@@ -15,21 +15,13 @@ import { MoreHorizontal } from 'lucide-react';
 import UserEditDialog from './(components)/edit-dialog';
 import React from 'react';
 import UserDeleteDialog from './(components)/delete-dialog';
-
-export type UsersColumnType = {
-  id: string;
-  name: string;
-  phone_number: string;
-  email: string;
-  address: string;
-  role: 'user' | 'admin';
-};
+import { Row } from '@/types';
 
 export function userColumns({
   userId,
 }: {
-  userId: string;
-}): ColumnDef<UsersColumnType>[] {
+  userId: number | undefined;
+}): ColumnDef<Row<'users'> | null>[] {
   return [
     {
       accessorKey: 'name',
@@ -37,7 +29,10 @@ export function userColumns({
         <DataTableColumnHeader column={column} title='Name' />
       ),
       cell: ({ row }) => (
-        <UserPop>
+        <UserPop
+          email={row.original?.email}
+          name={row.original?.name}
+          phoneNumber={row.original?.phone_number}>
           <p className='text-primary font-semibold'>{row.getValue('name')}</p>
         </UserPop>
       ),
@@ -70,7 +65,7 @@ export function userColumns({
       enableSorting: false,
       enableHiding: false,
       cell: ({ row }) => {
-        if (userId === row.original.id) return;
+        if (userId === row.original?.id) return;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -98,7 +93,7 @@ export function userColumns({
                     Delete
                   </DropdownMenuItem>
                 </DialogTrigger>
-                <UserDeleteDialog rowId={row.original.id} />
+                <UserDeleteDialog rowId={row.original!.id} />
               </Dialog>
             </DropdownMenuContent>
           </DropdownMenu>

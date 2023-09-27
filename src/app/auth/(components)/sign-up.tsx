@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
+import { addAudit } from '@/utils/audit';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -50,6 +51,11 @@ export default function SignUp({ action }: { action: () => void }) {
         description: userInfo.error,
       });
     }
+
+    await addAudit({
+      label: `User ${userInfo.data[0].name} has been created`,
+      userId: userInfo.data[0].id,
+    });
 
     toast({
       title: 'Perfect! No issues or problems occurred.',

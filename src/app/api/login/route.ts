@@ -39,5 +39,5 @@ export async function POST(req: Request) {
 
   cookies().set(sessionOption);
 
-  return NextResponse.json({}, { status: 200 });
+  return NextResponse.json(user, { status: 200 });
 }

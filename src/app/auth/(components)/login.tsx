@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+import { addAudit } from '@/utils/audit';
 
 const LoginSchema = z.object({
   email: z.string().email({ message: 'Must be a valid email' }),
@@ -45,6 +46,11 @@ export default function Login({ action }: { action: () => void }) {
         description: userInfo.error,
       });
     }
+
+    await addAudit({
+      label: `User ${userInfo.data.name} has logged in`,
+      userId: userInfo.data.id,
+    });
 
     router.refresh();
   }

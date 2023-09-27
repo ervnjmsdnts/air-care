@@ -3,7 +3,6 @@
 import { usePathname } from 'next/navigation';
 import DefaultNavbar from './default-nav-bar';
 import UserNavbar from './user-nav-bar';
-import { User } from '@/types/user';
 import { UsersColumnType } from '@/app/admin/users/columns';
 
 export default function LayoutProvider({
