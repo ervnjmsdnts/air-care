@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as jose from 'jose';
-import { User } from '@/types';
 import { cookies } from 'next/headers';
 
 export async function GET(req: NextRequest): Promise<any> {
@@ -13,7 +12,7 @@ export async function GET(req: NextRequest): Promise<any> {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
   try {
-    const user = (await jose.jwtVerify(value, secret)) as User;
+    const user = await jose.jwtVerify(value, secret);
 
     return Response.json(user?.payload?.data);
   } catch (e: unknown) {
