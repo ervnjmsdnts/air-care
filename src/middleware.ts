@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import * as jose from 'jose';
-import { User } from './types';
+import { Row } from './types';
+
+type MiddleWareUser = {
+  payload?: {
+    data?: Row<'users'>;
+  };
+};
 
 export default async function middleware(req: NextRequest) {
   const cookie = cookies().get('session');
@@ -17,7 +23,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   try {
-    const user = (await jose.jwtVerify(value, secret)) as User;
+    const user = (await jose.jwtVerify(value, secret)) as MiddleWareUser;
 
     if (
       user &&
