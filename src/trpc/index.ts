@@ -4,7 +4,12 @@ import { db } from '@/db';
 import { TRPCError } from '@trpc/server';
 import * as jose from 'jose';
 import { cookies } from 'next/headers';
-import { updateUserSchema, userIdSchema } from './schema';
+import {
+  createProductSchema,
+  idSchema,
+  updateProductSchema,
+  updateUserSchema,
+} from './schema';
 
 export const appRouter = router({
   // Auth
@@ -88,18 +93,16 @@ export const appRouter = router({
       await db.user.update({ where: { id: userId }, data: { ...input } });
     }),
   updateUser: publicProcedure
-    .input(updateUserSchema.merge(userIdSchema))
+    .input(updateUserSchema.merge(idSchema))
     .mutation(async ({ input }) => {
       await db.user.update({
         where: { id: input.id },
         data: { ...input },
       });
     }),
-  deleteUser: publicProcedure
-    .input(userIdSchema)
-    .mutation(async ({ input }) => {
-      await db.user.delete({ where: { id: input.id } });
-    }),
+  deleteUser: publicProcedure.input(idSchema).mutation(async ({ input }) => {
+    await db.user.delete({ where: { id: input.id } });
+  }),
 
   // Audits
   getLatestAudits: publicProcedure.query(async () => {
@@ -126,6 +129,49 @@ export const appRouter = router({
     .mutation(async ({ input }) => {
       await db.audit.create({
         data: { label: input.label, userId: input.userId },
+      });
+    }),
+
+  // Inventory
+  createProduct: privateProcedure
+    .input(createProductSchema)
+    .mutation(async ({ input, ctx }) => {
+      await db.inventory.create({ data: { ...input } });
+      await db.audit.create({
+        data: {
+          label: `User ${ctx.user.name} added a product`,
+          userId: ctx.userId,
+        },
+      });
+
+      return { success: true };
+    }),
+  getProducts: publicProcedure.query(async () => {
+    const products = await db.inventory.findMany();
+
+    return products;
+  }),
+  addProductImage: publicProcedure
+    .input(
+      z.object({ url: z.string(), key: z.string(), productId: z.string() }),
+    )
+    .mutation(async ({ input }) => {
+      await db.inventory.update({
+        where: { id: input.productId },
+        data: { url: input.url, key: input.url },
+      });
+    }),
+  deleteProduct: publicProcedure
+    .input(idSchema.merge(z.object({ key: z.string() })))
+    .mutation(async ({ input }) => {
+      await db.inventory.delete({ where: { id: input.id } });
+    }),
+  updateProduct: publicProcedure
+    .input(updateProductSchema.merge(idSchema))
+    .mutation(async ({ input }) => {
+      await db.inventory.update({
+        where: { id: input.id },
+        data: { ...input, id: undefined },
       });
     }),
 });

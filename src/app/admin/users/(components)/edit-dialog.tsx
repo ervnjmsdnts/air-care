@@ -14,11 +14,7 @@ import { Button } from '@/components/ui/button';
 import { User } from '@prisma/client';
 import { trpc } from '@/app/_trpc/client';
 import { useRouter } from 'next/navigation';
-import {
-  UpdateUserSchema,
-  UserIdSchema,
-  updateUserSchema,
-} from '@/trpc/schema';
+import { UpdateUserSchema, IdSchema, updateUserSchema } from '@/trpc/schema';
 import { Loader2 } from 'lucide-react';
 
 export default function UserEditDialog({
@@ -26,7 +22,7 @@ export default function UserEditDialog({
 }: {
   detail: Row<User | null>;
 }) {
-  const form = useForm<UpdateUserSchema & UserIdSchema>({
+  const form = useForm<UpdateUserSchema & IdSchema>({
     resolver: zodResolver(updateUserSchema),
   });
   const router = useRouter();
@@ -35,7 +31,7 @@ export default function UserEditDialog({
     onSuccess: () => router.refresh(),
   });
 
-  async function submit(formData: UpdateUserSchema & UserIdSchema) {
+  async function submit(formData: UpdateUserSchema & IdSchema) {
     updateUser({ ...formData, id: detail.original!.id });
   }
 

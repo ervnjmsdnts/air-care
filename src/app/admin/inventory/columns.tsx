@@ -2,7 +2,7 @@
 
 import { DataTableColumnHeader } from '@/components/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
+import { Image as ImageIcon, MoreHorizontal } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -11,17 +11,42 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { Inventory } from '@prisma/client';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import UploadDropzone from './(components)/upload-dropzone';
+import Image from 'next/image';
+import ProductDeleteDialog from './(components)/delete-dialog';
+import ProductEditDialog from './(components)/edit-dialog';
 
-export type InventoryColumnType = {
-  id: string;
-  name: string;
-  brand: string;
-  type: string;
-  quantity: number;
-  price: number;
-};
-
-export const inventoryColumns: ColumnDef<InventoryColumnType>[] = [
+export const inventoryColumns: ColumnDef<Inventory>[] = [
+  {
+    id: 'image',
+    enableSorting: false,
+    enableHiding: false,
+    cell: ({ row }) => (
+      <div>
+        {!row.original.url ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant='secondary'
+                className='flex gap-1 text-secondary-foreground'>
+                <ImageIcon className='h-6 w-6' />
+                Add Image
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <UploadDropzone productId={row.original.id} />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <div className='relative aspect-[16/9] w-64'>
+            <Image src={row.original.url} alt={row.original.name} fill />
+          </div>
+        )}
+      </div>
+    ),
+  },
   {
     accessorKey: 'name',
     header: ({ column }) => (
@@ -66,7 +91,7 @@ export const inventoryColumns: ColumnDef<InventoryColumnType>[] = [
     id: 'action',
     enableSorting: false,
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -76,12 +101,29 @@ export const inventoryColumns: ColumnDef<InventoryColumnType>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuItem className='flex flex-row gap-2 items-center'>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem className='flex flex-row gap-2 items-center'>
-              Delete
-            </DropdownMenuItem>
+            <Dialog>
+              <DialogTrigger asChild>
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className='flex flex-row gap-2 items-center'>
+                  Edit
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <ProductEditDialog detail={row} />
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className='flex flex-row gap-2 items-center'>
+                  Delete
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <ProductDeleteDialog
+                rowId={row.original.id}
+                rowKey={row.original.key!}
+              />
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
       );

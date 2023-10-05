@@ -6,7 +6,7 @@ import UserPop from '@/components/user-pop';
 import { supabase } from '@/lib/supabase';
 import { Audit, User } from '@prisma/client';
 import dayjs from 'dayjs';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Ghost } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -90,16 +90,27 @@ export default function LatestAudits({
         </Button>
       </CardHeader>
       <CardContent className='flex flex-col gap-2 overflow-y-auto h-0 flex-grow'>
-        {audits?.map((audit) => (
-          <Audit
-            key={audit.id}
-            email={audit.user!.email}
-            name={audit.user!.name}
-            phoneNumber={audit.user!.phoneNumber}
-            createdAt={audit.createdAt}
-            label={audit.label}
-          />
-        ))}
+        {!audits.length ? (
+          <div className='self-center gap-2 mt-6 flex flex-col items-center'>
+            <Ghost className='h-8 w-8 text-zinc-600' />
+            <p className='text-center text-zinc-800 font-semibold'>
+              No content
+            </p>
+          </div>
+        ) : (
+          <>
+            {audits?.map((audit) => (
+              <Audit
+                key={audit.id}
+                email={audit.user!.email}
+                name={audit.user!.name}
+                phoneNumber={audit.user!.phoneNumber}
+                createdAt={audit.createdAt}
+                label={audit.label}
+              />
+            ))}
+          </>
+        )}
       </CardContent>
     </Card>
   );
