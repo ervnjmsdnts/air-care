@@ -19,6 +19,7 @@ import { CreateProductSchema, createProductSchema } from '@/trpc/schema';
 import { trpc } from '@/app/_trpc/client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 function AddProductButton() {
   const form = useForm<CreateProductSchema>({
@@ -29,7 +30,7 @@ function AddProductButton() {
 
   const router = useRouter();
 
-  const { mutate: createProduct } = trpc.createProduct.useMutation({
+  const { mutate: createProduct, isLoading } = trpc.createProduct.useMutation({
     onSuccess: () => {
       setOpen(false);
       router.refresh();
@@ -77,7 +78,9 @@ function AddProductButton() {
             {...form.register('price', { valueAsNumber: true })}
           />
         </div>
-        <Button onClick={form.handleSubmit(submit)}>Add</Button>
+        <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
+          {isLoading ? <Loader2 className='animate-spin w-4 h-4' /> : 'Add'}
+        </Button>
       </DialogContent>
     </Dialog>
   );
