@@ -11,58 +11,43 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { addAudit } from '@/utils/audit';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-
-const SignupSchema = z.object({
-  name: z.string(),
-  phone_number: z.string(),
-  address: z.string(),
-  email: z.string().email({ message: 'Must be a valid email' }),
-  password: z.string().min(6, { message: 'Must be at least 6 characters' }),
-});
-
-type SignupType = z.infer<typeof SignupSchema>;
+import { trpc } from '@/app/_trpc/client';
+import { CreateUserSchema, createUserSchema } from '@/trpc/schema';
 
 export default function SignUp({ action }: { action: () => void }) {
-  const form = useForm<SignupType>({ resolver: zodResolver(SignupSchema) });
+  const form = useForm<CreateUserSchema>({
+    resolver: zodResolver(createUserSchema),
+  });
   const { toast } = useToast();
-  const router = useRouter();
 
-  async function submit(data: SignupType) {
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...data,
-        role: 'user',
-      }),
-    });
+  const { mutate: createAudit } = trpc.createAudit.useMutation();
+  const { mutate: signUp, isLoading } = trpc.signUp.useMutation({
+    onSuccess: (data) => {
+      createAudit({
+        label: `User ${data.name} has been created`,
+        userId: data.id,
+      });
+      toast({
+        title: 'Perfect! No issues or problems occurred.',
+        description: 'Account created',
+      });
 
-    const userInfo = await response.json();
-
-    if (userInfo.error) {
-      return toast({
+      action();
+    },
+    onError: (error) => {
+      toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
-        description: userInfo.error,
+        description: error.message,
       });
-    }
+    },
+  });
 
-    await addAudit({
-      label: `User ${userInfo.data[0].name} has been created`,
-      userId: userInfo.data[0].id,
-    });
-
-    toast({
-      title: 'Perfect! No issues or problems occurred.',
-      description: 'Account created',
-    });
-
-    action();
+  async function submit(data: CreateUserSchema) {
+    signUp({ ...data });
   }
 
   return (
@@ -78,7 +63,7 @@ export default function SignUp({ action }: { action: () => void }) {
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='phoneNumber'>Phone Number</Label>
-          <Input id='phoneNumber' {...form.register('phone_number')} />
+          <Input id='phoneNumber' {...form.register('phoneNumber')} />
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='address'>Address</Label>
@@ -97,7 +82,13 @@ export default function SignUp({ action }: { action: () => void }) {
           <Label htmlFor='password'>Password</Label>
           <Input id='password' type='password' {...form.register('password')} />
         </div>
-        <Button onClick={form.handleSubmit(submit)}>Create account</Button>
+        <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
+          {isLoading ? (
+            <Loader2 className='h-4 w-4 animate-spin' />
+          ) : (
+            'Create Account'
+          )}
+        </Button>
         <span className='text-center text-sm'>
           Already have an account?{' '}
           <Button variant='link' className='p-0' onClick={action}>

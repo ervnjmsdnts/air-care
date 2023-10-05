@@ -4,24 +4,34 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import UserPop from '@/components/user-pop';
 import { supabase } from '@/lib/supabase';
-import { NestedRow, Row } from '@/types';
+import { Audit, User } from '@prisma/client';
+import dayjs from 'dayjs';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-function Audit({ user, label }: { user: Row<'users'>; label: string }) {
+function Audit({
+  createdAt,
+  email,
+  phoneNumber,
+  name,
+  label,
+}: {
+  createdAt: Date;
+  email: string;
+  name: string;
+  phoneNumber: string;
+  label: string;
+}) {
   return (
     <Card className='p-4'>
       <div className='flex items-center justify-between'>
         <div>
           <CardHeader className='space-y-0 p-0'>
-            <UserPop
-              email={user.email}
-              name={user.name}
-              phoneNumber={user.phone_number}>
+            <UserPop email={email} name={name} phoneNumber={phoneNumber}>
               <CardTitle className='text-lg font-semibold text-primary'>
-                {user.name}
+                {name}
               </CardTitle>
             </UserPop>
           </CardHeader>
@@ -30,8 +40,8 @@ function Audit({ user, label }: { user: Row<'users'>; label: string }) {
           </CardContent>
         </div>
         <div className='flex flex-col text-xs text-muted-foreground font-medium'>
-          <p>02-01-23</p>
-          <p>10:41 PM</p>
+          <p>{dayjs(createdAt).format('MMM DD, YYYY')}</p>
+          <p>{dayjs(createdAt).format('hh:mm A')}</p>
         </div>
       </div>
     </Card>
@@ -41,7 +51,7 @@ function Audit({ user, label }: { user: Row<'users'>; label: string }) {
 export default function LatestAudits({
   audits,
 }: {
-  audits: NestedRow<'audits', 'users'>[] | null;
+  audits: (Audit & { user: User | null })[];
 }) {
   const router = useRouter();
 
@@ -53,7 +63,7 @@ export default function LatestAudits({
         {
           event: '*',
           schema: 'public',
-          table: 'audits',
+          table: 'Audit',
         },
         () => {
           router.refresh();
@@ -81,7 +91,14 @@ export default function LatestAudits({
       </CardHeader>
       <CardContent className='flex flex-col gap-2 overflow-y-auto h-0 flex-grow'>
         {audits?.map((audit) => (
-          <Audit key={audit.id} user={audit.users} label={audit.label} />
+          <Audit
+            key={audit.id}
+            email={audit.user!.email}
+            name={audit.user!.name}
+            phoneNumber={audit.user!.phoneNumber}
+            createdAt={audit.createdAt}
+            label={audit.label}
+          />
         ))}
       </CardContent>
     </Card>

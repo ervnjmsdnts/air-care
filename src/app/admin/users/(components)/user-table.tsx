@@ -3,14 +3,14 @@
 import { DataTable } from '@/components/ui/data-table';
 import { userColumns } from '../columns';
 import React from 'react';
-import { Row } from '@/types';
+import { User } from '@prisma/client';
 
 export default function UserTable({
   users,
   userId,
 }: {
-  users: Row<'users'>[];
-  userId: number | undefined;
+  users: User[];
+  userId: string | undefined;
 }) {
   return (
     <>

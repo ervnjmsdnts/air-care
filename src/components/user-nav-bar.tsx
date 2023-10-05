@@ -35,7 +35,7 @@ import { Separator } from './ui/separator';
 import { usePathname, useRouter } from 'next/navigation';
 import { ElementType, useState } from 'react';
 import Link from 'next/link';
-import { Row } from '@/types';
+import { trpc } from '@/app/_trpc/client';
 
 type AdminRouteType = {
   href: string;
@@ -138,13 +138,12 @@ function AdminNavItem({ label, href, Icon, children }: AdminRouteType) {
 }
 
 export default function UserNavbar({
-  user,
   children,
 }: {
-  user: Row<'users'>;
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const { data: user } = trpc.getCurrentUser.useQuery();
   async function logOut() {
     await fetch('/api/user', { method: 'POST' });
     router.replace('/auth');
@@ -158,7 +157,6 @@ export default function UserNavbar({
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
-                {!user && <p>No User</p>}
                 <AvatarFallback>
                   <User />
                 </AvatarFallback>
@@ -200,7 +198,7 @@ export default function UserNavbar({
                     <Input
                       id='phone-number'
                       placeholder='Enter phone number...'
-                      value={user?.phone_number}
+                      value={user?.phoneNumber}
                       disabled
                     />
                     <Button variant='outline'>Edit</Button>

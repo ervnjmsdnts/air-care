@@ -6,38 +6,37 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Row } from '@tanstack/react-table';
-import { Row as SupabaseRow } from '@/types';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
+import { User } from '@prisma/client';
+import { trpc } from '@/app/_trpc/client';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-
-const schema = z.object({
-  name: z.string(),
-  address: z.string(),
-  phone_number: z.string(),
-});
-
-type EditUserSchemaType = z.infer<typeof schema>;
+import {
+  UpdateUserSchema,
+  UserIdSchema,
+  updateUserSchema,
+} from '@/trpc/schema';
+import { Loader2 } from 'lucide-react';
 
 export default function UserEditDialog({
   detail,
 }: {
-  detail: Row<SupabaseRow<'users'> | null>;
+  detail: Row<User | null>;
 }) {
-  const form = useForm<EditUserSchemaType>({ resolver: zodResolver(schema) });
+  const form = useForm<UpdateUserSchema & UserIdSchema>({
+    resolver: zodResolver(updateUserSchema),
+  });
   const router = useRouter();
 
-  async function submit(formData: EditUserSchemaType) {
-    const respone = await supabase
-      .from('users')
-      .update({ ...formData })
-      .eq('id', detail.original!.id);
-    router.refresh();
+  const { mutate: updateUser, isLoading } = trpc.updateUser.useMutation({
+    onSuccess: () => router.refresh(),
+  });
+
+  async function submit(formData: UpdateUserSchema & UserIdSchema) {
+    updateUser({ ...formData, id: detail.original!.id });
   }
 
   return (
@@ -66,12 +65,15 @@ export default function UserEditDialog({
           <Label htmlFor='phoneNumber'>Phone Number</Label>
           <Input
             id='phoneNumber'
-            defaultValue={detail.getValue('phone_number')}
-            {...form.register('phone_number')}
+            defaultValue={detail.getValue('phoneNumber')}
+            {...form.register('phoneNumber')}
           />
         </div>
-        <Button className='self-end' onClick={form.handleSubmit(submit)}>
-          Save
+        <Button
+          className='self-end'
+          disabled={isLoading}
+          onClick={form.handleSubmit(submit)}>
+          {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Save'}
         </Button>
       </div>
     </DialogContent>

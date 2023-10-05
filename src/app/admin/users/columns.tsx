@@ -15,13 +15,13 @@ import { MoreHorizontal } from 'lucide-react';
 import UserEditDialog from './(components)/edit-dialog';
 import React from 'react';
 import UserDeleteDialog from './(components)/delete-dialog';
-import { Row } from '@/types';
+import { User } from '@prisma/client';
 
 export function userColumns({
   userId,
 }: {
-  userId: number | undefined;
-}): ColumnDef<Row<'users'> | null>[] {
+  userId: string | undefined;
+}): ColumnDef<User | null>[] {
   return [
     {
       accessorKey: 'name',
@@ -32,7 +32,7 @@ export function userColumns({
         <UserPop
           email={row.original?.email}
           name={row.original?.name}
-          phoneNumber={row.original?.phone_number}>
+          phoneNumber={row.original?.phoneNumber}>
           <p className='text-primary font-semibold'>{row.getValue('name')}</p>
         </UserPop>
       ),
@@ -44,7 +44,7 @@ export function userColumns({
       ),
     },
     {
-      accessorKey: 'phone_number',
+      accessorKey: 'phoneNumber',
       header: 'Phone Number',
     },
     {

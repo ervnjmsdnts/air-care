@@ -10,49 +10,40 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { addAudit } from '@/utils/audit';
-
-const LoginSchema = z.object({
-  email: z.string().email({ message: 'Must be a valid email' }),
-  password: z.string().min(6, { message: 'Must be at least 6 characters' }),
-});
-
-type LoginType = z.infer<typeof LoginSchema>;
+import { Loader2 } from 'lucide-react';
+import { trpc } from '@/app/_trpc/client';
+import { LoginSchema, loginSchema } from '@/trpc/schema';
 
 export default function Login({ action }: { action: () => void }) {
-  const form = useForm<LoginType>({ resolver: zodResolver(LoginSchema) });
+  const form = useForm<LoginSchema>({ resolver: zodResolver(loginSchema) });
   const { toast } = useToast();
   const router = useRouter();
 
-  async function submit(formData: LoginType) {
-    const { email, password } = formData;
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const userInfo = await response.json();
-
-    if (userInfo.error) {
-      return toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong',
-        description: userInfo.error,
+  const { mutate: createAudit } = trpc.createAudit.useMutation();
+  const { mutate: login, isLoading } = trpc.login.useMutation({
+    onSuccess: (data) => {
+      createAudit({
+        label: `User ${data.name} has logged in`,
+        userId: data.id,
       });
-    }
+      router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Somthing went wrong',
+        description: error.message,
+      });
+    },
+  });
 
-    await addAudit({
-      label: `User ${userInfo.data.name} has logged in`,
-      userId: userInfo.data.id,
-    });
-
-    router.refresh();
+  async function submit(formData: LoginSchema) {
+    const { email, password } = formData;
+    login({ email, password });
   }
 
   return (
@@ -81,7 +72,9 @@ export default function Login({ action }: { action: () => void }) {
             error={form.formState.errors.password}
           />
         </div>
-        <Button onClick={form.handleSubmit(submit)}>Login</Button>
+        <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
+          {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Login'}
+        </Button>
         <span className='text-center text-sm'>
           Don&apos;t have an account?{' '}
           <Button variant='link' className='p-0' onClick={action}>

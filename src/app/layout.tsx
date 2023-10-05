@@ -3,7 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
-import { getUser } from '@/lib/session';
+import ReactQueryProvider from '@/components/query-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,12 +17,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getUser();
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <LayoutProvider user={user}>{children}</LayoutProvider>
-        <Toaster />
+        <ReactQueryProvider>
+          <LayoutProvider>{children}</LayoutProvider>
+          <Toaster />
+        </ReactQueryProvider>
       </body>
     </html>
   );

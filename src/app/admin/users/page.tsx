@@ -1,17 +1,15 @@
-import { supabase } from '@/lib/supabase';
 import UserTable from './(components)/user-table';
-import { getUser } from '@/lib/session';
-import { Row } from '@/types';
+import { serverClient } from '@/app/_trpc/server';
 
 export default async function Users() {
-  const { data: users } = await supabase.from('users').select('*');
-  const user = await getUser();
+  const users = await serverClient.getUsers();
+  const user = await serverClient.getCurrentUser();
 
   const currentUser = users?.find((u) => u.id === user.id);
 
   return (
     <div className='h-full'>
-      <UserTable users={users as Row<'users'>[]} userId={currentUser?.id} />
+      <UserTable users={users} userId={currentUser?.id} />
     </div>
   );
 }

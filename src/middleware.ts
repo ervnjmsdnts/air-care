@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import * as jose from 'jose';
-import { Row } from './types';
-
-type MiddleWareUser = {
-  payload?: {
-    data?: Row<'users'>;
-  };
-};
 
 export default async function middleware(req: NextRequest) {
   const cookie = cookies().get('session');
@@ -16,6 +9,8 @@ export default async function middleware(req: NextRequest) {
 
   const value = cookie?.value as string;
 
+  if (!value) return;
+
   const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
   if (pathname.includes('/admin') && !value) {
@@ -23,21 +18,17 @@ export default async function middleware(req: NextRequest) {
   }
 
   try {
-    const user = (await jose.jwtVerify(value, secret)) as MiddleWareUser;
+    const user = (await jose.jwtVerify(value, secret)) as any;
 
     if (
       user &&
       (pathname === '/' || pathname === '/auth') &&
-      user?.payload?.data?.role === 'admin'
+      user?.payload?.role === 'ADMIN'
     ) {
       return NextResponse.redirect(new URL('/admin', req.url));
     }
 
-    if (
-      user &&
-      pathname.includes('admin') &&
-      user.payload?.data?.role === 'user'
-    ) {
+    if (user && pathname.includes('admin') && user.payload?.role === 'USER') {
       return NextResponse.redirect(new URL('/', req.url));
     }
   } catch (e: unknown) {

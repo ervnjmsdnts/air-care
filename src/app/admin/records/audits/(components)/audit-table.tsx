@@ -2,39 +2,12 @@
 
 import { DataTable } from '@/components/ui/data-table';
 import { auditColumn } from '../columns';
-import { NestedRow } from '@/types';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-
+import { Audit, User } from '@prisma/client';
 export default function AuditTable({
   audits,
 }: {
-  audits: NestedRow<'audits', 'users'>[];
+  audits: (Audit & { user: User | null })[];
 }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    const channel = supabase
-      .channel('realtime_audits')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'audits',
-        },
-        () => {
-          router.refresh();
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [router]);
-
   return (
     <DataTable
       data={audits}
