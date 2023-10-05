@@ -14,12 +14,11 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Inventory, Prisma } from '@prisma/client';
 import { CreateProductSchema, createProductSchema } from '@/trpc/schema';
 import { trpc } from '@/app/_trpc/client';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { Inventory } from '@prisma/client';
 
 function AddProductButton() {
   const form = useForm<CreateProductSchema>({
@@ -28,12 +27,12 @@ function AddProductButton() {
 
   const [open, setOpen] = useState(false);
 
-  const router = useRouter();
+  const util = trpc.useContext();
 
   const { mutate: createProduct, isLoading } = trpc.createProduct.useMutation({
     onSuccess: () => {
       setOpen(false);
-      router.refresh();
+      util.getProducts.invalidate();
     },
   });
 
@@ -86,21 +85,29 @@ function AddProductButton() {
   );
 }
 
-export default function InventoryTable({
-  products,
-}: {
-  products: Inventory[];
-}) {
+export default function InventoryTable() {
+  const { data: products, isLoading } = trpc.getProducts.useQuery();
+
+  const productss: unknown = products;
+
   return (
     <div className='flex flex-col h-full gap-2'>
-      <AddProductButton />
-      <DataTable
-        columns={inventoryColumns}
-        data={products}
-        hasFilterInput
-        filterInputColumn='name'
-        filterPlaceholder='Search name...'
-      />
+      {isLoading ? (
+        <div className='flex justify-center'>
+          <Loader2 className='h-8 w-8 animate-spin' />
+        </div>
+      ) : (
+        <>
+          <AddProductButton />
+          <DataTable
+            columns={inventoryColumns}
+            data={productss as Inventory[]}
+            hasFilterInput
+            filterInputColumn='name'
+            filterPlaceholder='Search name...'
+          />
+        </>
+      )}
     </div>
   );
 }

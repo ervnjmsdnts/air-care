@@ -16,7 +16,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
   const { startUpload } = useUploadThing('imageUploader');
 
   const { toast } = useToast();
-  const router = useRouter();
+  const util = trpc.useContext();
 
   const { mutate: addProductImage } = trpc.addProductImage.useMutation();
 
@@ -76,8 +76,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
           productId,
         });
 
-        router.refresh();
-        window.location.reload();
+        util.getProducts.invalidate();
       }}>
       {({ getRootProps, getInputProps, acceptedFiles }) => (
         <div
