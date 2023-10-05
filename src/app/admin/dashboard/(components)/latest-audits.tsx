@@ -55,6 +55,8 @@ export default function LatestAudits({
 }) {
   const router = useRouter();
 
+  console.log({ audits });
+
   useEffect(() => {
     const channel = supabase
       .channel('realtime_audits')
