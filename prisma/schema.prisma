@@ -46,6 +46,7 @@ model Inventory {
   type         String
   installPrice Float
   repairPrice  Float
+  buyPrice     Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

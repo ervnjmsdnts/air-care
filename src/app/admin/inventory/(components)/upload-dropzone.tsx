@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { useUploadThing } from '@/lib/uploadthing';
 import { Cloud, File, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Dropzone from 'react-dropzone';
 
@@ -15,7 +16,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
   const { startUpload } = useUploadThing('imageUploader');
 
   const { toast } = useToast();
-  const util = trpc.useContext();
+  const router = useRouter();
 
   const { mutate: addProductImage } = trpc.addProductImage.useMutation();
 
@@ -75,7 +76,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
           productId,
         });
 
-        util.getProducts.invalidate();
+        router.refresh();
         window.location.reload();
       }}>
       {({ getRootProps, getInputProps, acceptedFiles }) => (

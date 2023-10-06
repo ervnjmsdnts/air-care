@@ -16,20 +16,7 @@ import UploadDropzone from './(components)/upload-dropzone';
 import Image from 'next/image';
 import ProductDeleteDialog from './(components)/delete-dialog';
 import ProductEditDialog from './(components)/edit-dialog';
-
-export type Inventory = {
-  id: string;
-  name: string;
-  url: string | null | undefined;
-  key: string | null | undefined;
-  createdAt: string;
-  updatedAt: string;
-  quantity: number;
-  brand: string;
-  type: string;
-  installPrice: number;
-  repairPrice: number;
-};
+import { Inventory } from '@prisma/client';
 
 export const inventoryColumns: ColumnDef<Inventory>[] = [
   {
@@ -107,6 +94,22 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
     ),
     cell: ({ row }) => {
       const price = parseFloat(row.getValue('repairPrice'));
+
+      const formatted = new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP',
+      }).format(price);
+
+      return <div className='font-medium'>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: 'buyPrice',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Buy Price' />
+    ),
+    cell: ({ row }) => {
+      const price = parseFloat(row.getValue('buyPrice'));
 
       const formatted = new Intl.NumberFormat('en-PH', {
         style: 'currency',
