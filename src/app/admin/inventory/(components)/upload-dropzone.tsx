@@ -64,7 +64,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
 
         const [fileResponse] = res;
 
-        const key = fileResponse?.key;
+        const key = fileResponse?.key.split('https://utfs.io/f/')[1];
         const url = fileResponse?.url;
 
         if (!key || !url) {
