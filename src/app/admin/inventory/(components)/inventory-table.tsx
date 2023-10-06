@@ -20,7 +20,6 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Inventory } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { router } from '@/trpc/trpc';
 
 function AddProductButton() {
   const form = useForm<CreateProductSchema>({

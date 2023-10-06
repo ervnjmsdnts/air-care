@@ -19,6 +19,14 @@ export default function UploadDropzone({ productId }: { productId: string }) {
   const router = useRouter();
 
   const { mutate: addProductImage } = trpc.addProductImage.useMutation();
+  const { mutate: startPolling } = trpc.getProductPoll.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      window.location.reload();
+    },
+    retry: true,
+    retryDelay: 500,
+  });
 
   const startSimulatedProgress = () => {
     setUploadProgress(0);
@@ -76,8 +84,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
           productId,
         });
 
-        router.refresh();
-        window.location.reload();
+        startPolling({ key });
       }}>
       {({ getRootProps, getInputProps, acceptedFiles }) => (
         <div

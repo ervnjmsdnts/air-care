@@ -151,6 +151,19 @@ export const appRouter = router({
 
     return products;
   }),
+  getProductPoll: publicProcedure
+    .input(z.object({ key: z.string() }))
+    .mutation(async ({ input }) => {
+      const product = await db.inventory.findFirst({
+        where: {
+          key: input.key,
+        },
+      });
+
+      if (!product) throw new TRPCError({ code: 'NOT_FOUND' });
+
+      return product;
+    }),
   addProductImage: publicProcedure
     .input(
       z.object({ url: z.string(), key: z.string(), productId: z.string() }),
