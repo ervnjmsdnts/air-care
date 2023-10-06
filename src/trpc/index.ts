@@ -171,7 +171,7 @@ export const appRouter = router({
     .mutation(async ({ input }) => {
       await db.inventory.update({
         where: { id: input.productId },
-        data: { url: input.url, key: input.url },
+        data: { url: input.url, key: input.key },
       });
     }),
   deleteProduct: publicProcedure
