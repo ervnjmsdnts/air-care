@@ -106,8 +106,8 @@ export default function InventoryTable() {
         <>
           <AddProductButton />
           <DataTable
-            columns={inventoryColumns}
             data={products as any[]}
+            columns={inventoryColumns}
             hasFilterInput
             filterInputColumn='name'
             filterPlaceholder='Search name...'

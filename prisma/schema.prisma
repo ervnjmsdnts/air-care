@@ -44,8 +44,8 @@ model Inventory {
   quantity     Int     @default(0)
   brand        String
   type         String
-  installPrice Decimal
-  repairPrice  Decimal
+  installPrice Float
+  repairPrice  Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
