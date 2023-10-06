@@ -94,25 +94,25 @@ function AddProductButton() {
 }
 
 export default function InventoryTable() {
-  const { data: products, isLoading } = trpc.getProducts.useQuery();
+  const { data: products } = trpc.getProducts.useQuery();
 
   return (
     <div className='flex flex-col h-full gap-2'>
-      {isLoading ? (
-        <div className='flex justify-center'>
-          <Loader2 className='h-8 w-8 animate-spin' />
-        </div>
-      ) : (
+      {products && products?.length !== 0 ? (
         <>
           <AddProductButton />
           <DataTable
-            data={products as any[]}
+            data={products}
             columns={inventoryColumns}
             hasFilterInput
             filterInputColumn='name'
             filterPlaceholder='Search name...'
           />
         </>
+      ) : (
+        <div className='flex justify-center'>
+          <Loader2 className='h-8 w-8 animate-spin' />
+        </div>
       )}
     </div>
   );
