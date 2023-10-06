@@ -18,7 +18,6 @@ import { CreateProductSchema, createProductSchema } from '@/trpc/schema';
 import { trpc } from '@/app/_trpc/client';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { Inventory } from '@prisma/client';
 
 function AddProductButton() {
   const form = useForm<CreateProductSchema>({
@@ -102,7 +101,7 @@ export default function InventoryTable() {
         <>
           <AddProductButton />
           <DataTable
-            data={products as unknown as Inventory[]}
+            data={products}
             columns={inventoryColumns}
             hasFilterInput
             filterInputColumn='name'

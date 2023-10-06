@@ -12,7 +12,6 @@ import {
   updateProductSchema,
 } from '@/trpc/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Inventory } from '@prisma/client';
 import { Row } from '@tanstack/react-table';
 import { useForm } from 'react-hook-form';
 import UploadDropzone from './upload-dropzone';
@@ -20,6 +19,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { Inventory } from '../columns';
 
 export default function ProductEditDialog({
   detail,

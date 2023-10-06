@@ -11,12 +11,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Inventory } from '@prisma/client';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import UploadDropzone from './(components)/upload-dropzone';
 import Image from 'next/image';
 import ProductDeleteDialog from './(components)/delete-dialog';
 import ProductEditDialog from './(components)/edit-dialog';
+
+export type Inventory = {
+  id: string;
+  name: string;
+  url: string | null | undefined;
+  key: string | null | undefined;
+  createdAt: string;
+  updatedAt: string;
+  quantity: number;
+  brand: string;
+  type: string;
+  installPrice: number;
+  repairPrice: number;
+};
 
 export const inventoryColumns: ColumnDef<Inventory>[] = [
   {
