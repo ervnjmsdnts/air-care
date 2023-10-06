@@ -1,7 +1,7 @@
 'use client';
 
 import { DataTable } from '@/components/ui/data-table';
-import { inventoryColumns } from '../columns';
+import { Inventory, inventoryColumns } from '../columns';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -93,15 +93,31 @@ function AddProductButton() {
 }
 
 export default function InventoryTable() {
-  const { data: products } = trpc.getProducts.useQuery();
+  const { data: rawInventory } = trpc.getProducts.useQuery();
+
+  const inventory: Inventory[] | undefined = rawInventory?.map((item) => ({
+    id: item.id,
+    name: item.name,
+    url: item.url || null,
+    key: item.key || null,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    quantity: item.quantity,
+    brand: item.brand,
+    type: item.type,
+    installPrice: item.installPrice,
+    repairPrice: item.repairPrice,
+  }));
+
+  console.log(inventory);
 
   return (
     <div className='flex flex-col h-full gap-2'>
-      {products && products?.length !== 0 ? (
+      {inventory && inventory?.length !== 0 ? (
         <>
           <AddProductButton />
           <DataTable
-            data={products}
+            data={inventory}
             columns={inventoryColumns}
             hasFilterInput
             filterInputColumn='name'
