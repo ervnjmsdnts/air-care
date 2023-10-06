@@ -79,5 +79,5 @@ model Appointment {
   status    AppointmentStatus @default(PENDING)
 
   createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
