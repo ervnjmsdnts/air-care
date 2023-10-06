@@ -18,7 +18,7 @@ import Image from 'next/image';
 import ProductDeleteDialog from './(components)/delete-dialog';
 import ProductEditDialog from './(components)/edit-dialog';
 
-export const inventoryColumns: ColumnDef<any>[] = [
+export const inventoryColumns: ColumnDef<Inventory>[] = [
   {
     id: 'image',
     enableSorting: false,

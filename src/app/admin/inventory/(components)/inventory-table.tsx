@@ -102,7 +102,7 @@ export default function InventoryTable() {
         <>
           <AddProductButton />
           <DataTable
-            data={products}
+            data={products as unknown as Inventory[]}
             columns={inventoryColumns}
             hasFilterInput
             filterInputColumn='name'
