@@ -151,10 +151,7 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
                   Delete
                 </DropdownMenuItem>
               </DialogTrigger>
-              <ProductDeleteDialog
-                rowId={row.original.id}
-                rowKey={row.original.key!}
-              />
+              <ProductDeleteDialog rowId={row.original.id} />
             </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>

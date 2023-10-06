@@ -174,11 +174,9 @@ export const appRouter = router({
         data: { url: input.url, key: input.key },
       });
     }),
-  deleteProduct: publicProcedure
-    .input(idSchema.merge(z.object({ key: z.string() })))
-    .mutation(async ({ input }) => {
-      await db.inventory.delete({ where: { id: input.id } });
-    }),
+  deleteProduct: publicProcedure.input(idSchema).mutation(async ({ input }) => {
+    await db.inventory.delete({ where: { id: input.id } });
+  }),
   updateProduct: publicProcedure
     .input(updateProductSchema.merge(idSchema))
     .mutation(async ({ input }) => {

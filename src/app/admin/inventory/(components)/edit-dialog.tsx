@@ -45,80 +45,84 @@ export default function ProductEditDialog({
   };
 
   return (
-    <DialogContent>
+    <DialogContent className='max-w-4xl'>
       <DialogHeader>
         <DialogTitle>Edit</DialogTitle>
       </DialogHeader>
-      <div className='grid gap-4'>
-        <UploadDropzone productId={detail.original.id} />
-        <div className='grid gap-2'>
-          <Label htmlFor='name'>Name</Label>
-          <Input
-            id='name'
-            defaultValue={detail.original.name}
-            {...form.register('name')}
-          />
+      <div className='flex gap-4'>
+        <div className='w-1/2'>
+          <UploadDropzone productId={detail.original.id} />
         </div>
-        <div className='grid gap-2'>
-          <Label htmlFor='brand'>Brand</Label>
-          <Input
-            defaultValue={detail.original.brand}
-            id='brand'
-            {...form.register('brand')}
-          />
-        </div>
-        <div className='grid gap-2'>
-          <Label htmlFor='type'>Type</Label>
-          <Input
-            id='type'
-            defaultValue={detail.original.type}
-            {...form.register('type')}
-          />
-        </div>
-        <div className='grid gap-2'>
-          <Label htmlFor='quantity'>Quantity</Label>
-          <Input
-            id='quantity'
-            type='number'
-            defaultValue={detail.original.quantity}
-            {...form.register('quantity', { valueAsNumber: true })}
-          />
-        </div>
-        <div className='grid grid-cols-3 gap-2'>
+        <div className='w-1/2 grid gap-2'>
           <div className='grid gap-2'>
-            <Label htmlFor='installPrice'>Install Price</Label>
+            <Label htmlFor='name'>Name</Label>
             <Input
-              id='installPrice'
-              type='number'
-              defaultValue={detail.original.installPrice as any}
-              {...form.register('installPrice', { valueAsNumber: true })}
+              id='name'
+              defaultValue={detail.original.name}
+              {...form.register('name')}
             />
           </div>
           <div className='grid gap-2'>
-            <Label htmlFor='repairPrice'>Repair Price</Label>
+            <Label htmlFor='brand'>Brand</Label>
             <Input
-              id='repairPrice'
-              type='number'
-              defaultValue={detail.original.repairPrice as any}
-              {...form.register('repairPrice', { valueAsNumber: true })}
+              defaultValue={detail.original.brand}
+              id='brand'
+              {...form.register('brand')}
             />
           </div>
           <div className='grid gap-2'>
-            <Label htmlFor='buyPrice'>Buy Price</Label>
+            <Label htmlFor='type'>Type</Label>
             <Input
-              id='buyPrice'
-              type='number'
-              defaultValue={detail.original.buyPrice as any}
-              {...form.register('buyPrice', { valueAsNumber: true })}
+              id='type'
+              defaultValue={detail.original.type}
+              {...form.register('type')}
             />
           </div>
+          <div className='grid gap-2'>
+            <Label htmlFor='quantity'>Quantity</Label>
+            <Input
+              id='quantity'
+              type='number'
+              defaultValue={detail.original.quantity}
+              {...form.register('quantity', { valueAsNumber: true })}
+            />
+          </div>
+          <div className='grid grid-cols-3 gap-2'>
+            <div className='grid gap-2'>
+              <Label htmlFor='installPrice'>Install Price</Label>
+              <Input
+                id='installPrice'
+                type='number'
+                defaultValue={detail.original.installPrice as any}
+                {...form.register('installPrice', { valueAsNumber: true })}
+              />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='repairPrice'>Repair Price</Label>
+              <Input
+                id='repairPrice'
+                type='number'
+                defaultValue={detail.original.repairPrice as any}
+                {...form.register('repairPrice', { valueAsNumber: true })}
+              />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='buyPrice'>Buy Price</Label>
+              <Input
+                id='buyPrice'
+                type='number'
+                defaultValue={detail.original.buyPrice as any}
+                {...form.register('buyPrice', { valueAsNumber: true })}
+              />
+            </div>
+          </div>
+          <Button
+            className='w-full'
+            disabled={isLoading}
+            onClick={form.handleSubmit(submit)}>
+            {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Save'}
+          </Button>
         </div>
-        <Button
-          className='self-end'
-          disabled={isLoading}
-          onClick={form.handleSubmit(submit)}>
-          {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Save'}
-        </Button>
       </div>
     </DialogContent>
   );
