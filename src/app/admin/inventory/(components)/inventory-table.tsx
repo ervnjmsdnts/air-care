@@ -96,8 +96,6 @@ function AddProductButton() {
 export default function InventoryTable() {
   const { data: products, isLoading } = trpc.getProducts.useQuery();
 
-  const productss: unknown = products;
-
   return (
     <div className='flex flex-col h-full gap-2'>
       {isLoading ? (
@@ -109,7 +107,7 @@ export default function InventoryTable() {
           <AddProductButton />
           <DataTable
             columns={inventoryColumns}
-            data={productss as Inventory[]}
+            data={products as any[]}
             hasFilterInput
             filterInputColumn='name'
             filterPlaceholder='Search name...'
