@@ -5,7 +5,6 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { useUploadThing } from '@/lib/uploadthing';
 import { Cloud, File, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Dropzone from 'react-dropzone';
 
@@ -77,6 +76,7 @@ export default function UploadDropzone({ productId }: { productId: string }) {
         });
 
         util.getProducts.invalidate();
+        window.location.reload();
       }}>
       {({ getRootProps, getInputProps, acceptedFiles }) => (
         <div

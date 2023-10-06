@@ -72,12 +72,28 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
     ),
   },
   {
-    accessorKey: 'price',
+    accessorKey: 'installPrice',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Price' />
+      <DataTableColumnHeader column={column} title='Install Price' />
     ),
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue('price'));
+      const price = parseFloat(row.getValue('installPrice'));
+
+      const formatted = new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP',
+      }).format(price);
+
+      return <div className='font-medium'>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: 'repairPrice',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Repair Price' />
+    ),
+    cell: ({ row }) => {
+      const price = parseFloat(row.getValue('repairPrice'));
 
       const formatted = new Intl.NumberFormat('en-PH', {
         style: 'currency',

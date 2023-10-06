@@ -10,7 +10,8 @@ export const updateProductSchema = z.object({
   name: z.string().optional(),
   brand: z.string().optional(),
   type: z.string().optional(),
-  price: z.number().optional(),
+  installPrice: z.number().optional(),
+  repairPrice: z.number().optional(),
   quantity: z.number().optional(),
 });
 
@@ -35,7 +36,8 @@ export const createProductSchema = z.object({
   name: z.string(),
   brand: z.string(),
   type: z.string(),
-  price: z.number(),
+  installPrice: z.number(),
+  repairPrice: z.number(),
   quantity: z.number(),
 });
 

@@ -70,11 +70,19 @@ function AddProductButton() {
           />
         </div>
         <div className='grid gap-2'>
-          <Label htmlFor='price'>Price</Label>
+          <Label htmlFor='installPrice'>Install Price</Label>
           <Input
-            id='price'
+            id='installPrice'
             type='number'
-            {...form.register('price', { valueAsNumber: true })}
+            {...form.register('installPrice', { valueAsNumber: true })}
+          />
+        </div>
+        <div className='grid gap-2'>
+          <Label htmlFor='repairPrice'>Repair Price</Label>
+          <Input
+            id='repairPrice'
+            type='number'
+            {...form.register('repairPrice', { valueAsNumber: true })}
           />
         </div>
         <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>

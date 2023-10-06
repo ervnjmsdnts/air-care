@@ -37,14 +37,15 @@ model Audit {
 }
 
 model Inventory {
-  id       String  @id @unique @default(cuid())
-  name     String
-  key      String?
-  url      String?
-  quantity Int     @default(0)
-  brand    String
-  type     String
-  price    Decimal
+  id           String  @id @unique @default(cuid())
+  name         String
+  key          String?
+  url          String?
+  quantity     Int     @default(0)
+  brand        String
+  type         String
+  installPrice Decimal
+  repairPrice  Decimal
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

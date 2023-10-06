@@ -30,8 +30,13 @@ export default function ProductEditDialog({
     resolver: zodResolver(updateProductSchema),
   });
 
+  const util = trpc.useContext();
+
   const { mutate: updateProduct, isLoading } = trpc.updateProduct.useMutation({
-    onSuccess: () => window.location.reload(),
+    onSuccess: () => {
+      util.getProducts.invalidate();
+      window.location.reload();
+    },
   });
 
   const submit = async (data: UpdateProductSchema & IdSchema) => {
@@ -79,12 +84,21 @@ export default function ProductEditDialog({
           />
         </div>
         <div className='grid gap-2'>
-          <Label htmlFor='price'>Price</Label>
+          <Label htmlFor='installPrice'>Install Price</Label>
           <Input
-            id='price'
+            id='installPrice'
             type='number'
-            defaultValue={detail.original.price as any}
-            {...form.register('price', { valueAsNumber: true })}
+            defaultValue={detail.original.installPrice as any}
+            {...form.register('installPrice', { valueAsNumber: true })}
+          />
+        </div>
+        <div className='grid gap-2'>
+          <Label htmlFor='repairPrice'>Repair Price</Label>
+          <Input
+            id='repairPrice'
+            type='number'
+            defaultValue={detail.original.repairPrice as any}
+            {...form.register('repairPrice', { valueAsNumber: true })}
           />
         </div>
         <Button
