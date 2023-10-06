@@ -13,7 +13,7 @@ export default async function middleware(req: NextRequest) {
 
   const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-  if (pathname.includes('/admin') && !value) {
+  if ((pathname.includes('admin') || pathname.includes('inquiry')) && !value) {
     return NextResponse.redirect(new URL('/auth', req.url));
   }
 
@@ -28,8 +28,12 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/admin', req.url));
     }
 
-    if (user && pathname.includes('admin') && user.payload?.role === 'USER') {
-      return NextResponse.redirect(new URL('/', req.url));
+    if (
+      user &&
+      (pathname === '/' || pathname === '/auth') &&
+      user.payload?.role === 'USER'
+    ) {
+      return NextResponse.redirect(new URL('/inquiry', req.url));
     }
   } catch (e: unknown) {
     console.log(e);

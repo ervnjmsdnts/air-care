@@ -13,9 +13,11 @@ export default function LayoutProvider({
 
   if (pathname.includes('auth')) return children;
 
+  const hasUser = pathname.includes('admin') || pathname.includes('inquiry');
+
   return (
     <>
-      {pathname.includes('admin') ? (
+      {hasUser ? (
         <UserNavbar>{children}</UserNavbar>
       ) : (
         <>

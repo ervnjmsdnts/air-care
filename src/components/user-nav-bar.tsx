@@ -142,6 +142,7 @@ export default function UserNavbar({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const router = useRouter();
   const { data: user } = trpc.getCurrentUser.useQuery();
   async function logOut() {
@@ -245,13 +246,15 @@ export default function UserNavbar({
         </Dialog>
       </div>
       <div className='flex flex-grow h-full'>
-        <div className='w-80 p-6 border-r'>
-          <div className='flex flex-col gap-2'>
-            {adminRoutes.map((route, index) => (
-              <AdminNavItem {...route} key={index} />
-            ))}
+        {pathname.includes('admin') ? (
+          <div className='w-80 p-6 border-r'>
+            <div className='flex flex-col gap-2'>
+              {adminRoutes.map((route, index) => (
+                <AdminNavItem {...route} key={index} />
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
         <main className='p-6 w-full'>{children}</main>
       </div>
     </div>

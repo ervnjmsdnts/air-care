@@ -21,9 +21,10 @@ model User {
   password    String
   role        Role   @default(USER)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Audit     Audit[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Audit       Audit[]
+  Appointment Appointment[]
 }
 
 model Audit {
@@ -48,6 +49,35 @@ model Inventory {
   repairPrice  Float
   buyPrice     Float
 
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Appointment Appointment[]
+}
+
+enum AppoinmentType {
+  INSTALLATION
+  REPAIR
+  PURCHASE
+}
+
+enum AppointmentStatus {
+  PENDING
+  APPROVED
+  DENIED
+  ONGOING
+  DONE
+}
+
+model Appointment {
+  id        String            @id @unique @default(cuid())
+  user      User              @relation(fields: [userId], references: [id])
+  product   Inventory         @relation(fields: [productId], references: [id])
+  userId    String
+  productId String
+  price     Float
+  type      AppoinmentType
+  status    AppointmentStatus @default(PENDING)
+
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updateAt  DateTime @updatedAt
 }
