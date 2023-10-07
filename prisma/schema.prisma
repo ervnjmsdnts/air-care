@@ -54,7 +54,7 @@ model Inventory {
   Appointment Appointment[]
 }
 
-enum AppoinmentType {
+enum AppointmentType {
   INSTALLATION
   REPAIR
   PURCHASE
@@ -75,7 +75,8 @@ model Appointment {
   userId    String
   productId String
   price     Float
-  type      AppoinmentType
+  quantity  Int?
+  type      AppointmentType
   status    AppointmentStatus @default(PENDING)
 
   createdAt DateTime @default(now())

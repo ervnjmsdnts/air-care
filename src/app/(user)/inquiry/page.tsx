@@ -11,27 +11,47 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/use-toast';
 import { cn, toPhp } from '@/lib/utils';
-import { Inventory } from '@prisma/client';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { AppointmentType, Inventory } from '@prisma/client';
+import { ChevronLeft, ChevronRight, Ghost, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
 function Product({ product }: { product: Inventory }) {
-  const [selectedBadge, setSelectedBadge] = useState<
-    'install' | 'repair' | 'purchase'
-  >('purchase');
+  const [selectedBadge, setSelectedBadge] =
+    useState<AppointmentType>('PURCHASE');
   const [currQuantity, setCurrQuantity] = useState(1);
 
   const selectedPrice =
-    selectedBadge === 'install'
+    selectedBadge === 'INSTALLATION'
       ? product.installPrice
-      : selectedBadge === 'repair'
+      : selectedBadge === 'REPAIR'
       ? product.repairPrice
       : product.buyPrice;
 
   const inquiryPrice =
-    selectedBadge === 'purchase' ? selectedPrice * currQuantity : selectedPrice;
+    selectedBadge === 'PURCHASE' ? selectedPrice * currQuantity : selectedPrice;
+
+  const { toast } = useToast();
+
+  const { mutate: createAppointment, isLoading } =
+    trpc.createAppointment.useMutation({
+      onSuccess: () => {
+        toast({
+          title: 'Appointment has been created',
+          description: 'Please wait for the approval of your appointment',
+        });
+      },
+      onError: () => {
+        toast({
+          variant: 'destructive',
+          title: 'Oh uh! Something went wrong',
+          description: 'Please try again later',
+        });
+      },
+    });
 
   return (
     <Sheet>
@@ -47,28 +67,28 @@ function Product({ product }: { product: Inventory }) {
         </div>
         <div className='flex gap-2 items-center'>
           <Badge
-            onClick={() => setSelectedBadge('install')}
+            onClick={() => setSelectedBadge('INSTALLATION')}
             className={cn(
               'bg-white hover:bg-gray-200 border-gray-600 text-gray-600 cursor-pointer',
-              selectedBadge === 'install' &&
+              selectedBadge === 'INSTALLATION' &&
                 'bg-gray-600 border-none hover:bg-gray-600/80 text-white',
             )}>
             Installation
           </Badge>
           <Badge
-            onClick={() => setSelectedBadge('repair')}
+            onClick={() => setSelectedBadge('REPAIR')}
             className={cn(
               'bg-white hover:bg-green-100 border-green-600 text-green-600 cursor-pointer',
-              selectedBadge === 'repair' &&
+              selectedBadge === 'REPAIR' &&
                 'bg-green-600 border-none text-white hover:bg-green-600/80',
             )}>
             Repair
           </Badge>
           <Badge
-            onClick={() => setSelectedBadge('purchase')}
+            onClick={() => setSelectedBadge('PURCHASE')}
             className={cn(
               'bg-white hover:bg-primary/20 text-primary border-primary cursor-pointer',
-              selectedBadge === 'purchase' &&
+              selectedBadge === 'PURCHASE' &&
                 'bg-primary text-primary-foreground border-none hover:bg-primary/80',
             )}>
             Purchase
@@ -96,7 +116,7 @@ function Product({ product }: { product: Inventory }) {
             </div>
             <h2 className='text-lg font-bold'>{product.name}</h2>
             <h2 className='text-lg'>{toPhp(inquiryPrice)}</h2>
-            {selectedBadge === 'purchase' ? (
+            {selectedBadge === 'PURCHASE' ? (
               <div>
                 <p className='text-zinc-800 mb-1 text-sm'>Quantity</p>
                 <div className='flex items-center gap-1.5'>
@@ -148,7 +168,24 @@ function Product({ product }: { product: Inventory }) {
               </div>
             ) : null}
           </div>
-          <Button>Confirm</Button>
+          <Button
+            disabled={isLoading}
+            onClick={() =>
+              createAppointment({
+                price: inquiryPrice,
+                type: selectedBadge,
+                productId: product.id,
+                ...(selectedBadge === 'PURCHASE'
+                  ? { quantity: currQuantity }
+                  : {}),
+              })
+            }>
+            {isLoading ? (
+              <Loader2 className='h-4 w-4 animate-spin' />
+            ) : (
+              'Confirm'
+            )}
+          </Button>
         </div>
       </SheetContent>
     </Sheet>
@@ -165,7 +202,7 @@ export default function Inquiry() {
     <div className='max-w-6xl mx-auto'>
       {products && products.length !== 0 ? (
         <div className='grid grid-cols-4 gap-8'>
-          {products.map((product) => (
+          {products?.map((product) => (
             <>
               <Product
                 product={{
@@ -179,9 +216,18 @@ export default function Inquiry() {
           ))}
         </div>
       ) : isLoading ? (
-        <div>Loading...</div>
+        <div className='grid grid-cols-4 gap-8'>
+          {[...new Array(12)].map((_, index) => (
+            <Skeleton key={index} className='h-60 w-full rounded-lg' />
+          ))}
+        </div>
       ) : (
-        <div>Nothing to display...</div>
+        <div>
+          <div className='mt-16 flex flex-col items-center gap-2'>
+            <Ghost className='h-8 w-8 text-zinc-800' />
+            <h3 className='font-semibold text-xl'>No content to display</h3>
+          </div>
+        </div>
       )}
     </div>
   );

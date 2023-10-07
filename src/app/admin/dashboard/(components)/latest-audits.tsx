@@ -1,10 +1,11 @@
 'use client';
 
+import { trpc } from '@/app/_trpc/client';
+import LatestSkeleton from '@/components/latest-skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import UserPop from '@/components/user-pop';
 import { supabase } from '@/lib/supabase';
-import { Audit, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { ArrowRight, Ghost } from 'lucide-react';
 import Link from 'next/link';
@@ -48,11 +49,8 @@ function Audit({
   );
 }
 
-export default function LatestAudits({
-  audits,
-}: {
-  audits: (Audit & { user: User | null })[];
-}) {
+export default function LatestAudits() {
+  const { data: audits, isLoading } = trpc.getLatestAudits.useQuery();
   const router = useRouter();
 
   useEffect(() => {
@@ -90,14 +88,7 @@ export default function LatestAudits({
         </Button>
       </CardHeader>
       <CardContent className='flex flex-col gap-2 overflow-y-auto h-0 flex-grow'>
-        {!audits.length ? (
-          <div className='self-center gap-2 mt-6 flex flex-col items-center'>
-            <Ghost className='h-8 w-8 text-zinc-600' />
-            <p className='text-center text-zinc-800 font-semibold'>
-              No content
-            </p>
-          </div>
-        ) : (
+        {audits && audits.length !== 0 ? (
           <>
             {audits?.map((audit) => (
               <Audit
@@ -105,11 +96,26 @@ export default function LatestAudits({
                 email={audit.user!.email}
                 name={audit.user!.name}
                 phoneNumber={audit.user!.phoneNumber}
-                createdAt={audit.createdAt}
+                createdAt={new Date(audit.createdAt)}
                 label={audit.label}
               />
             ))}
           </>
+        ) : isLoading ? (
+          <>
+            {[...new Array(7)].map((_, index) => (
+              <div className='grid gap-2' key={index}>
+                <LatestSkeleton />
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className='self-center gap-2 mt-6 flex flex-col items-center'>
+            <Ghost className='h-8 w-8 text-zinc-600' />
+            <p className='text-center text-zinc-800 font-semibold'>
+              No content
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>

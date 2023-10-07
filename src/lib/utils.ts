@@ -15,3 +15,7 @@ export function toPhp(value: string | number) {
 
   return formatted;
 }
+
+export function toTitleCase(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
