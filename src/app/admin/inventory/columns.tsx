@@ -17,6 +17,7 @@ import Image from 'next/image';
 import ProductDeleteDialog from './(components)/delete-dialog';
 import ProductEditDialog from './(components)/edit-dialog';
 import { Inventory } from '@prisma/client';
+import { toPhp } from '@/lib/utils';
 
 export const inventoryColumns: ColumnDef<Inventory>[] = [
   {
@@ -77,14 +78,9 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
       <DataTableColumnHeader column={column} title='Install Price' />
     ),
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue('installPrice'));
+      const installPrice = toPhp(row.getValue('installPrice'));
 
-      const formatted = new Intl.NumberFormat('en-PH', {
-        style: 'currency',
-        currency: 'PHP',
-      }).format(price);
-
-      return <div className='font-medium'>{formatted}</div>;
+      return <div className='font-medium'>{installPrice}</div>;
     },
   },
   {
@@ -93,14 +89,8 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
       <DataTableColumnHeader column={column} title='Repair Price' />
     ),
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue('repairPrice'));
-
-      const formatted = new Intl.NumberFormat('en-PH', {
-        style: 'currency',
-        currency: 'PHP',
-      }).format(price);
-
-      return <div className='font-medium'>{formatted}</div>;
+      const repairPrice = toPhp(row.getValue('repairPrice'));
+      return <div className='font-medium'>{repairPrice}</div>;
     },
   },
   {
@@ -109,14 +99,8 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
       <DataTableColumnHeader column={column} title='Buy Price' />
     ),
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue('buyPrice'));
-
-      const formatted = new Intl.NumberFormat('en-PH', {
-        style: 'currency',
-        currency: 'PHP',
-      }).format(price);
-
-      return <div className='font-medium'>{formatted}</div>;
+      const buyPrice = toPhp(row.getValue('buyPrice'));
+      return <div className='font-medium'>{buyPrice}</div>;
     },
   },
   {

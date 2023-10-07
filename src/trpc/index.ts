@@ -10,6 +10,7 @@ import {
   updateProductSchema,
   updateUserSchema,
 } from './schema';
+import { AppointmentType } from '@prisma/client';
 
 export const appRouter = router({
   // Auth
@@ -185,6 +186,43 @@ export const appRouter = router({
         data: { ...input, id: undefined },
       });
     }),
+
+  // Appointment
+  createAppointment: privateProcedure
+    .input(
+      z.object({
+        productId: z.string(),
+        price: z.number(),
+        type: z.enum(['INSTALLATION', 'REPAIR', 'PURCHASE']),
+        quantity: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const appointment = await db.appointment.create({
+        data: { ...input, userId: ctx.userId },
+      });
+
+      if (!appointment) return new TRPCError({ code: 'BAD_REQUEST' });
+
+      await db.audit.create({
+        data: {
+          label: `User ${ctx.user.name} created an appointment`,
+          userId: ctx.userId,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  getLatestAppointments: publicProcedure.query(async () => {
+    const latestAppointments = await db.appointment.findMany({
+      take: 7,
+      include: { user: true, product: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return latestAppointments;
+  }),
 });
 
 export type AppRouter = typeof appRouter;

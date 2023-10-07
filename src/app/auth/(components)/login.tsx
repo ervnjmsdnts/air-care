@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/components/ui/use-toast';
-import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { trpc } from '@/app/_trpc/client';
 import { LoginSchema, loginSchema } from '@/trpc/schema';
@@ -21,7 +20,6 @@ import { LoginSchema, loginSchema } from '@/trpc/schema';
 export default function Login({ action }: { action: () => void }) {
   const form = useForm<LoginSchema>({ resolver: zodResolver(loginSchema) });
   const { toast } = useToast();
-  const router = useRouter();
 
   const { mutate: createAudit } = trpc.createAudit.useMutation();
   const { mutate: login, isLoading } = trpc.login.useMutation({
@@ -30,7 +28,7 @@ export default function Login({ action }: { action: () => void }) {
         label: `User ${data.name} has logged in`,
         userId: data.id,
       });
-      router.refresh();
+      window.location.reload();
     },
     onError: (error) => {
       toast({
