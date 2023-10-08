@@ -2,35 +2,18 @@
 
 import { trpc } from '@/app/_trpc/client';
 import LatestSkeleton from '@/components/latest-skeleton';
-import { Badge } from '@/components/ui/badge';
+import TypeBadge from '@/components/type-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import UserPop from '@/components/user-pop';
 import { supabase } from '@/lib/supabase';
-import { cn, toTitleCase } from '@/lib/utils';
 import { AppointmentType, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { ArrowRight, Ghost } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
-function TypeBadge({ type }: { type: AppointmentType }) {
-  return (
-    <Badge
-      className={cn(
-        type === 'INSTALLATION'
-          ? 'bg-gray-600 border-none hover:bg-gray-600/80 text-white'
-          : type === 'REPAIR'
-          ? 'bg-green-600 border-none text-white hover:bg-green-600/80'
-          : 'bg-primary text-primary-foreground border-none hover:bg-primary/80',
-      )}>
-      {toTitleCase(type)}
-    </Badge>
-  );
-}
 
 function Appointment({
   createdAt,

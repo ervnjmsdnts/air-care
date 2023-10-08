@@ -43,9 +43,14 @@ export const createProductSchema = z.object({
   quantity: z.number(),
 });
 
+export const statusSchema = z.object({
+  status: z.enum(['PENDING', 'APPROVED', 'DENIED', 'ONGOING', 'DONE']),
+});
+
 export type UpdateUserSchema = z.infer<typeof updateUserSchema>;
 export type IdSchema = z.infer<typeof idSchema>;
 export type CreateUserSchema = z.infer<typeof createUserSchema>;
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type CreateProductSchema = z.infer<typeof createProductSchema>;
 export type UpdateProductSchema = z.infer<typeof updateProductSchema>;
+export type StatusSchema = z.infer<typeof statusSchema>;

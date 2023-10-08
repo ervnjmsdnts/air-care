@@ -25,7 +25,7 @@ export const auditColumn: ColumnDef<Audit & { user: User | null }>[] = [
     accessorKey: 'user',
     filterFn: (row, _, value): any => {
       if (value === undefined || !value) return false;
-      return row.original.user?.name.includes(value);
+      return row.original.user?.name.toLowerCase().includes(value);
     },
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='User' />

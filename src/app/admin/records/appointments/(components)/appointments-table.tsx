@@ -1,25 +1,39 @@
+'use client';
+
 import { DataTable } from '@/components/ui/data-table';
-import { AppoinmentColumnType, appointmentColumns } from '../columns';
+import { appointmentColumns } from '../columns';
+import { trpc } from '@/app/_trpc/client';
+import TableSkeleton from '@/components/table-skeleton';
 
 export default function AppiontmentTable() {
-  const data: AppoinmentColumnType[] = [
-    {
-      id: '1234',
-      client: 'John Doe',
-      date: '02-02-23',
-      product: 'Aircon ni Juan',
-      status: 'in progress',
-      type: 'installation',
-      updated: '02-03-23',
-    },
-  ];
+  const { data: appointments, isLoading } = trpc.getAppointments.useQuery();
+
   return (
-    <DataTable
-      columns={appointmentColumns}
-      data={data}
-      hasFilterInput
-      filterInputColumn='client'
-      filterPlaceholder='Search clients...'
-    />
+    <>
+      {appointments && appointments.length !== 0 ? (
+        <>
+          <DataTable
+            columns={appointmentColumns}
+            data={appointments.map((a) => ({
+              ...a,
+              createdAt: new Date(a.createdAt),
+              updatedAt: new Date(a.updatedAt),
+              user: {
+                ...a.user,
+                createdAt: new Date(a.user.createdAt),
+                updatedAt: new Date(a.user.updatedAt),
+              },
+            }))}
+            hasFilterInput
+            filterInputColumn='user'
+            filterPlaceholder='Search clients...'
+          />
+        </>
+      ) : isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <div>No content</div>
+      )}
+    </>
   );
 }

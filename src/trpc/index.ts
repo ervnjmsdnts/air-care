@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 import {
   createProductSchema,
   idSchema,
+  statusSchema,
   updateProductSchema,
   updateUserSchema,
 } from './schema';
@@ -219,10 +220,33 @@ export const appRouter = router({
       take: 7,
       include: { user: true, product: true },
       orderBy: { createdAt: 'desc' },
+      where: { NOT: { status: 'DONE' } },
     });
 
     return latestAppointments;
   }),
+  getAppointments: publicProcedure.query(async () => {
+    const appointments = await db.appointment.findMany({
+      include: { user: true, product: true },
+      where: { NOT: { status: 'DONE' } },
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    return appointments;
+  }),
+
+  updateAppointmentStatus: publicProcedure
+    .input(statusSchema.merge(idSchema))
+    .mutation(async ({ input }) => {
+      const appointment = await db.appointment.update({
+        where: { id: input.id },
+        data: { status: input.status },
+      });
+
+      if (!appointment) return new TRPCError({ code: 'NOT_FOUND' });
+
+      return { success: true };
+    }),
 });
 
 export type AppRouter = typeof appRouter;
