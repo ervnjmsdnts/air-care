@@ -41,7 +41,7 @@ function Appointment({
       className='rounded-lg shadow-md hover:shadow-lg cursor-pointer'
       onClick={() => router.push(`/inquiry/my-appointments/${appointmentId}`)}>
       <div className='p-4'>
-        <div className='flex gap-4'>
+        <div className='flex gap-4 items-center'>
           <div className='relative h-20 w-20'>
             <Image
               alt='product'
@@ -51,14 +51,13 @@ function Appointment({
             />
           </div>
           <div className='text-sm flex flex-col'>
-            <h4 className='font-semibold text-lg'>{name}</h4>
-            <div className='flex justify-start items-center gap-1'>
-              <p>{brand}</p>
-              <Separator className='w-2 bg-zinc-600' />
-              <p>{productType}</p>
-            </div>
-            <p>Qty: {quantity ?? 'Not applicable'}</p>
-            <p className=''>{toPhp(price)}</p>
+            <h4 className='font-semibold flex items-center gap-2 text-lg'>
+              {name}
+              {quantity ? (
+                <span className='text-xs text-zinc-500'>Qty: {quantity}</span>
+              ) : null}
+            </h4>
+            <p className='font-bold text-lg'>{toPhp(price)}</p>
           </div>
         </div>
       </div>
