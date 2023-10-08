@@ -40,14 +40,14 @@ export const historyColumns: ColumnDef<Appointment & { user: User }>[] = [
     accessorKey: 'createdAt',
     header: 'Start Date',
     cell: ({ row }) => (
-      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY hh:mm A')}</p>
+      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY')}</p>
     ),
   },
   {
-    accessorKey: 'updatedAt',
+    accessorKey: 'scheduledDate',
     header: 'End Date',
     cell: ({ row }) => (
-      <p>{dayjs(row.original.updatedAt).format('MMM DD, YYYY hh:mm A')}</p>
+      <p>{dayjs(row.original.scheduledDate).format('MMM DD, YYYY')}</p>
     ),
   },
   {

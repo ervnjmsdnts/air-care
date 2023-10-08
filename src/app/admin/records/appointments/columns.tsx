@@ -75,14 +75,14 @@ export const appointmentColumns: ColumnDef<Appointment & { user: User }>[] = [
     accessorKey: 'createdAt',
     header: 'Date Issued',
     cell: ({ row }) => (
-      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY hh:mm A')}</p>
+      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY')}</p>
     ),
   },
   {
-    accessorKey: 'updatedAt',
-    header: 'Updated Date',
+    accessorKey: 'scheduledDate',
+    header: 'Scheduled Date',
     cell: ({ row }) => (
-      <p>{dayjs(row.original.updatedAt).format('MMM DD, YYYY hh:mm A')}</p>
+      <p>{dayjs(row.original.scheduledDate).format('MMM DD, YYYY')}</p>
     ),
   },
   {

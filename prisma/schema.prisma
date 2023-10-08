@@ -13,46 +13,44 @@ enum Role {
 }
 
 model User {
-  id          String @id @unique @default(cuid())
-  name        String
-  phoneNumber String
-  address     String
-  email       String @unique
-  password    String
-  role        Role   @default(USER)
-
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Audit       Audit[]
-  Appointment Appointment[]
+  id           String         @id @unique @default(cuid())
+  name         String
+  phoneNumber  String
+  address      String
+  email        String         @unique
+  password     String
+  role         Role           @default(USER)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Audit        Audit[]
+  Appointment  Appointment[]
+  Notification Notification[]
 }
 
 model Audit {
-  id    String @id @unique @default(cuid())
-  user  User?  @relation(fields: [userId], references: [id])
-  label String
-
+  id        String   @id @unique @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  label     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String?
 }
 
 model Inventory {
-  id           String  @id @unique @default(cuid())
+  id           String        @id @unique @default(cuid())
   name         String
   key          String?
   url          String?
-  quantity     Int     @default(0)
+  quantity     Int           @default(0)
   brand        String
   type         String
   installPrice Float
   repairPrice  Float
   buyPrice     Float
   cleanPrice   Float
-
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Appointment Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  Appointment  Appointment[]
 }
 
 enum AppointmentType {
@@ -71,16 +69,33 @@ enum AppointmentStatus {
 }
 
 model Appointment {
-  id        String            @id @unique @default(cuid())
-  user      User              @relation(fields: [userId], references: [id])
-  product   Inventory         @relation(fields: [productId], references: [id])
-  userId    String
-  productId String
-  price     Float
-  quantity  Int?
-  type      AppointmentType
-  status    AppointmentStatus @default(PENDING)
+  id            String            @id @unique @default(cuid())
+  user          User              @relation(fields: [userId], references: [id])
+  product       Inventory         @relation(fields: [productId], references: [id])
+  userId        String
+  productId     String
+  price         Float
+  quantity      Int?
+  type          AppointmentType
+  status        AppointmentStatus @default(PENDING)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  scheduledDate DateTime?
+  Notification  Notification[]
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum NotificationType {
+  ARCHIVED
+  NEW
+}
+
+model Notification {
+  id            String           @id @unique @default(cuid())
+  user          User             @relation(fields: [userId], references: [id])
+  userId        String
+  appointment   Appointment      @relation(fields: [appointmentId], references: [id])
+  appointmentId String
+  message       String
+  type          NotificationType @default(NEW)
+  createdAt     DateTime         @default(now())
 }

@@ -11,7 +11,7 @@ import {
   updateProductSchema,
   updateUserSchema,
 } from './schema';
-import { AppointmentType } from '@prisma/client';
+import { AppointmentStatus, AppointmentType } from '@prisma/client';
 
 export const appRouter = router({
   // Auth
@@ -117,7 +117,10 @@ export const appRouter = router({
     return audits;
   }),
   getAudits: publicProcedure.query(async () => {
-    const audits = await db.audit.findMany({ include: { user: true } });
+    const audits = await db.audit.findMany({
+      include: { user: true },
+      orderBy: { createdAt: 'desc' },
+    });
 
     return audits;
   }),
@@ -152,6 +155,13 @@ export const appRouter = router({
     const products = await db.inventory.findMany();
 
     return products;
+  }),
+  getValidProducts: publicProcedure.query(async () => {
+    const validProducts = await db.inventory.findMany({
+      where: { quantity: { not: 0 } },
+    });
+
+    return validProducts;
   }),
   getProductPoll: publicProcedure
     .input(z.object({ key: z.string() }))
@@ -234,6 +244,24 @@ export const appRouter = router({
 
     return appointments;
   }),
+  getUserAppointments: privateProcedure.query(async ({ ctx }) => {
+    const appointments = await db.appointment.findMany({
+      where: { userId: ctx.userId },
+      include: { product: true },
+    });
+
+    return appointments;
+  }),
+  getUserAppointment: publicProcedure
+    .input(idSchema)
+    .query(async ({ input }) => {
+      const appointment = await db.appointment.findFirst({
+        where: { id: input.id },
+        include: { product: true },
+      });
+
+      return appointment;
+    }),
 
   updateAppointmentStatus: publicProcedure
     .input(statusSchema.merge(idSchema))
@@ -244,6 +272,67 @@ export const appRouter = router({
       });
 
       if (!appointment) return new TRPCError({ code: 'NOT_FOUND' });
+
+      const statusMessages: Partial<Record<AppointmentStatus, string>> = {
+        APPROVED:
+          'Great news! Your appointment has been approved. Please choose a suitable date and time.',
+        DENIED:
+          "We're sorry, but your appointment has been denied. Please contact us for further assistance.",
+        ONGOING:
+          "Your appointment is currently in progress. We hope it's going smoothly!",
+        DONE: 'Congratulations! Your appointment is now complete. We hope it was a success!',
+      };
+
+      const message = statusMessages[appointment.status] || '';
+
+      if (
+        appointment.quantity &&
+        appointment.type === 'PURCHASE' &&
+        appointment.status === 'DONE'
+      ) {
+        const currentProduct = await db.inventory.findUnique({
+          where: { id: appointment.productId },
+        });
+
+        if (!currentProduct) return new TRPCError({ code: 'NOT_FOUND' });
+
+        await db.inventory.update({
+          where: { id: appointment.productId },
+          data: { quantity: currentProduct.quantity - appointment.quantity },
+        });
+      }
+
+      await db.notification.create({
+        data: {
+          userId: appointment.userId,
+          message,
+          appointmentId: appointment.id,
+        },
+      });
+
+      return { success: true };
+    }),
+  setScheduleDate: privateProcedure
+    .input(
+      idSchema.merge(
+        z.object({
+          scheduleDate: z.string().optional(),
+        }),
+      ),
+    )
+    .mutation(async ({ input, ctx }) => {
+      console.log(input);
+      await db.appointment.update({
+        where: { id: input.id },
+        data: { scheduledDate: new Date(input.scheduleDate!) },
+      });
+
+      await db.audit.create({
+        data: {
+          label: `User ${ctx.user.name} added a scheduled date on their appointment`,
+          userId: ctx.userId,
+        },
+      });
 
       return { success: true };
     }),
@@ -257,6 +346,28 @@ export const appRouter = router({
 
     return doneAppointments;
   }),
+
+  // Notifications
+  getNotifications: privateProcedure.query(async ({ ctx }) => {
+    const notifications = await db.notification.findMany({
+      where: { userId: ctx.userId, type: 'NEW' },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return notifications;
+  }),
+  archiveNotification: privateProcedure
+    .input(
+      z.object({
+        notificationId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await db.notification.updateMany({
+        where: { userId: ctx.userId, id: input.notificationId },
+        data: { type: 'ARCHIVED' },
+      });
+    }),
 });
 
 export type AppRouter = typeof appRouter;

@@ -43,7 +43,8 @@ function Product({ product }: { product: Inventory }) {
       onSuccess: () => {
         toast({
           title: 'Appointment has been created',
-          description: 'Please wait for the approval of your appointment',
+          description:
+            'Your appointment is pending approval. We will notify you when it gets approved.',
         });
       },
       onError: () => {
@@ -59,7 +60,12 @@ function Product({ product }: { product: Inventory }) {
     <Sheet>
       <div className='grid gap-2'>
         <div className='relative aspect-video'>
-          <Image fill src={product.url!} alt='Test' className='rounded-lg' />
+          <Image
+            fill
+            src={product.url || 'https://via.placeholder.com/1280x720'}
+            alt='Test'
+            className='rounded-lg'
+          />
         </div>
         <div>
           <h4 className='font-semibold text-zinc-800'>{product.name}</h4>
@@ -204,7 +210,7 @@ function Product({ product }: { product: Inventory }) {
 }
 
 export default function Inquiry() {
-  const { data: products, isLoading } = trpc.getProducts.useQuery();
+  const { data: products, isLoading } = trpc.getValidProducts.useQuery();
   const parseDate = (dateString: string) => {
     return new Date(dateString);
   };
@@ -233,11 +239,9 @@ export default function Inquiry() {
           ))}
         </div>
       ) : (
-        <div>
-          <div className='mt-16 flex flex-col items-center gap-2'>
-            <Ghost className='h-8 w-8 text-zinc-800' />
-            <h3 className='font-semibold text-xl'>No content to display</h3>
-          </div>
+        <div className='mt-16 flex flex-col items-center gap-2'>
+          <Ghost className='h-8 w-8 text-zinc-800' />
+          <h3 className='font-semibold text-xl'>No content to display</h3>
         </div>
       )}
     </div>
