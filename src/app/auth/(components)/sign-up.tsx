@@ -18,7 +18,10 @@ import { trpc } from '@/app/_trpc/client';
 import { CreateUserSchema, createUserSchema } from '@/trpc/schema';
 
 export default function SignUp({ action }: { action: () => void }) {
-  const form = useForm<CreateUserSchema>({
+  const {
+    formState: { errors },
+    ...form
+  } = useForm<CreateUserSchema>({
     resolver: zodResolver(createUserSchema),
   });
   const { toast } = useToast();
@@ -59,19 +62,28 @@ export default function SignUp({ action }: { action: () => void }) {
       <CardContent className='flex flex-col gap-2'>
         <div className='grid gap-2'>
           <Label htmlFor='name'>Name</Label>
-          <Input id='name' {...form.register('name')} />
+          <Input id='name' {...form.register('name')} error={errors.name} />
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='phoneNumber'>Phone Number</Label>
-          <Input id='phoneNumber' {...form.register('phoneNumber')} />
+          <Input
+            id='phoneNumber'
+            {...form.register('phoneNumber')}
+            error={errors.phoneNumber}
+          />
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='address'>Address</Label>
-          <Input id='address' {...form.register('address')} />
+          <Input
+            id='address'
+            {...form.register('address')}
+            error={errors.address}
+          />
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='email'>Email Address</Label>
           <Input
+            error={errors.email}
             id='email'
             type='email'
             placeholder='m@example.com'
@@ -80,7 +92,12 @@ export default function SignUp({ action }: { action: () => void }) {
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='password'>Password</Label>
-          <Input id='password' type='password' {...form.register('password')} />
+          <Input
+            id='password'
+            error={errors.password}
+            type='password'
+            {...form.register('password')}
+          />
         </div>
         <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
           {isLoading ? (

@@ -22,11 +22,11 @@ export const idSchema = z.object({
 });
 
 export const createUserSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-  address: z.string(),
-  phoneNumber: z.string(),
-  name: z.string(),
+  email: z.string().email().min(1, { message: 'Field is required' }),
+  password: z.string().min(1, { message: 'Field is required' }),
+  address: z.string().min(1, { message: 'Field is required' }),
+  phoneNumber: z.string().min(1, { message: 'Field is required' }),
+  name: z.string().min(1, { message: 'Field is required' }),
 });
 
 export const loginSchema = z.object({

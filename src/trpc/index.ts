@@ -6,6 +6,7 @@ import * as jose from 'jose';
 import { cookies } from 'next/headers';
 import {
   createProductSchema,
+  createUserSchema,
   idSchema,
   statusSchema,
   updateProductSchema,
@@ -53,15 +54,7 @@ export const appRouter = router({
       return user;
     }),
   signUp: publicProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        password: z.string(),
-        address: z.string(),
-        phoneNumber: z.string(),
-        name: z.string(),
-      }),
-    )
+    .input(createUserSchema)
     .mutation(async ({ input }) => {
       const exist = await db.user.findFirst({ where: { email: input.email } });
 

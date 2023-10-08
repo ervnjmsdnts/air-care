@@ -93,9 +93,9 @@ export default function LatestAudits() {
             {audits?.map((audit) => (
               <Audit
                 key={audit.id}
-                email={audit.user!.email}
-                name={audit.user!.name}
-                phoneNumber={audit.user!.phoneNumber}
+                email={audit.user?.email || ''}
+                name={audit.user?.name || ''}
+                phoneNumber={audit.user?.phoneNumber || ''}
                 createdAt={new Date(audit.createdAt)}
                 label={audit.label}
               />
