@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Facebook, Instagram, Mail, MapPin, Smartphone } from 'lucide-react';
+import Link from 'next/link';
 
 const services = [
   {
@@ -54,7 +55,9 @@ export default function Home() {
                 The ultimate one-stop shop for all your air conditioning needs.
               </p>
             </div>
-            <Button className='px-10'>Inquire Now</Button>
+            <Button className='px-10' asChild>
+              <Link href='/auth'>Inquire Now</Link>
+            </Button>
           </div>
         </div>
         <Image
@@ -99,7 +102,9 @@ export default function Home() {
                 <h3>Get the best airconditioning services from us,</h3>
                 <h3>Just for you!</h3>
               </div>
-              <Button className='px-10'>Get Started</Button>
+              <Button className='px-10' asChild>
+                <Link href='/auth'>Get Started</Link>
+              </Button>
             </div>
           </div>
         </div>
