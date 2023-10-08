@@ -104,6 +104,16 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
     },
   },
   {
+    accessorKey: 'cleanPrice',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Clean Price' />
+    ),
+    cell: ({ row }) => {
+      const cleanPrice = toPhp(row.getValue('cleanPrice'));
+      return <div className='font-medium'>{cleanPrice}</div>;
+    },
+  },
+  {
     id: 'action',
     enableSorting: false,
     enableHiding: false,

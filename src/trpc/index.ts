@@ -194,7 +194,7 @@ export const appRouter = router({
       z.object({
         productId: z.string(),
         price: z.number(),
-        type: z.enum(['INSTALLATION', 'REPAIR', 'PURCHASE']),
+        type: z.enum(['INSTALLATION', 'REPAIR', 'PURCHASE', 'CLEANING']),
         quantity: z.number().optional(),
       }),
     )
@@ -247,6 +247,16 @@ export const appRouter = router({
 
       return { success: true };
     }),
+
+  getDoneAppointments: publicProcedure.query(async () => {
+    const doneAppointments = await db.appointment.findMany({
+      where: { status: 'DONE' },
+      orderBy: { updatedAt: 'desc' },
+      include: { user: true, product: true },
+    });
+
+    return doneAppointments;
+  }),
 });
 
 export type AppRouter = typeof appRouter;

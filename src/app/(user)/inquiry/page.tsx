@@ -29,6 +29,8 @@ function Product({ product }: { product: Inventory }) {
       ? product.installPrice
       : selectedBadge === 'REPAIR'
       ? product.repairPrice
+      : selectedBadge === 'CLEANING'
+      ? product.cleanPrice
       : product.buyPrice;
 
   const inquiryPrice =
@@ -65,7 +67,7 @@ function Product({ product }: { product: Inventory }) {
             {toPhp(selectedPrice)}
           </h3>
         </div>
-        <div className='flex gap-2 items-center'>
+        <div className='flex gap-2 items-center flex-wrap'>
           <Badge
             onClick={() => setSelectedBadge('INSTALLATION')}
             className={cn(
@@ -92,6 +94,15 @@ function Product({ product }: { product: Inventory }) {
                 'bg-primary text-primary-foreground border-none hover:bg-primary/80',
             )}>
             Purchase
+          </Badge>
+          <Badge
+            onClick={() => setSelectedBadge('CLEANING')}
+            className={cn(
+              'bg-white hover:bg-blue-400/20 text-blue-400 border-blue-400 cursor-pointer',
+              selectedBadge === 'CLEANING' &&
+                'bg-blue-400 text-white border-none hover:bg-blue-400/80',
+            )}>
+            Cleaning
           </Badge>
         </div>
         <SheetTrigger asChild>

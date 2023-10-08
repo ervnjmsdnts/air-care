@@ -17,6 +17,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import ChangeStatusDialog from './(components)/change-status-dialog';
+import { toPhp } from '@/lib/utils';
 
 export const appointmentColumns: ColumnDef<Appointment & { user: User }>[] = [
   {
@@ -38,13 +39,6 @@ export const appointmentColumns: ColumnDef<Appointment & { user: User }>[] = [
     ),
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Date Issued',
-    cell: ({ row }) => (
-      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY hh:mm A')}</p>
-    ),
-  },
-  {
     accessorKey: 'product.name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Product' />
@@ -61,6 +55,28 @@ export const appointmentColumns: ColumnDef<Appointment & { user: User }>[] = [
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => <StatusBadge status={row.original.status} />,
+  },
+  {
+    accessorKey: 'user.address',
+    header: 'Location',
+  },
+  {
+    accessorKey: 'price',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Price' />
+    ),
+    cell: ({ row }) => {
+      const price = toPhp(row.getValue('price'));
+
+      return <div className='font-medium'>{price}</div>;
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Date Issued',
+    cell: ({ row }) => (
+      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY hh:mm A')}</p>
+    ),
   },
   {
     accessorKey: 'updatedAt',

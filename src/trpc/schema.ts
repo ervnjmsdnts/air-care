@@ -13,6 +13,7 @@ export const updateProductSchema = z.object({
   installPrice: z.number().optional(),
   repairPrice: z.number().optional(),
   buyPrice: z.number().optional(),
+  cleanPrice: z.number().optional(),
   quantity: z.number().optional(),
 });
 
@@ -40,6 +41,7 @@ export const createProductSchema = z.object({
   installPrice: z.number(),
   repairPrice: z.number(),
   buyPrice: z.number(),
+  cleanPrice: z.number(),
   quantity: z.number(),
 });
 

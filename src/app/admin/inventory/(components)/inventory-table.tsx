@@ -71,7 +71,7 @@ function AddProductButton() {
             {...form.register('quantity', { valueAsNumber: true })}
           />
         </div>
-        <div className='grid grid-cols-3 gap-2'>
+        <div className='grid grid-cols-4 gap-2'>
           <div className='grid gap-2'>
             <Label htmlFor='installPrice'>Install Price</Label>
             <Input
@@ -94,6 +94,14 @@ function AddProductButton() {
               id='buyPrice'
               type='number'
               {...form.register('buyPrice', { valueAsNumber: true })}
+            />
+          </div>
+          <div className='grid gap-2'>
+            <Label htmlFor='cleanPrice'>Clean Price</Label>
+            <Input
+              id='cleanPrice'
+              type='number'
+              {...form.register('cleanPrice', { valueAsNumber: true })}
             />
           </div>
         </div>

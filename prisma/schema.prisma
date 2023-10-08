@@ -48,6 +48,7 @@ model Inventory {
   installPrice Float
   repairPrice  Float
   buyPrice     Float
+  cleanPrice   Float
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -58,6 +59,7 @@ enum AppointmentType {
   INSTALLATION
   REPAIR
   PURCHASE
+  CLEANING
 }
 
 enum AppointmentStatus {

@@ -1,25 +1,32 @@
+'use client';
+
 import { DataTable } from '@/components/ui/data-table';
-import { HistoryColumnType, historyColumns } from '../columns';
+import { historyColumns } from '../columns';
+import { Appointment, User } from '@prisma/client';
 
-export default function HistoryTable() {
-  const data: HistoryColumnType[] = [
-    {
-      id: '12345',
-      client: 'John Doe',
-      startDate: '02-02-23',
-      endDate: '02-12-23',
-      product: 'Aircon ni Juan',
-      serviceType: 'Installation',
-    },
-  ];
-
+export default function HistoryTable({
+  appointments,
+}: {
+  appointments: (Appointment & { user: User })[];
+}) {
   return (
-    <DataTable
-      columns={historyColumns}
-      data={data}
-      hasFilterInput
-      filterInputColumn='client'
-      filterPlaceholder='Search clients...'
-    />
+    <>
+      <DataTable
+        columns={historyColumns}
+        data={appointments.map((a) => ({
+          ...a,
+          createdAt: new Date(a.createdAt),
+          updatedAt: new Date(a.updatedAt),
+          user: {
+            ...a.user,
+            createdAt: new Date(a.user.createdAt),
+            updatedAt: new Date(a.user.updatedAt),
+          },
+        }))}
+        hasFilterInput
+        filterInputColumn='user'
+        filterPlaceholder='Search clients...'
+      />
+    </>
   );
 }

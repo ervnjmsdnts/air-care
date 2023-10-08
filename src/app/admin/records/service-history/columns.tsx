@@ -12,71 +12,75 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
+import { Appointment, User } from '@prisma/client';
+import dayjs from 'dayjs';
+import TypeBadge from '@/components/type-badge';
+import { toPhp } from '@/lib/utils';
 
-export type HistoryColumnType = {
-  id: string;
-  client: string;
-  startDate: string;
-  endDate: string;
-  product: string;
-  serviceType: string;
-};
-
-export const historyColumns: ColumnDef<HistoryColumnType>[] = [
+export const historyColumns: ColumnDef<Appointment & { user: User }>[] = [
   {
-    accessorKey: 'client',
+    accessorKey: 'user',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Client' />
     ),
+    filterFn: (row, _, value): any => {
+      if (value === undefined || !value) return false;
+      return row.original.user?.name.toLowerCase().includes(value);
+    },
     cell: ({ row }) => (
-      <UserPop>
-        <p className='text-primary font-semibold'>{row.getValue('client')}</p>
+      <UserPop
+        email={row.original.user.email}
+        name={row.original.user.name}
+        phoneNumber={row.original.user.phoneNumber}>
+        <p className='font-bold text-primary'>{row.original.user.name}</p>
       </UserPop>
     ),
   },
   {
-    accessorKey: 'startDate',
+    accessorKey: 'createdAt',
     header: 'Start Date',
+    cell: ({ row }) => (
+      <p>{dayjs(row.original.createdAt).format('MMM DD, YYYY hh:mm A')}</p>
+    ),
   },
   {
-    accessorKey: 'endDate',
+    accessorKey: 'updatedAt',
     header: 'End Date',
+    cell: ({ row }) => (
+      <p>{dayjs(row.original.updatedAt).format('MMM DD, YYYY hh:mm A')}</p>
+    ),
   },
   {
-    accessorKey: 'product',
+    accessorKey: 'product.name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Product' />
     ),
   },
   {
-    accessorKey: 'serviceType',
+    accessorKey: 'quantity',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Type' />
+      <DataTableColumnHeader column={column} title='Quantity' />
+    ),
+    cell: ({ row }) => (
+      <p>{row.original.quantity ? row.original.quantity : 'Not Applicable'}</p>
     ),
   },
   {
-    id: 'action',
-    enableSorting: false,
-    enableHiding: false,
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='ghost' className='h-8 w-8 p-0'>
-              <span className='sr-only'>Open menu</span>
-              <MoreHorizontal className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuItem className='flex flex-row gap-2 items-center'>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem className='flex flex-row gap-2 items-center'>
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    accessorKey: 'type',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Type' />
+    ),
+    cell: ({ row }) => <TypeBadge type={row.original.type} />,
+  },
+  {
+    accessorKey: 'price',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Price' />
+    ),
+    cell: ({ row }) => {
+      const price = toPhp(row.getValue('price'));
+
+      return <div className='font-medium'>{price}</div>;
     },
   },
 ];
