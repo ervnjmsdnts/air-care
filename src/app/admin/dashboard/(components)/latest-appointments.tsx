@@ -112,13 +112,13 @@ export default function LatestAppointments() {
               <Appointment
                 key={appointment.id}
                 createdAt={new Date(appointment.createdAt)}
-                location={appointment.user.address}
+                location={appointment.user!.address}
                 productName={appointment.product.name}
                 type={appointment.type}
                 user={{
-                  ...appointment.user,
-                  createdAt: new Date(appointment.user.createdAt),
-                  updatedAt: new Date(appointment.user.updatedAt),
+                  ...appointment.user!,
+                  createdAt: new Date(appointment.user!.createdAt),
+                  updatedAt: new Date(appointment.user!.updatedAt),
                 }}
               />
             ))}

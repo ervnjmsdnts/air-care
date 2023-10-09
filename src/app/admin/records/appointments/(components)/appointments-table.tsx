@@ -7,7 +7,7 @@ import { Appointment, User } from '@prisma/client';
 export default function AppiontmentTable({
   appointments,
 }: {
-  appointments: (Appointment & { user: User })[];
+  appointments: (Appointment & { user: User | null })[];
 }) {
   return (
     <DataTable
@@ -17,9 +17,9 @@ export default function AppiontmentTable({
         createdAt: new Date(a.createdAt),
         updatedAt: new Date(a.updatedAt),
         user: {
-          ...a.user,
-          createdAt: new Date(a.user.createdAt),
-          updatedAt: new Date(a.user.updatedAt),
+          ...a.user!,
+          createdAt: new Date(a.user!.createdAt),
+          updatedAt: new Date(a.user!.updatedAt),
         },
       }))}
       hasFilterInput

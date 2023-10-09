@@ -8,6 +8,7 @@ import {
   createProductSchema,
   createUserSchema,
   idSchema,
+  manualEntrySchema,
   statusSchema,
   updateProductSchema,
   updateUserSchema,
@@ -250,7 +251,7 @@ export const appRouter = router({
     .query(async ({ input }) => {
       const appointment = await db.appointment.findFirst({
         where: { id: input.id },
-        include: { product: true },
+        include: { product: true, user: true },
       });
 
       return appointment;
@@ -297,7 +298,7 @@ export const appRouter = router({
 
       await db.notification.create({
         data: {
-          userId: appointment.userId,
+          userId: appointment.userId!,
           message,
           appointmentId: appointment.id,
         },
@@ -339,6 +340,37 @@ export const appRouter = router({
 
     return doneAppointments;
   }),
+  createManualService: publicProcedure
+    .input(manualEntrySchema)
+    .mutation(async ({ input }) => {
+      const appointment = await db.appointment.create({
+        data: {
+          scheduledDate: new Date(),
+          productId: input.productId,
+          userId: null,
+          type: input.type,
+          quantity: input.quantity || null,
+          status: 'DONE',
+          price: input.price,
+        },
+      });
+      if (
+        appointment.quantity &&
+        appointment.type === 'PURCHASE' &&
+        appointment.status === 'DONE'
+      ) {
+        const currentProduct = await db.inventory.findUnique({
+          where: { id: appointment.productId },
+        });
+
+        if (!currentProduct) return new TRPCError({ code: 'NOT_FOUND' });
+
+        await db.inventory.update({
+          where: { id: appointment.productId },
+          data: { quantity: currentProduct.quantity - appointment.quantity },
+        });
+      }
+    }),
 
   // Notifications
   getNotifications: privateProcedure.query(async ({ ctx }) => {

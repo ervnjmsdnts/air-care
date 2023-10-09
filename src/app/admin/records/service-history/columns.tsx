@@ -5,19 +5,21 @@ import UserPop from '@/components/user-pop';
 import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
-import { Appointment, User } from '@prisma/client';
+import { Appointment, Inventory, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import TypeBadge from '@/components/type-badge';
 import { toPhp } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
-export const historyColumns: ColumnDef<Appointment & { user: User }>[] = [
+export const historyColumns: ColumnDef<
+  Appointment & { user: User | null; product: Inventory }
+>[] = [
   {
     accessorKey: 'user',
     header: ({ column }) => (
@@ -27,14 +29,17 @@ export const historyColumns: ColumnDef<Appointment & { user: User }>[] = [
       if (value === undefined || !value) return false;
       return row.original.user?.name.toLowerCase().includes(value);
     },
-    cell: ({ row }) => (
-      <UserPop
-        email={row.original.user.email}
-        name={row.original.user.name}
-        phoneNumber={row.original.user.phoneNumber}>
-        <p className='font-bold text-primary'>{row.original.user.name}</p>
-      </UserPop>
-    ),
+    cell: ({ row }) => {
+      if (!row.original.userId) return <p className='font-bold'>Anonymous</p>;
+      return (
+        <UserPop
+          email={row.original.user!.email}
+          name={row.original.user!.name}
+          phoneNumber={row.original.user!.phoneNumber}>
+          <p className='font-bold text-primary'>{row.original.user!.name}</p>
+        </UserPop>
+      );
+    },
   },
   {
     accessorKey: 'createdAt',
@@ -81,6 +86,61 @@ export const historyColumns: ColumnDef<Appointment & { user: User }>[] = [
       const price = toPhp(row.getValue('price'));
 
       return <div className='font-medium'>{price}</div>;
+    },
+  },
+  {
+    id: 'warranty',
+    cell: ({ row }) => {
+      if (
+        row.original.type !== 'INSTALLATION' &&
+        row.original.type !== 'PURCHASE'
+      ) {
+        return;
+      }
+
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant='outline'>View Warranty</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Warranty</DialogTitle>
+            </DialogHeader>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Customer: </p>
+              <p>{row.original.user!.name || 'N/A'}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Address: </p>
+              <p>{row.original.user!.address || 'N/A'}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Contact Number: </p>
+              <p>{row.original.user!.phoneNumber || 'N/A'}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Item Purchased: </p>
+              <p>{row.original.product.name}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Quanity:</p>
+              <p>{row.original.quantity ?? 'Not Applicable'}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Purchase/Service Date: </p>
+              <p>{dayjs(row.original.scheduledDate).format('MMM DD, YYYY')}</p>
+            </div>
+            <div>
+              <p className='font-semibold'>Details: </p>
+              <ul className='list-disc pl-8'>
+                <li>5 year warranty on Compressor and Parts</li>
+                <li>1 year warranty on Services</li>
+              </ul>
+            </div>
+          </DialogContent>
+        </Dialog>
+      );
     },
   },
 ];

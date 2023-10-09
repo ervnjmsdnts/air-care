@@ -70,9 +70,9 @@ enum AppointmentStatus {
 
 model Appointment {
   id            String            @id @unique @default(cuid())
-  user          User              @relation(fields: [userId], references: [id])
+  user          User?             @relation(fields: [userId], references: [id])
   product       Inventory         @relation(fields: [productId], references: [id])
-  userId        String
+  userId        String?
   productId     String
   price         Float
   quantity      Int?

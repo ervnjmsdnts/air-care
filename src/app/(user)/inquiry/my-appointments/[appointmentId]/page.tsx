@@ -7,19 +7,24 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { cn, toPhp } from '@/lib/utils';
-import { IdSchema, idSchema } from '@/trpc/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 import { CalendarIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -108,7 +113,51 @@ export default function SpecificAppointment({
                 <CardTitle className='text-lg'>Warranty</CardTitle>
               </CardHeader>
               <CardContent className='flex gap-2'>
-                <Button variant='outline'>View Warranty</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant='outline'>View Warranty</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Warranty</DialogTitle>
+                    </DialogHeader>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Customer: </p>
+                      <p>{appointment.user!.name}</p>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Address: </p>
+                      <p>{appointment.user!.address}</p>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Contact Number: </p>
+                      <p>{appointment.user!.phoneNumber}</p>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Item Purchased: </p>
+                      <p>{appointment.product.name}</p>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Quanity:</p>
+                      <p>{appointment.quantity ?? 'Not Applicable'}</p>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Purchase/Service Date: </p>
+                      <p>
+                        {dayjs(appointment.scheduledDate).format(
+                          'MMM DD, YYYY',
+                        )}
+                      </p>
+                    </div>
+                    <div>
+                      <p className='font-semibold'>Details: </p>
+                      <ul className='list-disc pl-8'>
+                        <li>5 year warranty on Compressor and Parts</li>
+                        <li>1 year warranty on Services</li>
+                      </ul>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
             <Card>
