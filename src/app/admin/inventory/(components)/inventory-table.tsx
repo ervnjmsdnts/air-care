@@ -127,6 +127,7 @@ export default function InventoryTable({
         hasFilterInput
         filterInputColumn='name'
         filterPlaceholder='Search name...'
+        pageSize={3}
       />
     </div>
   );

@@ -53,6 +53,7 @@ interface DataTableProps<TData, TValue> {
   hasFilterInput?: boolean;
   filterPlaceholder?: string;
   filterInputColumn?: string;
+  pageSize?: number;
 }
 
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -114,6 +115,7 @@ export function DataTable<TData, TValue>({
   hasFilterInput = false,
   filterInputColumn,
   filterPlaceholder,
+  pageSize = 10,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -130,6 +132,7 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageSize: pageSize } },
     state: {
       sorting,
       columnFilters,

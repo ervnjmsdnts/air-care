@@ -56,19 +56,31 @@ function Product({ product }: { product: Inventory }) {
       },
     });
 
+  function truncateString(str: string, maxLength: number) {
+    if (str.length <= maxLength) {
+      return str; // Return the original string if it's already shorter or equal to maxLength.
+    } else {
+      return str.slice(0, maxLength) + '...'; // Truncate the string and append an ellipsis.
+    }
+  }
+
   return (
     <Sheet>
       <div className='grid gap-2'>
-        <div className='relative aspect-video'>
-          <Image
-            fill
-            src={product.url || 'https://via.placeholder.com/1280x720'}
-            alt='Test'
-            className='rounded-lg'
-          />
+        <div className='grid place-items-center'>
+          <div className='relative aspect-video w-40 '>
+            <Image
+              fill
+              src={product.url || 'https://via.placeholder.com/1280x720'}
+              alt='Test'
+              className='rounded-lg'
+            />
+          </div>
         </div>
-        <div>
-          <h4 className='font-semibold text-zinc-800'>{product.name}</h4>
+        <div className='flex flex-col'>
+          <p className='font-semibold text-zinc-800'>
+            {truncateString(product.name, 24)}
+          </p>
           <h3 className='font-semibold text-sm text-zinc-700'>
             {toPhp(selectedPrice)}
           </h3>
