@@ -16,10 +16,11 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateProductSchema, createProductSchema } from '@/trpc/schema';
 import { trpc } from '@/app/_trpc/client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Inventory } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { CSVLink } from 'react-csv';
 
 function AddProductButton() {
   const form = useForm<CreateProductSchema>({
@@ -118,9 +119,31 @@ export default function InventoryTable({
 }: {
   inventory: Inventory[];
 }) {
+  const csvData = useMemo(
+    () =>
+      inventory.map((inv) => ({
+        Name: inv.name,
+        Brand: inv.brand,
+        Type: inv.type,
+        Quantity: inv.quantity,
+        'Install Price': inv.installPrice,
+        'Repair Price': inv.repairPrice,
+        'Buy Price': inv.buyPrice,
+        'Clean Price': inv.cleanPrice,
+      })),
+    [inventory],
+  );
+
   return (
     <div className='flex flex-col h-full gap-2'>
-      <AddProductButton />
+      <div className='flex items-center justify-between'>
+        <AddProductButton />
+        <Button asChild>
+          <CSVLink data={csvData} filename='inventory-data.csv'>
+            Export CSV
+          </CSVLink>
+        </Button>
+      </div>
       <DataTable
         data={inventory}
         columns={inventoryColumns}
