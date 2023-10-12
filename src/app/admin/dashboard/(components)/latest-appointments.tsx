@@ -17,7 +17,6 @@ import { useEffect } from 'react';
 
 function Appointment({
   createdAt,
-  location,
   productName,
   type,
   user,

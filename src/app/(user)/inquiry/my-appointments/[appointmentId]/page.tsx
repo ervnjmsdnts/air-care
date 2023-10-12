@@ -18,9 +18,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { cn, toPhp } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Appointment, AppointmentHours, AppointmentType } from '@prisma/client';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 import { CalendarIcon, Loader2 } from 'lucide-react';
@@ -28,7 +38,10 @@ import Image from 'next/image';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const schema = z.object({ scheduleDate: z.date().optional() });
+const schema = z.object({
+  scheduleDate: z.date().optional(),
+  hours: z.enum(['MORNING', 'AFTERNOON']),
+});
 
 type Schema = z.infer<typeof schema>;
 
@@ -37,12 +50,17 @@ export default function SpecificAppointment({
 }: {
   params: { appointmentId: string };
 }) {
-  const { data: appointment } = trpc.getUserAppointment.useQuery({
-    id: params.appointmentId,
-  });
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
   });
+
+  const watchScheduledDate = form.watch('scheduleDate');
+  const watchHours = form.watch('hours');
+
+  const { data: appointment } = trpc.getUserAppointment.useQuery({
+    id: params.appointmentId,
+  });
+  const { data: appointments } = trpc.getAppointments.useQuery();
 
   const util = trpc.useContext();
 
@@ -55,12 +73,48 @@ export default function SpecificAppointment({
     setScheduleDate({
       id: params.appointmentId,
       scheduleDate: data.scheduleDate?.toString(),
+      hours: data.hours,
     });
+  };
+
+  const canScheduleTime = (
+    type: AppointmentType,
+    appointments: Appointment[],
+    scheduledDate: Date | undefined,
+    hours: AppointmentHours,
+  ): boolean => {
+    if (type === 'INSTALLATION' && scheduledDate) {
+      const existingAppointment = appointments.find(
+        (appointment) =>
+          appointment.scheduledDate &&
+          appointment.scheduledDate.getTime() === scheduledDate.getTime() &&
+          appointment.hours === hours,
+      );
+
+      if (existingAppointment) {
+        return false;
+      }
+    } else if ((type === 'CLEANING' || type === 'REPAIR') && scheduledDate) {
+      const sameDateAppointment = appointments.filter(
+        (appointment) =>
+          appointment.scheduledDate &&
+          appointment.scheduledDate.getTime() === scheduledDate.getTime() &&
+          (appointment.type === 'CLEANING' || appointment.type === 'REPAIR'),
+      );
+
+      if (sameDateAppointment.length >= 5) {
+        return false;
+      }
+    } else {
+      return true;
+    }
+
+    return true;
   };
 
   return (
     <div className='max-w-6xl mx-auto'>
-      {appointment ? (
+      {appointment && appointments && appointments.length !== 0 ? (
         <div className='flex gap-8 justify-start items-start'>
           <div className='grid grid-cols-4 gap-3 w-full'>
             <Card className='col-span-2 row-span-2'>
@@ -115,7 +169,11 @@ export default function SpecificAppointment({
               <CardContent className='flex gap-2'>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant='outline'>View Warranty</Button>
+                    <Button
+                      disabled={appointment.status !== 'DONE'}
+                      variant='outline'>
+                      View Warranty
+                    </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -178,7 +236,7 @@ export default function SpecificAppointment({
             </Card>
             <Card className='col-span-2'>
               <CardHeader>
-                <CardTitle className='text-lg'>Scheduled Date</CardTitle>
+                <CardTitle className='text-lg'>Scheduled Date & Time</CardTitle>
               </CardHeader>
               <CardContent>
                 <Controller
@@ -223,12 +281,78 @@ export default function SpecificAppointment({
                           />
                         </PopoverContent>
                       </Popover>
+                      <Controller
+                        control={form.control}
+                        name='hours'
+                        render={({ field }) => (
+                          <Select
+                            disabled={
+                              appointment.status !== 'APPROVED' ||
+                              Boolean(appointment.hours) ||
+                              !watchScheduledDate
+                            }
+                            onValueChange={field.onChange}
+                            defaultValue={appointment.hours ?? field.value}>
+                            <SelectTrigger
+                              className={cn(
+                                !field.value && 'text-muted-foreground',
+                              )}>
+                              <SelectValue placeholder='Select a time' />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Times</SelectLabel>
+                                <SelectItem
+                                  disabled={
+                                    !canScheduleTime(
+                                      appointment.type,
+                                      appointments.map((a) => ({
+                                        ...a,
+                                        createdAt: new Date(a.createdAt),
+                                        updatedAt: new Date(a.updatedAt),
+                                        scheduledDate: new Date(
+                                          a.scheduledDate!,
+                                        ),
+                                      })),
+                                      watchScheduledDate,
+                                      'MORNING',
+                                    )
+                                  }
+                                  value='MORNING'>
+                                  7AM - 11AM
+                                </SelectItem>
+                                <SelectItem
+                                  value='AFTERNOON'
+                                  disabled={
+                                    !canScheduleTime(
+                                      appointment.type,
+                                      appointments.map((a) => ({
+                                        ...a,
+                                        createdAt: new Date(a.createdAt),
+                                        updatedAt: new Date(a.updatedAt),
+                                        scheduledDate: new Date(
+                                          a.scheduledDate!,
+                                        ),
+                                      })),
+                                      watchScheduledDate,
+                                      'AFTERNOON',
+                                    )
+                                  }>
+                                  12PM - 5PM
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                       <Button
                         onClick={form.handleSubmit(submit)}
                         disabled={
                           Boolean(appointment.scheduledDate) ||
+                          Boolean(appointment.hours) ||
                           appointment.status !== 'APPROVED' ||
-                          scheduleLoading
+                          scheduleLoading ||
+                          !watchHours
                         }>
                         {scheduleLoading ? (
                           <Loader2 className='h-4 w-4 animate-spin' />

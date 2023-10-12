@@ -82,7 +82,24 @@ export const appointmentColumns: ColumnDef<Appointment & { user: User }>[] = [
     accessorKey: 'scheduledDate',
     header: 'Scheduled Date',
     cell: ({ row }) => (
-      <p>{dayjs(row.original.scheduledDate).format('MMM DD, YYYY')}</p>
+      <p>
+        {row.original.scheduledDate
+          ? dayjs(row.original.scheduledDate).format('MMM DD, YYYY')
+          : ''}
+      </p>
+    ),
+  },
+  {
+    accessorKey: 'hours',
+    header: 'Scheduled Time',
+    cell: ({ row }) => (
+      <p>
+        {row.original.hours === 'MORNING'
+          ? '7AM - 11AM'
+          : row.original.hours === 'AFTERNOON'
+          ? '12PM - 5PM'
+          : ''}
+      </p>
     ),
   },
   {

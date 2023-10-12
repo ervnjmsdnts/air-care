@@ -311,14 +311,17 @@ export const appRouter = router({
       idSchema.merge(
         z.object({
           scheduleDate: z.string().optional(),
+          hours: z.enum(['MORNING', 'AFTERNOON']),
         }),
       ),
     )
     .mutation(async ({ input, ctx }) => {
-      console.log(input);
       await db.appointment.update({
         where: { id: input.id },
-        data: { scheduledDate: new Date(input.scheduleDate!) },
+        data: {
+          scheduledDate: new Date(input.scheduleDate!),
+          hours: input.hours,
+        },
       });
 
       await db.audit.create({

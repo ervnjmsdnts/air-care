@@ -68,6 +68,11 @@ enum AppointmentStatus {
   DONE
 }
 
+enum AppointmentHours {
+  MORNING
+  AFTERNOON
+}
+
 model Appointment {
   id            String            @id @unique @default(cuid())
   user          User?             @relation(fields: [userId], references: [id])
@@ -81,6 +86,7 @@ model Appointment {
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   scheduledDate DateTime?
+  hours         AppointmentHours?
   Notification  Notification[]
 }
 
