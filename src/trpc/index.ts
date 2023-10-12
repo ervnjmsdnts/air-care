@@ -265,12 +265,13 @@ export const appRouter = router({
       return appointment;
     }),
 
-  updateAppointmentStatus: publicProcedure
+  updateAppointmentStatus: privateProcedure
     .input(statusSchema.merge(idSchema))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const appointment = await db.appointment.update({
         where: { id: input.id },
         data: { status: input.status },
+        include: { product: true },
       });
 
       if (!appointment) return new TRPCError({ code: 'NOT_FOUND' });
@@ -287,6 +288,13 @@ export const appRouter = router({
 
       const message = statusMessages[appointment.status] || '';
 
+      await db.audit.create({
+        data: {
+          label: `User ${ctx.user.name} changed status of ${appointment.product.name} to ${input.status}`,
+          userId: ctx.userId,
+        },
+      });
+
       if (
         appointment.quantity &&
         appointment.type === 'PURCHASE' &&
@@ -301,6 +309,13 @@ export const appRouter = router({
         await db.inventory.update({
           where: { id: appointment.productId },
           data: { quantity: currentProduct.quantity - appointment.quantity },
+        });
+
+        await db.audit.create({
+          data: {
+            label: `Deducted ${appointment.quantity} from ${appointment.product.name} product`,
+            userId: ctx.userId,
+          },
         });
       }
 

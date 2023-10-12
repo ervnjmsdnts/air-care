@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
-import { cn, toPhp } from '@/lib/utils';
+import { cn, toPhp, truncateString } from '@/lib/utils';
 import { AppointmentType, Inventory } from '@prisma/client';
 import { ChevronLeft, ChevronRight, Ghost, Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -55,14 +55,6 @@ function Product({ product }: { product: Inventory }) {
         });
       },
     });
-
-  function truncateString(str: string, maxLength: number) {
-    if (str.length <= maxLength) {
-      return str; // Return the original string if it's already shorter or equal to maxLength.
-    } else {
-      return str.slice(0, maxLength) + '...'; // Truncate the string and append an ellipsis.
-    }
-  }
 
   return (
     <Sheet>

@@ -5,7 +5,7 @@ import StatusBadge from '@/components/status-badge';
 import TypeBadge from '@/components/type-badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toPhp } from '@/lib/utils';
+import { toPhp, truncateString } from '@/lib/utils';
 import { AppointmentStatus, AppointmentType } from '@prisma/client';
 import dayjs from 'dayjs';
 import { Ghost } from 'lucide-react';
@@ -18,8 +18,6 @@ function Appointment({
   image,
   name,
   price,
-  brand,
-  productType,
   quantity,
   createdAt,
   appointmentId,
@@ -29,8 +27,6 @@ function Appointment({
   image: string | null;
   name: string;
   price: number;
-  brand: string;
-  productType: string;
   quantity: number | null;
   createdAt: Date;
   appointmentId: string;
@@ -38,7 +34,7 @@ function Appointment({
   const router = useRouter();
   return (
     <div
-      className='rounded-lg shadow-md hover:shadow-lg cursor-pointer'
+      className='rounded-lg flex flex-col shadow-md hover:shadow-lg cursor-pointer'
       onClick={() => router.push(`/inquiry/my-appointments/${appointmentId}`)}>
       <div className='p-4'>
         <div className='flex gap-4 items-center'>
@@ -50,13 +46,11 @@ function Appointment({
               className='object-cover rounded-full'
             />
           </div>
-          <div className='text-sm flex flex-col'>
-            <h4 className='font-semibold flex items-center gap-2 text-lg'>
-              {name}
-              {quantity ? (
-                <span className='text-xs text-zinc-500'>Qty: {quantity}</span>
-              ) : null}
-            </h4>
+          <div className='text-sm flex w-full flex-col'>
+            <p className='font-semibold text-lg'>{truncateString(name, 20)}</p>
+            {quantity ? (
+              <span className='text-xs text-zinc-500'>Qty: {quantity}</span>
+            ) : null}
             <p className='font-bold text-lg'>{toPhp(price)}</p>
           </div>
         </div>
@@ -90,8 +84,6 @@ export default function MyAppointments() {
               appointmentId={appointment.id}
               quantity={appointment.quantity}
               key={appointment.id}
-              brand={appointment.product.brand}
-              productType={appointment.product.type}
               type={appointment.type}
               status={appointment.status}
               image={appointment.product.url}

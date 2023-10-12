@@ -19,3 +19,11 @@ export function toPhp(value: string | number) {
 export function toTitleCase(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+export function truncateString(str: string, maxLength: number) {
+  if (str.length <= maxLength) {
+    return str; // Return the original string if it's already shorter or equal to maxLength.
+  } else {
+    return str.slice(0, maxLength) + '...'; // Truncate the string and append an ellipsis.
+  }
+}

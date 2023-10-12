@@ -25,7 +25,7 @@ export default function UserPop({
           <p className='font-medium'>{name}</p>
           <p className='text-muted-foreground'>{email}</p>
           <p className='text-muted-foreground text-sm'>{phoneNumber}</p>
-          <Separator className='my-2' />
+          {/* <Separator className='my-2' />
           <div className='grid grid-cols-2 gap-2'>
             <Button size='sm' className='flex items-center gap-2'>
               <Mail size={20} /> Email
@@ -33,7 +33,7 @@ export default function UserPop({
             <Button size='sm' className='flex items-center gap-2'>
               <Contact2 size={20} /> History
             </Button>
-          </div>
+          </div> */}
         </div>
       </PopoverContent>
     </Popover>

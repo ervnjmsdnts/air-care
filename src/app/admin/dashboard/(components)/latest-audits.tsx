@@ -37,7 +37,7 @@ function Audit({
             </UserPop>
           </CardHeader>
           <CardContent className='p-0'>
-            <p className='text-muted-foreground text-sm'>{label}</p>
+            <p className='text-muted-foreground text-sm max-w-lg'>{label}</p>
           </CardContent>
         </div>
         <div className='flex flex-col text-xs text-muted-foreground font-medium'>

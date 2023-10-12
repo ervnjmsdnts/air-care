@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import UserPop from '@/components/user-pop';
 import { supabase } from '@/lib/supabase';
+import { truncateString } from '@/lib/utils';
 import { AppointmentType, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { ArrowRight, Ghost } from 'lucide-react';
@@ -35,21 +36,21 @@ function Appointment({
           <p>{dayjs(createdAt).format('MMM')}</p>
         </div>
         <Separator orientation='vertical' />
-        <div className='text-sm max-w-[200px]'>
+        <div className='text-sm w-[100px]'>
           <p className='font-medium text-secondary-foreground'>
             {dayjs(createdAt).format('hh:mm A')}
           </p>
-          <p className='font-medium text-muted-foreground truncate'>
+          {/* <p className='font-medium text-muted-foreground truncate'>
             {user.address}
-          </p>
+          </p> */}
         </div>
         <div className='text-sm'>
           <p className='font-medium text-secondary-foreground'>
-            {productName} -{' '}
-            <span>
-              <TypeBadge type={type} />
-            </span>
+            {truncateString(productName, 30)}
           </p>
+          <span>
+            <TypeBadge type={type} />
+          </span>
           <UserPop
             email={user.email}
             name={user.name}
