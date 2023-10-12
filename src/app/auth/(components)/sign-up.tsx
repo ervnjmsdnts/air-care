@@ -62,42 +62,93 @@ export default function SignUp({ action }: { action: () => void }) {
       <CardContent className='flex flex-col gap-2'>
         <div className='grid gap-2'>
           <Label htmlFor='name'>Name</Label>
-          <Input id='name' {...form.register('name')} error={errors.name} />
+          <div>
+            <Input id='name' {...form.register('name')} error={errors.name} />
+            {errors.name ? (
+              <span className='text-xs text-red-500'>
+                {errors.name.message}
+              </span>
+            ) : null}
+          </div>
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='phoneNumber'>Phone Number</Label>
-          <Input
-            id='phoneNumber'
-            {...form.register('phoneNumber')}
-            error={errors.phoneNumber}
-          />
+          <div>
+            <Input
+              id='phoneNumber'
+              {...form.register('phoneNumber')}
+              error={errors.phoneNumber}
+            />
+            {errors.phoneNumber ? (
+              <span className='text-xs text-red-500'>
+                {errors.phoneNumber.message}
+              </span>
+            ) : null}
+          </div>
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='address'>Address</Label>
-          <Input
-            id='address'
-            {...form.register('address')}
-            error={errors.address}
-          />
+          <div>
+            <Input
+              id='address'
+              {...form.register('address')}
+              error={errors.address}
+            />
+            {errors.address ? (
+              <span className='text-xs text-red-500'>
+                {errors.address.message}
+              </span>
+            ) : null}
+          </div>
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='email'>Email Address</Label>
-          <Input
-            error={errors.email}
-            id='email'
-            type='email'
-            placeholder='m@example.com'
-            {...form.register('email')}
-          />
+          <div>
+            <Input
+              error={errors.email}
+              id='email'
+              type='email'
+              placeholder='m@example.com'
+              {...form.register('email')}
+            />
+            {errors.email ? (
+              <span className='text-xs text-red-500'>
+                {errors.email.message}
+              </span>
+            ) : null}
+          </div>
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='password'>Password</Label>
-          <Input
-            id='password'
-            error={errors.password}
-            type='password'
-            {...form.register('password')}
-          />
+          <div>
+            <Input
+              id='password'
+              error={errors.password}
+              type='password'
+              {...form.register('password')}
+            />
+            {errors.password ? (
+              <span className='text-xs text-red-500'>
+                {errors.password.message}
+              </span>
+            ) : null}
+          </div>
+        </div>
+        <div className='grid gap-2'>
+          <Label htmlFor='confirm-password'>Confirm Password</Label>
+          <div>
+            <Input
+              id='confirm-password'
+              error={errors.confirmPassword}
+              type='password'
+              {...form.register('confirmPassword')}
+            />
+            {errors.confirmPassword ? (
+              <span className='text-xs text-red-500'>
+                {errors.confirmPassword.message}
+              </span>
+            ) : null}
+          </div>
         </div>
         <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
           {isLoading ? (

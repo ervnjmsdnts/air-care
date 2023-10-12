@@ -111,6 +111,77 @@ export default function Home() {
       </section>
       <section className='px-64 py-4'>
         <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
+          Gallery
+        </h2>
+        <div className='grid grid-cols-gallery auto-rows-[10px] gap-4'>
+          <div className='relative row-[span_12]'>
+            <Image
+              fill
+              src='/images/gallery/1.jpeg'
+              className='rounded-lg object-cover'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_10]'>
+            <Image
+              fill
+              src='/images/gallery/2.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_8]'>
+            <Image
+              fill
+              src='/images/gallery/3.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_12]'>
+            <Image
+              fill
+              src='/images/gallery/4.jpeg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_12]'>
+            <Image
+              fill
+              src='/images/gallery/5.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_12]'>
+            <Image
+              fill
+              src='/images/gallery/6.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_12]'>
+            <Image
+              fill
+              src='/images/gallery/7.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative row-[span_12]'>
+            <Image
+              fill
+              src='/images/gallery/8.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+        </div>
+      </section>
+      <section className='px-64 py-4'>
+        <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
           Contact Us
         </h2>
         <div className='grid grid-cols-2'>

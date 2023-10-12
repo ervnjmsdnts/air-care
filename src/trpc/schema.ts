@@ -21,13 +21,19 @@ export const idSchema = z.object({
   id: z.string(),
 });
 
-export const createUserSchema = z.object({
-  email: z.string().email().min(1, { message: 'Field is required' }),
-  password: z.string().min(1, { message: 'Field is required' }),
-  address: z.string().min(1, { message: 'Field is required' }),
-  phoneNumber: z.string().min(1, { message: 'Field is required' }),
-  name: z.string().min(1, { message: 'Field is required' }),
-});
+export const createUserSchema = z
+  .object({
+    email: z.string().email().min(1, { message: 'Field is required' }),
+    password: z.string().min(6, { message: 'Minimum of 6 characters' }),
+    address: z.string().min(1, { message: 'Field is required' }),
+    phoneNumber: z.string().min(1, { message: 'Field is required' }),
+    name: z.string().min(1, { message: 'Field is required' }),
+    confirmPassword: z.string().min(1, { message: 'Field is required' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 export const loginSchema = z.object({
   email: z.string().email(),

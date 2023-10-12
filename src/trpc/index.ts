@@ -65,7 +65,15 @@ export const appRouter = router({
           message: 'Account already exists',
         });
 
-      const user = await db.user.create({ data: { ...input } });
+      const user = await db.user.create({
+        data: {
+          address: input.address,
+          name: input.name,
+          phoneNumber: input.phoneNumber,
+          email: input.email,
+          password: input.password,
+        },
+      });
 
       return user;
     }),
