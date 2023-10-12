@@ -35,12 +35,21 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { usePathname, useRouter } from 'next/navigation';
-import { ElementType, useState } from 'react';
+import { ElementType, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { trpc } from '@/app/_trpc/client';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import dayjs from 'dayjs';
 import { Skeleton } from './ui/skeleton';
+import { useForm } from 'react-hook-form';
+import {
+  ChangePasswordSchema,
+  UpdateUserSchema,
+  changePasswordSchema,
+  updateUserSchema,
+} from '@/trpc/schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useToast } from './ui/use-toast';
 
 type AdminRouteType = {
   href: string;
@@ -218,6 +227,57 @@ function UserInfo() {
     router.replace('/auth');
   }
 
+  const form = useForm<UpdateUserSchema>({
+    resolver: zodResolver(updateUserSchema),
+  });
+  const passwordForm = useForm<ChangePasswordSchema>({
+    resolver: zodResolver(changePasswordSchema),
+  });
+
+  const [editInputs, setEditInputs] = useState({
+    name: false,
+    phoneNumber: false,
+    address: false,
+  });
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user?.id) {
+      form.setValue('name', user?.name);
+      form.setValue('phoneNumber', user?.phoneNumber);
+      form.setValue('address', user?.address);
+    }
+  }, [user?.name, user?.address, user?.phoneNumber, user?.id, form]);
+
+  const { mutate: updateCurrentUser } = trpc.updateCurrentUser.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      window.location.reload();
+    },
+  });
+
+  const { mutate: changePassword } = trpc.changePassword.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      window.location.reload();
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Incorrect old password',
+      });
+    },
+  });
+
+  const submit = (data: UpdateUserSchema) => {
+    updateCurrentUser({ ...data });
+  };
+  const changeSubmit = (data: ChangePasswordSchema) => {
+    changePassword({ ...data });
+  };
+
   return (
     <Dialog>
       <DropdownMenu>
@@ -248,10 +308,18 @@ function UserInfo() {
                 <Input
                   id='name'
                   placeholder='Enter name...'
-                  value={user?.name}
-                  disabled
+                  disabled={!editInputs.name}
+                  {...form.register('name')}
                 />
-                <Button variant='outline'>Edit</Button>
+                <Button
+                  variant='outline'
+                  onClick={() =>
+                    editInputs.name
+                      ? form.handleSubmit(submit)()
+                      : setEditInputs((prev) => ({ ...prev, name: true }))
+                  }>
+                  {editInputs.name ? 'Save' : 'Edit'}
+                </Button>
               </div>
             </div>
             <div>
@@ -264,10 +332,21 @@ function UserInfo() {
                 <Input
                   id='phone-number'
                   placeholder='Enter phone number...'
-                  value={user?.phoneNumber}
-                  disabled
+                  disabled={!editInputs.phoneNumber}
+                  {...form.register('phoneNumber')}
                 />
-                <Button variant='outline'>Edit</Button>
+                <Button
+                  variant='outline'
+                  onClick={() =>
+                    editInputs.phoneNumber
+                      ? form.handleSubmit(submit)()
+                      : setEditInputs((prev) => ({
+                          ...prev,
+                          phoneNumber: true,
+                        }))
+                  }>
+                  {editInputs.phoneNumber ? 'Save' : 'Edit'}
+                </Button>
               </div>
             </div>
             <div>
@@ -276,10 +355,18 @@ function UserInfo() {
                 <Input
                   id='address'
                   placeholder='Enter address...'
-                  value={user?.address}
-                  disabled
+                  disabled={!editInputs.address}
+                  {...form.register('address')}
                 />
-                <Button variant='outline'>Edit</Button>
+                <Button
+                  variant='outline'
+                  onClick={() =>
+                    editInputs.address
+                      ? form.handleSubmit(submit)()
+                      : setEditInputs((prev) => ({ ...prev, address: true }))
+                  }>
+                  {editInputs.address ? 'Save' : 'Edit'}
+                </Button>
               </div>
             </div>
           </div>
@@ -288,21 +375,59 @@ function UserInfo() {
           <div className='flex flex-col gap-2'>
             <div>
               <Label htmlFor='old-password'>Old Password</Label>
-              <Input
-                id='old-password'
-                placeholder='Enter old password...'
-                type='password'
-              />
+              <div>
+                <Input
+                  id='old-password'
+                  placeholder='Enter old password...'
+                  type='password'
+                  error={passwordForm.formState.errors.oldPassword}
+                  {...passwordForm.register('oldPassword')}
+                />
+                {passwordForm.formState.errors.oldPassword ? (
+                  <span className='text-xs text-red-500'>
+                    {passwordForm.formState.errors.oldPassword.message}
+                  </span>
+                ) : null}
+              </div>
             </div>
             <div>
               <Label htmlFor='new-password'>New Password</Label>
-              <Input
-                id='new-password'
-                placeholder='Enter new password...'
-                type='password'
-              />
+              <div>
+                <Input
+                  id='new-password'
+                  placeholder='Enter new password...'
+                  error={passwordForm.formState.errors.newPassword}
+                  {...passwordForm.register('newPassword')}
+                  type='password'
+                />
+                {passwordForm.formState.errors.newPassword ? (
+                  <span className='text-xs text-red-500'>
+                    {passwordForm.formState.errors.newPassword.message}
+                  </span>
+                ) : null}
+              </div>
             </div>
-            <Button className='self-end' variant='outline'>
+            <div>
+              <Label htmlFor='confirm-new-password'>Confirm New Password</Label>
+              <div>
+                <Input
+                  id='confirm-new-password'
+                  placeholder='Enter confirmation password...'
+                  error={passwordForm.formState.errors.confirmPassword}
+                  {...passwordForm.register('confirmPassword')}
+                  type='password'
+                />
+                {passwordForm.formState.errors.confirmPassword ? (
+                  <span className='text-xs text-red-500'>
+                    {passwordForm.formState.errors.confirmPassword.message}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+            <Button
+              onClick={passwordForm.handleSubmit(changeSubmit)}
+              className='self-end'
+              variant='outline'>
               Save
             </Button>
           </div>

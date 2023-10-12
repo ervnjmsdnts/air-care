@@ -55,6 +55,17 @@ export const statusSchema = z.object({
   status: z.enum(['PENDING', 'APPROVED', 'DENIED', 'ONGOING', 'DONE']),
 });
 
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, 'Field is required'),
+    newPassword: z.string().min(6, { message: 'Minimum of 6 characters' }),
+    confirmPassword: z.string().min(1, 'Field is required'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
 export const manualEntrySchema = z.object({
   productId: z.string(),
   type: z.enum(['CLEANING', 'PURCHASE', 'INSTALLATION', 'REPAIR']),
@@ -62,6 +73,7 @@ export const manualEntrySchema = z.object({
   price: z.number(),
 });
 
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
 export type UpdateUserSchema = z.infer<typeof updateUserSchema>;
 export type IdSchema = z.infer<typeof idSchema>;
 export type CreateUserSchema = z.infer<typeof createUserSchema>;

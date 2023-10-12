@@ -5,6 +5,7 @@ import { TRPCError } from '@trpc/server';
 import * as jose from 'jose';
 import { cookies } from 'next/headers';
 import {
+  changePasswordSchema,
   createProductSchema,
   createUserSchema,
   idSchema,
@@ -13,7 +14,7 @@ import {
   updateProductSchema,
   updateUserSchema,
 } from './schema';
-import { AppointmentStatus, AppointmentType } from '@prisma/client';
+import { AppointmentStatus } from '@prisma/client';
 
 export const appRouter = router({
   // Auth
@@ -80,7 +81,9 @@ export const appRouter = router({
 
   // User
   getCurrentUser: privateProcedure.query(async ({ ctx }) => {
-    const { user } = ctx;
+    const { userId } = ctx;
+
+    const user = await db.user.findFirst({ where: { id: userId } });
 
     return user;
   }),
@@ -107,6 +110,20 @@ export const appRouter = router({
   deleteUser: publicProcedure.input(idSchema).mutation(async ({ input }) => {
     await db.user.delete({ where: { id: input.id } });
   }),
+  changePassword: privateProcedure
+    .input(changePasswordSchema)
+    .mutation(async ({ input, ctx }) => {
+      const user = await db.user.findFirst({ where: { id: ctx.userId } });
+
+      if (input.oldPassword !== user?.password) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      await db.user.update({
+        where: { id: ctx.userId },
+        data: { password: input.newPassword },
+      });
+    }),
 
   // Audits
   getLatestAudits: publicProcedure.query(async () => {
