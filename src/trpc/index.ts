@@ -177,7 +177,7 @@ export const appRouter = router({
   }),
   getValidProducts: publicProcedure.query(async () => {
     const validProducts = await db.inventory.findMany({
-      where: { quantity: { not: 0 } },
+      where: { NOT: { quantity: { lte: 0 } } },
     });
 
     return validProducts;

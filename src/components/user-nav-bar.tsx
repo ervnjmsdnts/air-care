@@ -50,6 +50,7 @@ import {
 } from '@/trpc/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from './ui/use-toast';
+import { supabase } from '@/lib/supabase';
 
 type AdminRouteType = {
   href: string;
@@ -155,6 +156,7 @@ function Notification() {
   const util = trpc.useContext();
 
   const { data: notifications, isLoading } = trpc.getNotifications.useQuery();
+  const { data: user } = trpc.getCurrentUser.useQuery();
   const { mutate: archiveNotification } = trpc.archiveNotification.useMutation({
     onSuccess: () => {
       util.getNotifications.invalidate();
@@ -164,6 +166,28 @@ function Notification() {
   const router = useRouter();
 
   const hasNewNotifications = notifications?.some((n) => n.type === 'NEW');
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime_audits')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'Notification',
+        },
+        (payload) => {
+          util.getNotifications.invalidate();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [util, user?.id]);
+
   return (
     <Popover>
       <PopoverTrigger className='relative'>

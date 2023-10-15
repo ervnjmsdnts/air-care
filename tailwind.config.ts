@@ -16,6 +16,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        cynthe: ['CYNTHE', 'sans-serif'],
+      },
       gridTemplateColumns: {
         gallery: 'repeat(4, minmax(250px, 1fr))',
       },

@@ -44,14 +44,14 @@ const contactInfo = [
 export default function Home() {
   return (
     <div className='flex flex-col gap-10'>
-      <section className='flex items-center justify-between px-64'>
+      <section className='flex flex-col sm:flex-row items-center mt-8 sm:mt-0 justify-between sm:px-64'>
         <div className='flex flex-col gap-2'>
-          <div className='flex flex-col gap-8 items-start'>
-            <div>
+          <div className='flex flex-col gap-8 items-center sm:items-start'>
+            <div className='text-center sm:text-left'>
               <h1 className='text-primary font-bold text-6xl'>
                 Air Care Services
               </h1>
-              <p className='text-muted-foreground text-2xl w-96'>
+              <p className='text-muted-foreground text-2xl sm:w-96'>
                 The ultimate one-stop shop for all your air conditioning needs.
               </p>
             </div>
@@ -65,10 +65,10 @@ export default function Home() {
           alt='main'
           width={600}
           height={600}
-          className='w-[625px]'
+          className='w-[625px] hidden sm:block'
         />
       </section>
-      <section className='px-64 py-4'>
+      <section className='sm:px-64 px-4 py-4'>
         <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
           Our Services
         </h2>
@@ -82,13 +82,14 @@ export default function Home() {
                 width={300}
                 height={300}
                 alt={service.name}
+                className=''
               />
               <h3 className='text-primary font-bold text-lg'>{service.name}</h3>
             </div>
           ))}
         </div>
       </section>
-      <section className='relative py-4'>
+      <section className='relative py-4 sm:block hidden'>
         <div className='aboslute -mt-12'>
           <Image
             src={tilt}
@@ -109,11 +110,11 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className='px-64 py-4'>
+      <section className='sm:px-64 px-8 py-4'>
         <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
           Gallery
         </h2>
-        <div className='grid grid-cols-gallery auto-rows-[10px] gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-gallery auto-rows-[10px] gap-4'>
           <div className='relative row-[span_12]'>
             <Image
               fill
@@ -180,20 +181,22 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className='px-64 py-4'>
+      <section className='sm:px-64 px-8 py-4'>
         <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
           Contact Us
         </h2>
-        <div className='grid grid-cols-2'>
+        <div className='grid grid-cols-1 sm:grid-cols-2'>
           <div className='flex flex-col gap-8'>
             {contactInfo.map((contact) => (
-              <div className='flex items-center gap-2' key={contact.label}>
+              <div
+                className='flex flex-col sm:flex-row items-center gap-2'
+                key={contact.label}>
                 <contact.Icon />
                 <p className='font-bold'>{contact.label}</p>
               </div>
             ))}
           </div>
-          <div className='px-16 flex flex-col gap-4'>
+          <div className='sm:px-16 mt-8 sm:mt-0 flex flex-col gap-4'>
             <div className='grid gap-2'>
               <Label htmlFor='fullName'>Full Name</Label>
               <Input id='fullName' />
@@ -210,7 +213,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <footer className='bg-primary text-primary-foreground py-8 px-64'>
+      <footer className='bg-primary text-primary-foreground py-8 sm:px-64 px-8'>
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-1'>
             <h3 className='font-bold text-3xl'>Air Care</h3>

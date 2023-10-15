@@ -75,10 +75,10 @@ export default function MyAppointments() {
   const { data: appointments, isLoading } = trpc.getUserAppointments.useQuery();
 
   return (
-    <div className='max-w-6xl mx-auto'>
+    <div className='max-w-6xl pb-4 mx-auto'>
       <h3 className='text-lg font-bold mb-4'>My Appointments</h3>
       {appointments && appointments.length !== 0 ? (
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid sm:grid-cols-3 gap-4'>
           {appointments.map((appointment) => (
             <Appointment
               appointmentId={appointment.id}

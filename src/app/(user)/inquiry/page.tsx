@@ -220,9 +220,9 @@ export default function Inquiry() {
   };
 
   return (
-    <div className='max-w-6xl mx-auto'>
+    <div className='max-w-6xl pb-4 mx-auto'>
       {products && products.length !== 0 ? (
-        <div className='grid grid-cols-4 gap-8'>
+        <div className='grid grid-cols-1 sm:grid-cols-4 gap-8'>
           {products?.map((product) => (
             <>
               <Product

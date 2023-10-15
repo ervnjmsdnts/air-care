@@ -113,10 +113,10 @@ export default function SpecificAppointment({
   };
 
   return (
-    <div className='max-w-6xl mx-auto'>
+    <div className='max-w-6xl pb-4 mx-auto'>
       {appointment && appointments && appointments.length !== 0 ? (
         <div className='flex gap-8 justify-start items-start'>
-          <div className='grid grid-cols-4 gap-3 w-full'>
+          <div className='grid sm:grid-cols-4 gap-3 w-full'>
             <Card className='col-span-2 row-span-2'>
               <CardContent className='pt-6'>
                 <div className='relative aspect-video'>
