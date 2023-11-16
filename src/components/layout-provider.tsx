@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import DefaultNavbar from './default-nav-bar';
 import UserNavbar from './user-nav-bar';
 
 export default function LayoutProvider({
@@ -15,16 +14,5 @@ export default function LayoutProvider({
 
   const hasUser = pathname.includes('admin') || pathname.includes('inquiry');
 
-  return (
-    <>
-      {hasUser ? (
-        <UserNavbar>{children}</UserNavbar>
-      ) : (
-        <>
-          <DefaultNavbar />
-          {children}
-        </>
-      )}
-    </>
-  );
+  return <>{hasUser ? <UserNavbar>{children}</UserNavbar> : children}</>;
 }

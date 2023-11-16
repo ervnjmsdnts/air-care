@@ -4,8 +4,23 @@ import tilt from '../../public/images/tilt-top.svg';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Facebook, Instagram, Mail, MapPin, Smartphone } from 'lucide-react';
+import {
+  ArrowRight,
+  CalendarCheck,
+  Cog,
+  Facebook,
+  Hammer,
+  Instagram,
+  Mail,
+  MapPin,
+  Phone,
+  ShieldCheck,
+  Smartphone,
+  Twitter,
+} from 'lucide-react';
 import Link from 'next/link';
+import Logo from '@/components/logo';
+import { Separator } from '@/components/ui/separator';
 
 const services = [
   {
@@ -28,92 +43,140 @@ const services = [
 
 const contactInfo = [
   {
-    Icon: Smartphone,
+    Icon: MapPin,
+    label: 'Gulod Labac, Batangas City, Philippines, 4200',
+  },
+  {
+    Icon: Phone,
     label: '+63 998 576 3538',
   },
   {
     Icon: Mail,
     label: 'aircare116@gmail.com',
   },
-  {
-    Icon: MapPin,
-    label: 'Gulod Labac, Batangas City, Philippines, 4200',
-  },
 ];
 
 export default function Home() {
   return (
-    <div className='flex flex-col gap-10'>
-      <section className='flex flex-col sm:flex-row items-center mt-8 sm:mt-0 justify-between sm:px-64'>
-        <div className='flex flex-col gap-2'>
-          <div className='flex flex-col gap-8 items-center sm:items-start'>
-            <div className='text-center sm:text-left'>
-              <h1 className='text-primary font-bold text-6xl'>
-                Air Care Services
-              </h1>
-              <p className='text-muted-foreground text-2xl sm:w-96'>
-                The ultimate one-stop shop for all your air conditioning needs.
-              </p>
+    <div>
+      <div className='bg-white p-2 border-b max-w-6xl mx-auto'>
+        <div className='flex items-center justify-between'>
+          <Logo className='text-8xl p-0' />
+          <div className='flex items-center gap-8'>
+            <div className='flex items-center gap-2 text-primary'>
+              <Phone className='stroke-1' />
+              <p>+63 998 576 3538</p>
             </div>
-            <Button className='px-10' asChild>
-              <Link href='/auth'>Inquire Now</Link>
-            </Button>
+            <div className='flex items-center gap-2 text-primary'>
+              <MapPin className='stroke-1' />
+              <p>Gulod Labac, Batangas City, Philippines, 4200</p>
+            </div>
           </div>
         </div>
-        <Image
-          src='/images/main.jpg'
-          alt='main'
-          width={600}
-          height={600}
-          className='w-[625px] hidden sm:block'
-        />
-      </section>
-      <section className='sm:px-64 px-4 py-4'>
-        <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
-          Our Services
-        </h2>
-        <div className='grid grid-cols-4 justify-evenly'>
-          {services.map((service) => (
-            <div
-              className='flex flex-col items-center gap-2'
-              key={service.name}>
-              <Image
-                src={service.image}
-                width={300}
-                height={300}
-                alt={service.name}
-                className=''
-              />
-              <h3 className='text-primary font-bold text-lg'>{service.name}</h3>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className='relative py-4 sm:block hidden'>
-        <div className='aboslute -mt-12'>
-          <Image
-            src={tilt}
-            priority
-            alt='tilt'
-            className='w-full h-[200px] bg-muted text-primary'
-          />
-          <div className='bg-muted w-full h-80 px-64 flex justify-end items-center text-muted-foreground'>
-            <div className='flex flex-col gap-6 justify-center items-end'>
-              <div className='text-3xl font-bold text-right'>
-                <h3>Get the best airconditioning services from us,</h3>
-                <h3>Just for you!</h3>
+      </div>
+      <section className="bg-[url('/images/gallery/4.jpeg')] h-[800px] bg-no-repeat bg-cover bg-center relative">
+        <div className='max-w-7xl mx-auto relative z-30'>
+          <div className='bg-primary absolute max-w-7xl h-[100px] rounded-b-lg w-full'></div>
+          <nav className='bg-white absolute p-4 rounded-b-lg max-w-7xl w-full'>
+            <div className='flex items-center justify-between max-w-6xl mx-auto'>
+              <div className='flex items-center gap-3'>
+                <Button
+                  variant='link'
+                  className='text-md uppercase font-semibold'>
+                  About Us
+                </Button>
+                <Button
+                  variant='link'
+                  className='text-md uppercase font-semibold'>
+                  Services
+                </Button>
+                <Button
+                  variant='link'
+                  className='text-md uppercase font-semibold'>
+                  Gallery
+                </Button>
               </div>
-              <Button className='px-10' asChild>
-                <Link href='/auth'>Get Started</Link>
-              </Button>
+              <div>
+                <Button
+                  asChild
+                  className='uppercase text-lg tracking-wide py-8 font-medium'
+                  size='lg'>
+                  <Link href='/auth'>Get Started</Link>
+                </Button>
+              </div>
             </div>
+          </nav>
+        </div>
+        <div className='bg-black opacity-75 z-10 absolute w-full h-full'></div>
+        <div className='relative z-20 text-white flex-col flex items-center justify-center h-full'>
+          <h1 className='text-8xl font-semibold'>MCCD Air Care Services</h1>
+          <p className='text-2xl'>
+            The ultimate one-stop shop for all your air conditioning needs.
+          </p>
+          <Button size='lg' asChild className='mt-8 text-lg'>
+            <Link href='/auth'>Get Started</Link>
+          </Button>
+        </div>
+      </section>
+      <section className='max-w-6xl mx-auto py-8'>
+        <div className='grid gap-8 grid-cols-4'>
+          <div className='border hover:border-primary p-4 grid gap-6'>
+            <div className='bg-zinc-300 w-28 h-28 grid place-items-center rounded-full'>
+              <Hammer className='w-16 h-16 stroke-1 stroke-primary' />
+            </div>
+            <h3 className='text-2xl text-primary font-semibold uppercase'>
+              Repair
+            </h3>
+            <p className='text-lg text-primary'>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
+              rerum.
+            </p>
+          </div>
+          <div className='border hover:border-primary p-4 grid gap-6'>
+            <div className='bg-zinc-300 w-28 h-28 grid place-items-center rounded-full'>
+              <Cog className='w-16 h-16 stroke-1 stroke-primary' />
+            </div>
+            <h3 className='text-2xl text-primary font-semibold uppercase'>
+              Installation
+            </h3>
+            <p className='text-lg text-primary'>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
+              rerum.
+            </p>
+          </div>
+          <div className='border hover:border-primary p-4 grid gap-6'>
+            <div className='bg-zinc-300 w-28 h-28 grid place-items-center rounded-full'>
+              <CalendarCheck className='w-16 h-16 stroke-1 stroke-primary' />
+            </div>
+            <h3 className='text-2xl text-primary font-semibold uppercase'>
+              Scheduling
+            </h3>
+            <p className='text-lg text-primary'>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
+              rerum.
+            </p>
+          </div>
+          <div className='border hover:border-primary p-4 grid gap-6'>
+            <div className='bg-zinc-300 w-28 h-28 grid place-items-center rounded-full'>
+              <ShieldCheck className='w-16 h-16 stroke-1 stroke-primary' />
+            </div>
+            <h3 className='text-2xl text-primary font-semibold uppercase'>
+              24/7 Support
+            </h3>
+            <p className='text-lg text-primary'>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
+              rerum.
+            </p>
           </div>
         </div>
       </section>
-      <section className='sm:px-64 px-8 py-4'>
-        <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
-          Gallery
-        </h2>
+      <section className='mx-auto max-w-6xl pt-32 pb-40'>
+        <div className='mb-16'>
+          <h1 className='text-primary text-4xl font-semibold mb-4 text-center'>
+            Our Featured Works
+          </h1>
+          <Separator className='w-64 mx-auto' />
+        </div>
         <div className='grid grid-cols-1 sm:grid-cols-gallery auto-rows-[10px] gap-4'>
           <div className='relative row-[span_12]'>
             <Image
@@ -181,52 +244,118 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className='sm:px-64 px-8 py-4'>
-        <h2 className='text-muted-foreground text-center text-2xl pb-8 font-bold'>
-          Contact Us
-        </h2>
-        <div className='grid grid-cols-1 sm:grid-cols-2'>
-          <div className='flex flex-col gap-8'>
-            {contactInfo.map((contact) => (
-              <div
-                className='flex flex-col sm:flex-row items-center gap-2'
-                key={contact.label}>
-                <contact.Icon />
-                <p className='font-bold'>{contact.label}</p>
+
+      <div className='bg-zinc-50'>
+        <section className='mx-auto max-w-6xl py-24'>
+          <div className='mb-16'>
+            <h1 className='text-primary text-4xl font-semibold mb-4 text-center'>
+              Get in Touch
+            </h1>
+            <Separator className='w-64 bg-zinc-300 mx-auto' />
+          </div>
+          <div className='grid grid-cols-1 gap-8 sm:grid-cols-2'>
+            <div className='bg-white py-16 border rounded-lg'>
+              <div className='sm:px-16 text-primary mt-8 sm:mt-0 flex flex-col gap-4'>
+                <h2 className='text-2xl uppercase tracking-tight font-semibold'>
+                  Contact Us
+                </h2>
+                <p>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Accusamus, fugiat!
+                </p>
+                <div className='grid gap-2'>
+                  <Label htmlFor='fullName'>Full Name</Label>
+                  <Input id='fullName' />
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='email'>Email</Label>
+                  <Input id='email' type='email' placeholder='m@example.com' />
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='message'>Message</Label>
+                  <Textarea id='message' />
+                </div>
+                <Button className='text-lg uppercase'>Send</Button>
               </div>
-            ))}
+            </div>
+            <div className='text-primary flex flex-col gap-4'>
+              <h2 className='text-2xl uppercase tracking-tight font-semibold'>
+                Our Office Address
+              </h2>
+              {contactInfo.map((contact) => (
+                <div
+                  className='flex flex-col sm:flex-row items-center gap-2'
+                  key={contact.label}>
+                  <contact.Icon className='stroke-1' />
+                  <p className=''>{contact.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className='sm:px-16 mt-8 sm:mt-0 flex flex-col gap-4'>
-            <div className='grid gap-2'>
-              <Label htmlFor='fullName'>Full Name</Label>
-              <Input id='fullName' />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='email'>Email</Label>
-              <Input id='email' type='email' placeholder='m@example.com' />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='message'>Message</Label>
-              <Textarea id='message' />
-            </div>
-            <Button className='self-end px-10'>Send</Button>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
       <footer className='bg-primary text-primary-foreground py-8 sm:px-64 px-8'>
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-1'>
-            <h3 className='font-bold text-3xl'>Air Care</h3>
-            <div className='flex items-center gap-4'>
-              <Button className='rounded-full p-0 text-primary-foreground'>
-                <Facebook />
-              </Button>
-              <Button className='rounded-full p-0 text-primary-foreground'>
-                <Instagram />
-              </Button>
+        <div className='mx-auto max-w-6xl'>
+          <div className='grid gap-8 grid-cols-3 grid-rows-2'>
+            <div className='flex flex-col gap-6'>
+              <h3 className='text-xl uppercase tracking-tight font-semibold'>
+                About Company
+              </h3>
+              <p className='text-muted-foreground font-medium'>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo
+                reprehenderit delectus eum consequatur esse. Nisi.
+              </p>
+            </div>
+            <div className='flex flex-col gap-6'>
+              <h3 className='text-xl uppercase tracking-tight font-semibold'>
+                Office
+              </h3>
+              <p className='text-muted-foreground font-medium'>
+                Gulod Labac, Batangas City, Philippines, 4200
+              </p>
+            </div>
+            <div className='row-span-2 flex flex-col gap-6'>
+              <h3 className='text-xl uppercase tracking-tight font-semibold'>
+                Quick Links
+              </h3>
+              <div className='flex flex-col items-start gap-4'>
+                <Link
+                  href='/'
+                  className='hover:text-white text-muted-foreground font-medium'>
+                  About Us
+                </Link>
+                <Link
+                  href='/'
+                  className='hover:text-white text-muted-foreground font-medium'>
+                  Services
+                </Link>
+                <Link
+                  href='/'
+                  className='hover:text-white text-muted-foreground font-medium'>
+                  Gallery
+                </Link>
+              </div>
+            </div>
+            <div className='flex gap-4'>
+              <div className='w-10 h-10 bg-white/20 grid place-items-center rounded-full'>
+                <Facebook className='stroke-1 text-white/50' />
+              </div>
+              <div className='w-10 h-10 bg-white/20 grid place-items-center rounded-full'>
+                <Instagram className='stroke-1 text-white/50' />
+              </div>
+              <div className='w-10 h-10 bg-white/20 grid place-items-center rounded-full'>
+                <Twitter className='stroke-1 text-white/50' />
+              </div>
+            </div>
+            <div className='flex flex-col gap-6'>
+              <h3 className='text-xl uppercase tracking-tight font-semibold'>
+                Call Us
+              </h3>
+              <p className='text-muted-foreground font-medium'>
+                Cell: +63 998 576 3538
+              </p>
             </div>
           </div>
-          <p>Copyright &copy; 2023 AirCare</p>
         </div>
       </footer>
     </div>
