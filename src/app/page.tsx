@@ -74,39 +74,39 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <section className="bg-[url('/images/gallery/4.jpeg')] h-[800px] bg-no-repeat bg-cover bg-center relative">
-        <div className='max-w-7xl mx-auto relative z-30'>
-          <div className='bg-primary absolute max-w-7xl h-[100px] rounded-b-lg w-full'></div>
-          <nav className='bg-white absolute p-4 rounded-b-lg max-w-7xl w-full'>
-            <div className='flex items-center justify-between max-w-6xl mx-auto'>
-              <div className='flex items-center gap-3'>
-                <Button
-                  variant='link'
-                  className='text-md uppercase font-semibold'>
-                  About Us
-                </Button>
-                <Button
-                  variant='link'
-                  className='text-md uppercase font-semibold'>
-                  Services
-                </Button>
-                <Button
-                  variant='link'
-                  className='text-md uppercase font-semibold'>
-                  Gallery
-                </Button>
-              </div>
-              <div>
-                <Button
-                  asChild
-                  className='uppercase text-lg tracking-wide py-8 font-medium'
-                  size='lg'>
-                  <Link href='/auth'>Get Started</Link>
-                </Button>
-              </div>
+      <div className='max-w-7xl mx-auto sticky top-0 z-30'>
+        <div className='bg-primary absolute max-w-7xl h-[100px] rounded-b-lg w-full'></div>
+        <nav className='bg-white absolute p-4 rounded-b-lg max-w-7xl w-full'>
+          <div className='flex items-center justify-between max-w-6xl mx-auto'>
+            <div className='flex items-center gap-3'>
+              <Button
+                variant='link'
+                className='text-md uppercase font-semibold'>
+                About Us
+              </Button>
+              <Button
+                variant='link'
+                className='text-md uppercase font-semibold'>
+                Services
+              </Button>
+              <Button
+                variant='link'
+                className='text-md uppercase font-semibold'>
+                Gallery
+              </Button>
             </div>
-          </nav>
-        </div>
+            <div>
+              <Button
+                asChild
+                className='uppercase text-lg tracking-wide py-8 font-medium'
+                size='lg'>
+                <Link href='/auth'>Get Started</Link>
+              </Button>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <section className="bg-[url('/images/gallery/4.jpeg')] h-[800px] bg-no-repeat bg-cover bg-center relative">
         <div className='bg-black opacity-75 z-10 absolute w-full h-full'></div>
         <div className='relative z-20 text-white flex-col flex items-center justify-center h-full'>
           <h1 className='text-8xl font-semibold'>MCCD Air Care Services</h1>

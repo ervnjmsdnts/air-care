@@ -9,6 +9,8 @@ import {
   ClipboardCheck,
   ClipboardList,
   Contact2,
+  Eye,
+  EyeOff,
   LayoutDashboard,
   LucideProps,
   Package,
@@ -51,6 +53,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from './ui/use-toast';
 import { supabase } from '@/lib/supabase';
+import Logo from './logo';
 
 type AdminRouteType = {
   href: string;
@@ -244,6 +247,17 @@ function Notification() {
 
 function UserInfo() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState({
+    oldPassword: false,
+    newPassword: false,
+    confirmPassword: false,
+  });
+
+  const togglePassword = (
+    type: 'oldPassword' | 'newPassword' | 'confirmPassword',
+  ) => {
+    setShowPassword((prev) => ({ ...prev, [type]: !prev[type] }));
+  };
 
   const { data: user } = trpc.getCurrentUser.useQuery();
   async function logOut() {
@@ -400,13 +414,25 @@ function UserInfo() {
             <div>
               <Label htmlFor='old-password'>Old Password</Label>
               <div>
-                <Input
-                  id='old-password'
-                  placeholder='Enter old password...'
-                  type='password'
-                  error={passwordForm.formState.errors.oldPassword}
-                  {...passwordForm.register('oldPassword')}
-                />
+                <div className='flex gap-1'>
+                  <Input
+                    id='old-password'
+                    placeholder='Enter old password...'
+                    type={showPassword.oldPassword ? 'text' : 'password'}
+                    error={passwordForm.formState.errors.oldPassword}
+                    {...passwordForm.register('oldPassword')}
+                  />
+                  <Button
+                    variant='outline'
+                    size='icon'
+                    onClick={() => togglePassword('oldPassword')}>
+                    {showPassword.oldPassword ? (
+                      <EyeOff className='stroke-1 h-5 w-5' />
+                    ) : (
+                      <Eye className='stroke-1 h-5 w-5' />
+                    )}
+                  </Button>
+                </div>
                 {passwordForm.formState.errors.oldPassword ? (
                   <span className='text-xs text-red-500'>
                     {passwordForm.formState.errors.oldPassword.message}
@@ -417,13 +443,25 @@ function UserInfo() {
             <div>
               <Label htmlFor='new-password'>New Password</Label>
               <div>
-                <Input
-                  id='new-password'
-                  placeholder='Enter new password...'
-                  error={passwordForm.formState.errors.newPassword}
-                  {...passwordForm.register('newPassword')}
-                  type='password'
-                />
+                <div className='flex gap-1'>
+                  <Input
+                    id='new-password'
+                    placeholder='Enter new password...'
+                    error={passwordForm.formState.errors.newPassword}
+                    type={showPassword.newPassword ? 'text' : 'password'}
+                    {...passwordForm.register('newPassword')}
+                  />
+                  <Button
+                    variant='outline'
+                    size='icon'
+                    onClick={() => togglePassword('newPassword')}>
+                    {showPassword.newPassword ? (
+                      <EyeOff className='stroke-1 h-5 w-5' />
+                    ) : (
+                      <Eye className='stroke-1 h-5 w-5' />
+                    )}
+                  </Button>
+                </div>
                 {passwordForm.formState.errors.newPassword ? (
                   <span className='text-xs text-red-500'>
                     {passwordForm.formState.errors.newPassword.message}
@@ -434,13 +472,25 @@ function UserInfo() {
             <div>
               <Label htmlFor='confirm-new-password'>Confirm New Password</Label>
               <div>
-                <Input
-                  id='confirm-new-password'
-                  placeholder='Enter confirmation password...'
-                  error={passwordForm.formState.errors.confirmPassword}
-                  {...passwordForm.register('confirmPassword')}
-                  type='password'
-                />
+                <div className='flex gap-1'>
+                  <Input
+                    id='confirm-new-password'
+                    placeholder='Enter confirmation password...'
+                    error={passwordForm.formState.errors.confirmPassword}
+                    type={showPassword.confirmPassword ? 'text' : 'password'}
+                    {...passwordForm.register('confirmPassword')}
+                  />
+                  <Button
+                    variant='outline'
+                    size='icon'
+                    onClick={() => togglePassword('confirmPassword')}>
+                    {showPassword.confirmPassword ? (
+                      <EyeOff className='stroke-1 h-5 w-5' />
+                    ) : (
+                      <Eye className='stroke-1 h-5 w-5' />
+                    )}
+                  </Button>
+                </div>
                 {passwordForm.formState.errors.confirmPassword ? (
                   <span className='text-xs text-red-500'>
                     {passwordForm.formState.errors.confirmPassword.message}
@@ -471,10 +521,26 @@ export default function UserNavbar({
   return (
     <div className='flex flex-col w-full h-full'>
       <div className='flex border-b py-4 px-6 justify-between items-center'>
-        <h1 className='font-bold text-2xl'>Air Care</h1>
+        {pathname.includes('inquiry') ? (
+          <Link href='/'>
+            <Logo className='text-6xl p-0' />
+          </Link>
+        ) : (
+          <h1 className='font-bold text-2xl'>Air Care</h1>
+        )}
+        {/* <h1 className='font-bold text-2xl'>Air Care</h1> */}
         <div className='flex gap-3 items-center'>
           {pathname.includes('inquiry') ? (
             <>
+              {pathname.includes('other-services') ? (
+                <Button variant='link' asChild>
+                  <Link href='/inquiry'>Purchase</Link>
+                </Button>
+              ) : (
+                <Button variant='link' asChild>
+                  <Link href='/inquiry/other-services'>Other Services</Link>
+                </Button>
+              )}
               {pathname.includes('my-appointments') ? (
                 <Button variant='link' asChild>
                   <Link href='/inquiry'>Inquiry</Link>

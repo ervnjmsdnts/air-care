@@ -28,11 +28,7 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/admin', req.url));
     }
 
-    if (
-      user &&
-      (pathname === '/' || pathname === '/auth') &&
-      user.payload?.role === 'USER'
-    ) {
+    if (user && pathname === '/auth' && user.payload?.role === 'USER') {
       return NextResponse.redirect(new URL('/inquiry', req.url));
     }
   } catch (e: unknown) {

@@ -13,13 +13,15 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { trpc } from '@/app/_trpc/client';
 import { LoginSchema, loginSchema } from '@/trpc/schema';
+import { useState } from 'react';
 
 export default function Login({ action }: { action: () => void }) {
   const form = useForm<LoginSchema>({ resolver: zodResolver(loginSchema) });
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
 
   const { mutate: createAudit } = trpc.createAudit.useMutation();
   const { mutate: login, isLoading } = trpc.login.useMutation({
@@ -44,6 +46,8 @@ export default function Login({ action }: { action: () => void }) {
     login({ email, password });
   }
 
+  const togglePassword = () => setShowPassword((prev) => !prev);
+
   return (
     <Card className='w-[400px]'>
       <CardHeader className='space-y-1'>
@@ -63,12 +67,21 @@ export default function Login({ action }: { action: () => void }) {
         </div>
         <div className='grid gap-2'>
           <Label htmlFor='password'>Password</Label>
-          <Input
-            id='password'
-            type='password'
-            {...form.register('password')}
-            error={form.formState.errors.password}
-          />
+          <div className='flex gap-1'>
+            <Input
+              id='password'
+              type={showPassword ? 'text' : 'password'}
+              {...form.register('password')}
+              error={form.formState.errors.password}
+            />
+            <Button variant='outline' size='icon' onClick={togglePassword}>
+              {showPassword ? (
+                <EyeOff className='w-5 h-5 stroke-1' />
+              ) : (
+                <Eye className='w-5 h-5 stroke-1' />
+              )}
+            </Button>
+          </div>
         </div>
         <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
           {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Login'}

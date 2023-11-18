@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { trpc } from '@/app/_trpc/client';
 import { CreateUserSchema, createUserSchema } from '@/trpc/schema';
+import { useState } from 'react';
 
 export default function SignUp({ action }: { action: () => void }) {
   const {
@@ -25,6 +26,12 @@ export default function SignUp({ action }: { action: () => void }) {
     resolver: zodResolver(createUserSchema),
   });
   const { toast } = useToast();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePassword = () => setShowPassword((prev) => !prev);
+  const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
   const { mutate: createAudit } = trpc.createAudit.useMutation();
   const { mutate: signUp, isLoading } = trpc.signUp.useMutation({
@@ -121,12 +128,21 @@ export default function SignUp({ action }: { action: () => void }) {
         <div className='grid gap-2'>
           <Label htmlFor='password'>Password</Label>
           <div>
-            <Input
-              id='password'
-              error={errors.password}
-              type='password'
-              {...form.register('password')}
-            />
+            <div className='flex gap-1'>
+              <Input
+                id='password'
+                error={errors.password}
+                type={showPassword ? 'text' : 'password'}
+                {...form.register('password')}
+              />
+              <Button variant='outline' size='icon' onClick={togglePassword}>
+                {showPassword ? (
+                  <EyeOff className='w-5 h-5 stroke-1' />
+                ) : (
+                  <Eye className='w-5 h-5 stroke-1' />
+                )}
+              </Button>
+            </div>
             {errors.password ? (
               <span className='text-xs text-red-500'>
                 {errors.password.message}
@@ -137,12 +153,24 @@ export default function SignUp({ action }: { action: () => void }) {
         <div className='grid gap-2'>
           <Label htmlFor='confirm-password'>Confirm Password</Label>
           <div>
-            <Input
-              id='confirm-password'
-              error={errors.confirmPassword}
-              type='password'
-              {...form.register('confirmPassword')}
-            />
+            <div className='flex gap-1'>
+              <Input
+                id='confirm-password'
+                error={errors.confirmPassword}
+                type={showConfirmPassword ? 'text' : 'password'}
+                {...form.register('confirmPassword')}
+              />
+              <Button
+                variant='outline'
+                size='icon'
+                onClick={toggleConfirmPassword}>
+                {showConfirmPassword ? (
+                  <EyeOff className='w-5 h-5 stroke-1' />
+                ) : (
+                  <Eye className='w-5 h-5 stroke-1' />
+                )}
+              </Button>
+            </div>
             {errors.confirmPassword ? (
               <span className='text-xs text-red-500'>
                 {errors.confirmPassword.message}
