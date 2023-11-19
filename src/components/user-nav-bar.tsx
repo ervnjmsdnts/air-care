@@ -11,6 +11,7 @@ import {
   Contact2,
   Eye,
   EyeOff,
+  FileQuestion,
   LayoutDashboard,
   LucideProps,
   Package,
@@ -88,6 +89,11 @@ const adminRoutes: AdminRouteType[] = [
         href: 'appointments',
         label: 'Appointments',
         Icon: ClipboardList,
+      },
+      {
+        href: 'special-request',
+        label: 'Special Requests',
+        Icon: FileQuestion,
       },
     ],
   },
@@ -219,9 +225,16 @@ function Notification() {
             {notifications.map((notif) => (
               <div
                 key={notif.id}
-                className='rounded-lg flex gap-4 border-b p-2 hover:bg-zinc-50 cursor-pointer'
+                className={cn(
+                  'rounded-lg flex gap-4 border-b p-2 hover:bg-zinc-50 cursor-pointer',
+                  !notif.isAppointment && 'hover:bg-white cursor-default',
+                )}
                 onClick={() =>
-                  router.push(`/inquiry/my-appointments/${notif.appointmentId}`)
+                  !notif.isAppointment
+                    ? null
+                    : router.push(
+                        `/inquiry/my-appointments/${notif.appointmentId}`,
+                      )
                 }>
                 <div className='flex-grow'>
                   <p className='text-sm mb-1'>{notif.message}</p>

@@ -451,6 +451,62 @@ export const appRouter = router({
       await db.specialRequest.create({
         data: { ...input, userId: ctx.userId },
       });
+
+      await db.audit.create({
+        data: {
+          label: `User ${ctx.user.name} added a special request`,
+          userId: ctx.userId,
+        },
+      });
+    }),
+
+  getSpecialRequests: publicProcedure.query(async () => {
+    const requests = await db.specialRequest.findMany({
+      include: { user: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return requests;
+  }),
+  updateSpecialRequest: privateProcedure
+    .input(
+      z.object({
+        status: z.enum(['PENDING', 'APPROVED', 'DENIED']),
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const request = await db.specialRequest.update({
+        where: { id: input.id },
+        data: { status: input.status },
+      });
+
+      if (!request) return new TRPCError({ code: 'NOT_FOUND' });
+
+      const statusMessages: Partial<Record<AppointmentStatus, string>> = {
+        APPROVED: 'Great news! Your request has been approved.',
+        DENIED:
+          "We're sorry, but your request has been denied. Please contact us for further assistance.",
+      };
+
+      const message = statusMessages[request.status] || '';
+
+      await db.audit.create({
+        data: {
+          label: `User ${ctx.user.name} changed a request status to ${input.status}`,
+          userId: ctx.userId,
+        },
+      });
+
+      await db.notification.create({
+        data: {
+          userId: request.userId!,
+          message,
+          isAppointment: false,
+        },
+      });
+
+      return { success: true };
     }),
 });
 

@@ -12,7 +12,6 @@ export default function AuditTable({
 }: {
   audits: (Audit & { user: User | null })[];
 }) {
-  console.log({ audits });
   const csvData = useMemo(
     () =>
       audits.map((audit) => ({

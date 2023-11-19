@@ -100,11 +100,12 @@ model Notification {
   id            String           @id @unique @default(cuid())
   user          User             @relation(fields: [userId], references: [id])
   userId        String
-  appointment   Appointment      @relation(fields: [appointmentId], references: [id])
-  appointmentId String
+  appointment   Appointment?     @relation(fields: [appointmentId], references: [id])
   message       String
+  isAppointment Boolean          @default(true)
   type          NotificationType @default(NEW)
   createdAt     DateTime         @default(now())
+  appointmentId String?
 }
 
 enum SpecialRequestStatus {
@@ -122,5 +123,6 @@ model SpecialRequest {
   url         String?
   key         String?
   userId      String
+  createdAt   DateTime             @default(now())
   status      SpecialRequestStatus @default(PENDING)
 }

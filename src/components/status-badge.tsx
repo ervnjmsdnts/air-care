@@ -1,8 +1,12 @@
-import { AppointmentStatus } from '@prisma/client';
+import { AppointmentStatus, SpecialRequestStatus } from '@prisma/client';
 import { Badge } from './ui/badge';
 import { cn, toTitleCase } from '@/lib/utils';
 
-export default function StatusBadge({ status }: { status: AppointmentStatus }) {
+export default function StatusBadge({
+  status,
+}: {
+  status: AppointmentStatus | SpecialRequestStatus;
+}) {
   return (
     <Badge
       className={cn(
