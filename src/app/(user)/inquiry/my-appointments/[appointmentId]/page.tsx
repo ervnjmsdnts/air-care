@@ -83,7 +83,7 @@ export default function SpecificAppointment({
     scheduledDate: Date | undefined,
     hours: AppointmentHours,
   ): boolean => {
-    if (type === 'INSTALLATION' && scheduledDate) {
+    if ((type === 'INSTALLATION' || type === 'PURCHASE') && scheduledDate) {
       const existingAppointment = appointments.find(
         (appointment) =>
           appointment.scheduledDate &&

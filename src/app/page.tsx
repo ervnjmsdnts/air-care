@@ -1,26 +1,26 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import tilt from '../../public/images/tilt-top.svg';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  ArrowRight,
   CalendarCheck,
+  Check,
   Cog,
   Facebook,
   Hammer,
   Instagram,
   Mail,
   MapPin,
+  Menu,
   Phone,
   ShieldCheck,
-  Smartphone,
   Twitter,
 } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '@/components/logo';
 import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const contactInfo = [
   {
@@ -37,13 +37,41 @@ const contactInfo = [
   },
 ];
 
+const pricings = {
+  CLEANING: [
+    'Standard check up',
+    'Pressurized cleaning of indoor and outdoor unit',
+    'Flushing of drain pipes',
+    'Cleaning of filters and external parts',
+  ],
+  REPAIR: [
+    'Check power supply issues, dirty filters, refrigerant leaks',
+    'Basic repairs or seek specialized repair services',
+    'Examine Condenser Unit',
+  ],
+  INSTALLATION: [
+    'Split system air conditioner unit',
+    'Insulated copper tubing',
+    'Dismantling of Unit',
+  ],
+};
+
+const PricingItem = ({ content }: { content: string }) => {
+  return (
+    <div className='flex gap-2'>
+      <Check className='flex-shrink-0' />
+      <span>{content}</span>
+    </div>
+  );
+};
+
 export default function Home() {
   return (
     <div>
-      <div className='bg-white p-2 border-b max-w-6xl mx-auto'>
-        <div className='flex items-center justify-between'>
+      <div className='bg-white sm:p-2 border-b max-w-6xl mx-auto'>
+        <div className='flex items-center justify-center sm:justify-between'>
           <Logo className='text-8xl p-0' />
-          <div className='flex items-center gap-8'>
+          <div className='hidden sm:flex items-center gap-8'>
             <div className='flex items-center gap-2 text-primary'>
               <Phone className='stroke-1' />
               <p>+63 998 576 3538</p>
@@ -55,11 +83,11 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className='max-w-7xl mx-auto sticky top-0 z-30'>
-        <div className='bg-primary absolute max-w-7xl h-[100px] rounded-b-lg w-full'></div>
-        <nav className='bg-white absolute p-4 rounded-b-lg max-w-7xl w-full'>
+      <div className='sm:max-w-7xl mx-auto sticky top-0 z-30'>
+        <div className='sm:bg-primary absolute sm:max-w-7xl h-[100px] rounded-b-lg w-full'></div>
+        <nav className='bg-white absolute p-4 rounded-b-lg sm:max-w-7xl w-full'>
           <div className='flex items-center justify-between max-w-6xl mx-auto'>
-            <div className='flex items-center gap-3'>
+            <div className='hidden sm:flex items-center gap-3'>
               <Button
                 variant='link'
                 className='text-md uppercase font-semibold'>
@@ -76,10 +104,36 @@ export default function Home() {
                 Gallery
               </Button>
             </div>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant='outline' size='icon'>
+                  <Menu />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side='left'>
+                <div className='flex flex-col gap-2'>
+                  <Button
+                    variant='link'
+                    className='text-md uppercase font-semibold'>
+                    About Us
+                  </Button>
+                  <Button
+                    variant='link'
+                    className='text-md uppercase font-semibold'>
+                    Services
+                  </Button>
+                  <Button
+                    variant='link'
+                    className='text-md uppercase font-semibold'>
+                    Gallery
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
             <div>
               <Button
                 asChild
-                className='uppercase text-lg tracking-wide py-8 font-medium'
+                className='uppercase sm:text-lg sm:tracking-wide sm:py-8 font-medium'
                 size='lg'>
                 <Link href='/auth'>Get Started</Link>
               </Button>
@@ -87,20 +141,22 @@ export default function Home() {
           </div>
         </nav>
       </div>
-      <section className="bg-[url('/images/gallery/4.jpeg')] h-[800px] bg-no-repeat bg-cover bg-center relative">
+      <section className="bg-[url('/images/landing.jpeg')] h-[800px] bg-no-repeat bg-cover bg-center relative">
         <div className='bg-black opacity-75 z-10 absolute w-full h-full'></div>
         <div className='relative z-20 text-white flex-col flex items-center justify-center h-full'>
-          <h1 className='text-8xl font-semibold'>MCCD Air Care Services</h1>
-          <p className='text-2xl'>
+          <h1 className='text-xl sm:text-8xl font-semibold'>
+            MCCD Air Care Services
+          </h1>
+          <p className='text-center'>
             The ultimate one-stop shop for all your air conditioning needs.
           </p>
-          <Button size='lg' asChild className='mt-8 text-lg'>
+          <Button size='lg' asChild className='mt-8 sm:text-lg'>
             <Link href='/auth'>Get Started</Link>
           </Button>
         </div>
       </section>
-      <section className='max-w-6xl mx-auto py-8'>
-        <div className='grid gap-8 grid-cols-4'>
+      <section className='sm:max-w-6xl sm:mx-auto px-2 sm:px-0 py-8'>
+        <div className='grid gap-8 grid-cols-1 sm:grid-cols-4'>
           <div className='border hover:border-primary p-4 grid gap-6'>
             <div className='bg-zinc-300 w-28 h-28 grid place-items-center rounded-full'>
               <Hammer className='w-16 h-16 stroke-1 stroke-primary' />
@@ -158,23 +214,135 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <section className='sm:mx-auto sm:max-w-6xl pt-32'>
+        <div className='mb-16'>
+          <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
+            All Brands Services
+          </h1>
+          <Separator className='w-64 mx-auto' />
+        </div>
+        <div className='grid px-2 sm:px-0 sm:grid-cols-5 grid-cols-2 sm:grid-rows-2 place-items-center gap-8 sm:gap-16'>
+          <div className='relative w-full h-16'>
+            <Image src='/images/brands/carrier.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-8'>
+            <Image src='/images/brands/samsung.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-24'>
+            <Image src='/images/brands/lg.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-24'>
+            <Image src='/images/brands/panasonic.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-16'>
+            <Image src='/images/brands/fuji.jpg' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-16'>
+            <Image src='/images/brands/kolin.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-32'>
+            <Image src='/images/brands/koppel.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-32'>
+            <Image src='/images/brands/daikin.png' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-32'>
+            <Image src='/images/brands/condura.jpg' fill alt='Carrier' />
+          </div>
+          <div className='relative w-full h-32'>
+            <Image src='/images/brands/sharp.png' fill alt='Carrier' />
+          </div>
+        </div>
+      </section>
+      <section className='sm:mx-auto sm:max-w-6xl pt-32'>
+        <div className='mb-16'>
+          <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
+            Pricing
+          </h1>
+          <Separator className='w-64 mx-auto' />
+        </div>
+        <div className='grid sm:grid-cols-3 gap-4'>
+          <div className='bg-secondary h-full rounded-md px-8 py-16'>
+            <div className='text-center flex flex-col gap-3 pb-8'>
+              <p className='text-primary uppercase font-semibold'>Cleaning</p>
+              <p className='text-primary uppercase font-semibold'>Starts At</p>
+              <h3 className='text-4xl font-semibold'>&#x20B1;600</h3>
+              <p className='text-primary uppercase font-light tracking-widest'>
+                Varies on Type
+              </p>
+            </div>
+            <div className='flex flex-col gap-2 pb-8'>
+              {pricings.CLEANING.map((content, index) => (
+                <PricingItem content={content} key={index} />
+              ))}
+            </div>
+            <Link href='/auth'>
+              <p className='w-full rounded-full p-4 text-white bg-primary text-center'>
+                Book Now
+              </p>
+            </Link>
+          </div>
+          <div className='bg-primary h-full rounded-md px-8 py-16 text-white'>
+            <div className='text-center flex flex-col gap-3 pb-8'>
+              <p className='uppercase font-semibold'>Installation</p>
+              <p className='uppercase font-semibold'>Starts At</p>
+              <h3 className='text-4xl font-semibold'>&#x20B1;750</h3>
+              <p className='uppercase font-light tracking-widest'>
+                Varies on Type
+              </p>
+            </div>
+            <div className='flex flex-col gap-2 pb-8'>
+              {pricings.INSTALLATION.map((content, index) => (
+                <PricingItem content={content} key={index} />
+              ))}
+            </div>
+
+            <Link href='/auth'>
+              <p className='w-full rounded-full p-4 text-primary bg-secondary text-center'>
+                Book Now
+              </p>
+            </Link>
+          </div>
+          <div className='bg-secondary h-full rounded-md px-8 py-16'>
+            <div className='text-center flex flex-col gap-3 pb-8'>
+              <p className='text-primary uppercase font-semibold'>Repair</p>
+              <p className='uppercase font-semibold'>Starts At</p>
+              <h3 className='text-4xl font-semibold'>&#x20B1;500</h3>
+              <p className='text-primary uppercase font-light tracking-widest'>
+                Varies on Type
+              </p>
+            </div>
+            <div className='flex flex-col gap-2 pb-8'>
+              {pricings.REPAIR.map((content, index) => (
+                <PricingItem content={content} key={index} />
+              ))}
+            </div>
+
+            <Link href='/auth'>
+              <p className='w-full rounded-full p-4 text-white bg-primary text-center'>
+                Book Now
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
       <section className='mx-auto max-w-6xl pt-32 pb-40'>
         <div className='mb-16'>
-          <h1 className='text-primary text-4xl font-semibold mb-4 text-center'>
+          <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
             Our Featured Works
           </h1>
           <Separator className='w-64 mx-auto' />
         </div>
-        <div className='grid grid-cols-1 sm:grid-cols-gallery auto-rows-[10px] gap-4'>
-          <div className='relative row-[span_12]'>
+        <div className='grid grid-cols-1 sm:grid-cols-3 grid-rows-[repeat(9,_200px)] sm:grid-rows-[repeat(3,_300px)] gap-4'>
+          <div className='relative'>
             <Image
               fill
-              src='/images/gallery/1.jpeg'
-              className='rounded-lg object-cover'
+              src='/images/gallery/1.jpg'
+              className='rounded-lg'
               alt='1'
             />
           </div>
-          <div className='relative row-[span_10]'>
+          <div className='relative'>
             <Image
               fill
               src='/images/gallery/2.jpg'
@@ -182,7 +350,7 @@ export default function Home() {
               alt='1'
             />
           </div>
-          <div className='relative row-[span_8]'>
+          <div className='relative'>
             <Image
               fill
               src='/images/gallery/3.jpg'
@@ -190,15 +358,15 @@ export default function Home() {
               alt='1'
             />
           </div>
-          <div className='relative row-[span_12]'>
+          <div className='relative'>
             <Image
               fill
-              src='/images/gallery/4.jpeg'
+              src='/images/gallery/4.jpg'
               className='rounded-lg'
               alt='1'
             />
           </div>
-          <div className='relative row-[span_12]'>
+          <div className='relative'>
             <Image
               fill
               src='/images/gallery/5.jpg'
@@ -206,7 +374,7 @@ export default function Home() {
               alt='1'
             />
           </div>
-          <div className='relative row-[span_12]'>
+          <div className='relative '>
             <Image
               fill
               src='/images/gallery/6.jpg'
@@ -214,7 +382,7 @@ export default function Home() {
               alt='1'
             />
           </div>
-          <div className='relative row-[span_12]'>
+          <div className='relative '>
             <Image
               fill
               src='/images/gallery/7.jpg'
@@ -222,10 +390,18 @@ export default function Home() {
               alt='1'
             />
           </div>
-          <div className='relative row-[span_12]'>
+          <div className='relative '>
             <Image
               fill
               src='/images/gallery/8.jpg'
+              className='rounded-lg'
+              alt='1'
+            />
+          </div>
+          <div className='relative '>
+            <Image
+              fill
+              src='/images/gallery/9.jpg'
               className='rounded-lg'
               alt='1'
             />
@@ -236,18 +412,18 @@ export default function Home() {
       <div className='bg-zinc-50'>
         <section className='mx-auto max-w-6xl py-24'>
           <div className='mb-16'>
-            <h1 className='text-primary text-4xl font-semibold mb-4 text-center'>
+            <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
               Get in Touch
             </h1>
             <Separator className='w-64 bg-zinc-300 mx-auto' />
           </div>
-          <div className='grid grid-cols-1 gap-8 sm:grid-cols-2'>
+          <div className='grid px-2 sm:px-0 grid-cols-1 gap-8 sm:grid-cols-2'>
             <div className='bg-white py-16 border rounded-lg'>
-              <div className='sm:px-16 text-primary mt-8 sm:mt-0 flex flex-col gap-4'>
-                <h2 className='text-2xl uppercase tracking-tight font-semibold'>
+              <div className='sm:px-16 px-4 text-primary mt-8 sm:mt-0 flex flex-col gap-4'>
+                <h2 className='text-2xl text-center sm:text-left uppercase tracking-tight font-semibold'>
                   Contact Us
                 </h2>
-                <p>
+                <p className='text-center sm:text-left'>
                   Lorem, ipsum dolor sit amet consectetur adipisicing elit.
                   Accusamus, fugiat!
                 </p>
@@ -267,7 +443,7 @@ export default function Home() {
               </div>
             </div>
             <div className='text-primary flex flex-col gap-4'>
-              <h2 className='text-2xl uppercase tracking-tight font-semibold'>
+              <h2 className='text-2xl text-center sm:text-left uppercase tracking-tight font-semibold'>
                 Our Office Address
               </h2>
               {contactInfo.map((contact) => (
@@ -275,7 +451,7 @@ export default function Home() {
                   className='flex flex-col sm:flex-row items-center gap-2'
                   key={contact.label}>
                   <contact.Icon className='stroke-1' />
-                  <p className=''>{contact.label}</p>
+                  <p className='text-center sm:text-left'>{contact.label}</p>
                 </div>
               ))}
             </div>
@@ -284,7 +460,7 @@ export default function Home() {
       </div>
       <footer className='bg-primary text-primary-foreground py-8 sm:px-64 px-8'>
         <div className='mx-auto max-w-6xl'>
-          <div className='grid gap-8 grid-cols-3 grid-rows-[1fr_100px]'>
+          <div className='grid gap-8 sm:grid-cols-3 grid-rows-[1fr_100px]'>
             <div className='flex flex-col gap-6'>
               <h3 className='text-xl uppercase tracking-tight font-semibold'>
                 About Company
