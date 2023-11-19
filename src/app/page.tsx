@@ -105,7 +105,7 @@ export default function Home() {
               </Button>
             </div>
             <Sheet>
-              <SheetTrigger asChild>
+              <SheetTrigger className='sm:hidden' asChild>
                 <Button variant='outline' size='icon'>
                   <Menu />
                 </Button>
