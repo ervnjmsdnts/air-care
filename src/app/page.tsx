@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
@@ -21,6 +22,7 @@ import Link from 'next/link';
 import Logo from '@/components/logo';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useRef } from 'react';
 
 const contactInfo = [
   {
@@ -66,6 +68,19 @@ const PricingItem = ({ content }: { content: string }) => {
 };
 
 export default function Home() {
+  const aboutRef = useRef<HTMLElement>(null);
+  const serviceRef = useRef<HTMLElement>(null);
+  const galleryRef = useRef<HTMLElement>(null);
+
+  const scrollToAbout = () => {
+    aboutRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  const scrollToService = () => {
+    serviceRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  const scrollToGallery = () => {
+    galleryRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   return (
     <div>
       <div className='bg-white sm:p-2 border-b max-w-6xl mx-auto'>
@@ -90,16 +105,19 @@ export default function Home() {
             <div className='hidden sm:flex items-center gap-3'>
               <Button
                 variant='link'
+                onClick={scrollToAbout}
                 className='text-md uppercase font-semibold'>
                 About Us
               </Button>
               <Button
                 variant='link'
+                onClick={scrollToService}
                 className='text-md uppercase font-semibold'>
                 Services
               </Button>
               <Button
                 variant='link'
+                onClick={scrollToGallery}
                 className='text-md uppercase font-semibold'>
                 Gallery
               </Button>
@@ -114,16 +132,19 @@ export default function Home() {
                 <div className='flex flex-col gap-2'>
                   <Button
                     variant='link'
+                    onClick={scrollToAbout}
                     className='text-md uppercase font-semibold'>
                     About Us
                   </Button>
                   <Button
                     variant='link'
+                    onClick={scrollToService}
                     className='text-md uppercase font-semibold'>
                     Services
                   </Button>
                   <Button
                     variant='link'
+                    onClick={scrollToGallery}
                     className='text-md uppercase font-semibold'>
                     Gallery
                   </Button>
@@ -155,7 +176,9 @@ export default function Home() {
           </Button>
         </div>
       </section>
-      <section className='sm:max-w-6xl sm:mx-auto px-2 sm:px-0 py-8'>
+      <section
+        ref={serviceRef}
+        className='sm:max-w-6xl sm:mx-auto px-2 sm:px-0 py-8'>
         <div className='grid gap-8 grid-cols-1 sm:grid-cols-4'>
           <div className='border hover:border-primary p-4 grid gap-6'>
             <div className='bg-zinc-300 w-28 h-28 grid place-items-center rounded-full'>
@@ -326,7 +349,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className='mx-auto max-w-6xl pt-32 pb-40'>
+      <section ref={galleryRef} className='mx-auto max-w-6xl pt-32 pb-40'>
         <div className='mb-16'>
           <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
             Our Featured Works
@@ -458,7 +481,9 @@ export default function Home() {
           </div>
         </section>
       </div>
-      <footer className='bg-primary text-primary-foreground py-8 sm:px-64 px-8'>
+      <footer
+        ref={aboutRef}
+        className='bg-primary text-primary-foreground py-8 sm:px-64 px-8'>
         <div className='mx-auto max-w-6xl'>
           <div className='grid gap-8 sm:grid-cols-3 grid-rows-[1fr_100px]'>
             <div className='flex flex-col gap-6'>
