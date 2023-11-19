@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import * as jose from 'jose';
 
 export default async function middleware(req: NextRequest) {
-  const cookie = cookies().get('session');
+  const cookie = req.cookies.get('session');
 
   const pathname = req.nextUrl.pathname;
 
