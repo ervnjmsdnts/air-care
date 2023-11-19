@@ -22,25 +22,6 @@ import Link from 'next/link';
 import Logo from '@/components/logo';
 import { Separator } from '@/components/ui/separator';
 
-const services = [
-  {
-    name: 'Installation',
-    image: '/images/installation.jpg',
-  },
-  {
-    name: 'Repair',
-    image: '/images/repair.jpg',
-  },
-  {
-    name: 'Scheduling',
-    image: '/images/schedule.jpg',
-  },
-  {
-    name: '24/7 Support',
-    image: '/images/support.jpg',
-  },
-];
-
 const contactInfo = [
   {
     Icon: MapPin,
@@ -128,8 +109,10 @@ export default function Home() {
               Repair
             </h3>
             <p className='text-lg text-primary'>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
-              rerum.
+              From strange noises to uneven cooling, our experts are trained to
+              diagnose and fix a wide range of issues. We believe in transparent
+              and upfront communication, so you&apos;ll know exactly what needs
+              fixing and why.
             </p>
           </div>
           <div className='border hover:border-primary p-4 grid gap-6'>
@@ -140,8 +123,10 @@ export default function Home() {
               Installation
             </h3>
             <p className='text-lg text-primary'>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
-              rerum.
+              Our installations are not just about putting in a unit;
+              they&apos;re about creating an atmosphere of comfort. We take
+              pride in our precision and attention to detail, ensuring that your
+              new air conditioner runs efficiently from day one.
             </p>
           </div>
           <div className='border hover:border-primary p-4 grid gap-6'>
@@ -152,8 +137,10 @@ export default function Home() {
               Scheduling
             </h3>
             <p className='text-lg text-primary'>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
-              rerum.
+              With just a call or a few clicks on our user-friendly website, you
+              can book an appointment that suits you. Our online scheduling
+              system lets you choose the date and time that works best for your
+              needs.
             </p>
           </div>
           <div className='border hover:border-primary p-4 grid gap-6'>
@@ -164,8 +151,9 @@ export default function Home() {
               24/7 Support
             </h3>
             <p className='text-lg text-primary'>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque,
-              rerum.
+              When it comes to your comfort, emergencies can happen at any time.
+              That&apos;s why at MCCD air care, we&apos;re proud to offer
+              around-the-clock, 24/7 support to keep you cool and worry-free.
             </p>
           </div>
         </div>
@@ -296,14 +284,20 @@ export default function Home() {
       </div>
       <footer className='bg-primary text-primary-foreground py-8 sm:px-64 px-8'>
         <div className='mx-auto max-w-6xl'>
-          <div className='grid gap-8 grid-cols-3 grid-rows-2'>
+          <div className='grid gap-8 grid-cols-3 grid-rows-[1fr_100px]'>
             <div className='flex flex-col gap-6'>
               <h3 className='text-xl uppercase tracking-tight font-semibold'>
                 About Company
               </h3>
               <p className='text-muted-foreground font-medium'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo
-                reprehenderit delectus eum consequatur esse. Nisi.
+                At MCCD Air Care Airconditioning Services, we pride ourselves on
+                delivering top-notch air conditioning services. From
+                installation to maintenance, we&apos;ve got the expertise to
+                keep your home or office cool and refreshing. we specialize in
+                professional air conditioning installations. Our team of
+                certified technicians ensures that your new unit is not only
+                installed efficiently but also tailored to meet the specific
+                needs of your space.
               </p>
             </div>
             <div className='flex flex-col gap-6'>

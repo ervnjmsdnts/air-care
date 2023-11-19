@@ -13,18 +13,19 @@ enum Role {
 }
 
 model User {
-  id           String         @id @unique @default(cuid())
-  name         String
-  phoneNumber  String
-  address      String
-  email        String         @unique
-  password     String
-  role         Role           @default(USER)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  Audit        Audit[]
-  Appointment  Appointment[]
-  Notification Notification[]
+  id             String           @id @unique @default(cuid())
+  name           String
+  phoneNumber    String
+  address        String
+  email          String           @unique
+  password       String
+  role           Role             @default(USER)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  Audit          Audit[]
+  Appointment    Appointment[]
+  Notification   Notification[]
+  SpecialRequest SpecialRequest[]
 }
 
 model Audit {
@@ -104,4 +105,22 @@ model Notification {
   message       String
   type          NotificationType @default(NEW)
   createdAt     DateTime         @default(now())
+}
+
+enum SpecialRequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
+model SpecialRequest {
+  id          String               @id @unique @default(cuid())
+  user        User                 @relation(fields: [userId], references: [id])
+  brand       String
+  model       String
+  description String
+  url         String?
+  key         String?
+  userId      String
+  status      SpecialRequestStatus @default(PENDING)
 }

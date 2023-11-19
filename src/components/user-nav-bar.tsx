@@ -54,6 +54,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from './ui/use-toast';
 import { supabase } from '@/lib/supabase';
 import Logo from './logo';
+import { cn } from '@/lib/utils';
 
 type AdminRouteType = {
   href: string;
@@ -190,6 +191,7 @@ function Notification() {
       supabase.removeChannel(channel);
     };
   }, [util, user?.id]);
+  const pathname = usePathname();
 
   return (
     <Popover>
@@ -202,7 +204,12 @@ function Notification() {
         ) : null}
         <Avatar>
           <AvatarFallback>
-            <Bell className='h-5 w-5' />
+            <Bell
+              className={cn(
+                'h-5 w-5',
+                pathname.includes('inquiry') && 'text-[#1da9c1]',
+              )}
+            />
           </AvatarFallback>
         </Avatar>
       </PopoverTrigger>
@@ -316,13 +323,17 @@ function UserInfo() {
     changePassword({ ...data });
   };
 
+  const pathname = usePathname();
+
   return (
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
             <AvatarFallback>
-              <User />
+              <User
+                className={cn(pathname.includes('inquiry') && 'text-[#1da9c1]')}
+              />
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -518,41 +529,82 @@ export default function UserNavbar({
 }) {
   const pathname = usePathname();
 
+  const isUserInquiry = pathname.includes('inquiry');
+
   return (
     <div className='flex flex-col w-full h-full'>
-      <div className='flex border-b py-4 px-6 justify-between items-center'>
-        {pathname.includes('inquiry') ? (
+      <div
+        className={cn(
+          'flex border-b py-4 px-6 justify-between items-center',
+          isUserInquiry && 'bg-[#1da9c1] text-white',
+        )}>
+        {isUserInquiry ? (
           <Link href='/'>
-            <Logo className='text-6xl p-0' />
+            <Logo
+              className={cn('text-6xl p-0', isUserInquiry && 'text-white')}
+            />
           </Link>
         ) : (
           <h1 className='font-bold text-2xl'>Air Care</h1>
         )}
         {/* <h1 className='font-bold text-2xl'>Air Care</h1> */}
         <div className='flex gap-3 items-center'>
-          {pathname.includes('inquiry') ? (
+          {isUserInquiry ? (
             <>
-              {pathname.includes('other-services') ? (
+              {pathname.includes('special-request') ? (
                 <Button variant='link' asChild>
-                  <Link href='/inquiry'>Purchase</Link>
+                  <Link
+                    href='/inquiry'
+                    className={cn(isUserInquiry && 'text-white')}>
+                    Inquiry
+                  </Link>
                 </Button>
               ) : (
                 <Button variant='link' asChild>
-                  <Link href='/inquiry/other-services'>Other Services</Link>
+                  <Link
+                    href='/inquiry/special-request'
+                    className={cn(isUserInquiry && 'text-white')}>
+                    Special Request
+                  </Link>
+                </Button>
+              )}
+              {pathname.includes('other-services') ? (
+                <Button variant='link' asChild>
+                  <Link
+                    href='/inquiry'
+                    className={cn(isUserInquiry && 'text-white')}>
+                    Purchase
+                  </Link>
+                </Button>
+              ) : (
+                <Button variant='link' asChild>
+                  <Link
+                    href='/inquiry/other-services'
+                    className={cn(isUserInquiry && 'text-white')}>
+                    Other Services
+                  </Link>
                 </Button>
               )}
               {pathname.includes('my-appointments') ? (
                 <Button variant='link' asChild>
-                  <Link href='/inquiry'>Inquiry</Link>
+                  <Link
+                    href='/inquiry'
+                    className={cn(isUserInquiry && 'text-white')}>
+                    Inquiry
+                  </Link>
                 </Button>
               ) : (
                 <Button variant='link' asChild>
-                  <Link href='/inquiry/my-appointments'>My Appointments</Link>
+                  <Link
+                    href='/inquiry/my-appointments'
+                    className={cn(isUserInquiry && 'text-white')}>
+                    My Appointments
+                  </Link>
                 </Button>
               )}
             </>
           ) : null}
-          {pathname.includes('inquiry') ? <Notification /> : null}
+          {isUserInquiry ? <Notification /> : null}
           <UserInfo />
         </div>
       </div>

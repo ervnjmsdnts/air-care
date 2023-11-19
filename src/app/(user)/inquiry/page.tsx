@@ -1,7 +1,6 @@
 'use client';
 
 import { trpc } from '@/app/_trpc/client';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -86,6 +85,14 @@ function Product({ product }: { product: Inventory }) {
               />
             </div>
             <h2 className='text-lg font-bold'>{product.name}</h2>
+            <div className='text-sm'>
+              <p>
+                Brand: <strong>{product.brand}</strong>
+              </p>
+              <p>
+                Type: <strong>{product.type}</strong>
+              </p>
+            </div>
             <h2 className='text-lg'>{toPhp(inquiryPrice)}</h2>
             <div>
               <p className='text-zinc-800 mb-1 text-sm'>Quantity</p>
@@ -167,6 +174,8 @@ export default function Inquiry() {
   const parseDate = (dateString: string) => {
     return new Date(dateString);
   };
+
+  console.log({ products });
 
   return (
     <div className='max-w-6xl pb-4 mx-auto'>

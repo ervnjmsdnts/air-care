@@ -436,6 +436,22 @@ export const appRouter = router({
         data: { type: 'ARCHIVED' },
       });
     }),
+  createSpecialRequest: privateProcedure
+    .input(
+      z.object({
+        brand: z.string(),
+        model: z.string(),
+        description: z.string(),
+        url: z.string().optional(),
+        key: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      console.log({ input });
+      await db.specialRequest.create({
+        data: { ...input, userId: ctx.userId },
+      });
+    }),
 });
 
 export type AppRouter = typeof appRouter;

@@ -122,6 +122,14 @@ function Product({ product }: { product: Inventory }) {
               />
             </div>
             <h2 className='text-lg font-bold'>{product.name}</h2>
+            <div className='text-sm'>
+              <p>
+                Brand: <strong>{product.brand}</strong>
+              </p>
+              <p>
+                Type: <strong>{product.type}</strong>
+              </p>
+            </div>
             <h2 className='text-lg'>{toPhp(inquiryPrice)}</h2>
           </div>
           <Button
