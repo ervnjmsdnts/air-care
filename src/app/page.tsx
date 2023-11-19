@@ -83,17 +83,19 @@ export default function Home() {
   };
   return (
     <div>
-      <div className='bg-white sm:p-2 border-b max-w-6xl mx-auto'>
-        <div className='flex items-center justify-center sm:justify-between'>
-          <Logo className='text-8xl p-0' />
-          <div className='hidden sm:flex items-center gap-8'>
-            <div className='flex items-center gap-2 text-primary'>
-              <Phone className='stroke-1' />
-              <p>+63 998 576 3538</p>
-            </div>
-            <div className='flex items-center gap-2 text-primary'>
-              <MapPin className='stroke-1' />
-              <p>Gulod Labac, Batangas City, Philippines, 4200</p>
+      <div className='bg-[#1da9c1]'>
+        <div className='sm:p-2 max-w-6xl mx-auto'>
+          <div className='flex items-center justify-center sm:justify-between'>
+            <Logo className='text-8xl p-0 text-white' />
+            <div className='hidden sm:flex items-center gap-8'>
+              <div className='flex items-center gap-2 text-white'>
+                <Phone className='stroke-1' />
+                <p>+63 998 576 3538</p>
+              </div>
+              <div className='flex items-center gap-2 text-white'>
+                <MapPin className='stroke-1' />
+                <p>Gulod Labac, Batangas City, Philippines, 4200</p>
+              </div>
             </div>
           </div>
         </div>
