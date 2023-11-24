@@ -1,7 +1,16 @@
 'use client';
 
 import { trpc } from '@/app/_trpc/client';
+import TermsConditionsDialog from '@/components/terms-conditions-dialog';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   Sheet,
@@ -20,6 +29,7 @@ import { useState } from 'react';
 
 function Product({ product }: { product: Inventory }) {
   const [currQuantity, setCurrQuantity] = useState(1);
+  const [isAcceptTC, setIsAcceptTC] = useState(false);
 
   const inquiryPrice = product.buyPrice * currQuantity;
 
@@ -145,10 +155,23 @@ function Product({ product }: { product: Inventory }) {
               <p className='text-muted-foreground text-xs mt-2'>
                 Installation is included
               </p>
+              <div className='flex items-center gap-1 mt-4'>
+                <Checkbox
+                  checked={isAcceptTC}
+                  onCheckedChange={() => setIsAcceptTC((prev) => !prev)}
+                  id='terms'
+                  className='rounded-md'
+                />
+                <label
+                  htmlFor='terms'
+                  className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                  Accept <TermsConditionsDialog />
+                </label>
+              </div>
             </div>
           </div>
           <Button
-            disabled={isLoading}
+            disabled={isLoading || !isAcceptTC}
             onClick={() =>
               createAppointment({
                 price: inquiryPrice,

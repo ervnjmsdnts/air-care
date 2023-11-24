@@ -71,6 +71,7 @@ export default function Home() {
   const aboutRef = useRef<HTMLElement>(null);
   const serviceRef = useRef<HTMLElement>(null);
   const galleryRef = useRef<HTMLElement>(null);
+  const pricingRef = useRef<HTMLElement>(null);
 
   const scrollToAbout = () => {
     aboutRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -81,6 +82,10 @@ export default function Home() {
   const scrollToGallery = () => {
     galleryRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+  const scrollToPricing = () => {
+    pricingRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div>
       <div className='bg-[#1da9c1]'>
@@ -123,6 +128,12 @@ export default function Home() {
                 className='text-md uppercase font-semibold'>
                 Gallery
               </Button>
+              <Button
+                variant='link'
+                onClick={scrollToPricing}
+                className='text-md uppercase font-semibold'>
+                Pricing
+              </Button>
             </div>
             <Sheet>
               <SheetTrigger className='sm:hidden' asChild>
@@ -149,6 +160,12 @@ export default function Home() {
                     onClick={scrollToGallery}
                     className='text-md uppercase font-semibold'>
                     Gallery
+                  </Button>
+                  <Button
+                    variant='link'
+                    onClick={scrollToPricing}
+                    className='text-md uppercase font-semibold'>
+                    Pricing
                   </Button>
                 </div>
               </SheetContent>
@@ -279,7 +296,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className='sm:mx-auto sm:max-w-6xl pt-32'>
+      <section ref={pricingRef} className='sm:mx-auto sm:max-w-6xl pt-32'>
         <div className='mb-16'>
           <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
             Pricing
@@ -435,52 +452,12 @@ export default function Home() {
       </section>
 
       <div className='bg-zinc-50'>
-        <section className='mx-auto max-w-6xl py-24'>
-          <div className='mb-16'>
-            <h1 className='text-primary text-2xl sm:text-4xl font-semibold mb-4 text-center'>
-              Get in Touch
-            </h1>
-            <Separator className='w-64 bg-zinc-300 mx-auto' />
-          </div>
-          <div className='grid px-2 sm:px-0 grid-cols-1 gap-8 sm:grid-cols-2'>
-            <div className='bg-white py-16 border rounded-lg'>
-              <div className='sm:px-16 px-4 text-primary mt-8 sm:mt-0 flex flex-col gap-4'>
-                <h2 className='text-2xl text-center sm:text-left uppercase tracking-tight font-semibold'>
-                  Contact Us
-                </h2>
-                <p className='text-center sm:text-left'>
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Accusamus, fugiat!
-                </p>
-                <div className='grid gap-2'>
-                  <Label htmlFor='fullName'>Full Name</Label>
-                  <Input id='fullName' />
-                </div>
-                <div className='grid gap-2'>
-                  <Label htmlFor='email'>Email</Label>
-                  <Input id='email' type='email' placeholder='m@example.com' />
-                </div>
-                <div className='grid gap-2'>
-                  <Label htmlFor='message'>Message</Label>
-                  <Textarea id='message' />
-                </div>
-                <Button className='text-lg uppercase'>Send</Button>
-              </div>
-            </div>
-            <div className='text-primary flex flex-col gap-4'>
-              <h2 className='text-2xl text-center sm:text-left uppercase tracking-tight font-semibold'>
-                Our Office Address
-              </h2>
-              {contactInfo.map((contact) => (
-                <div
-                  className='flex flex-col sm:flex-row items-center gap-2'
-                  key={contact.label}>
-                  <contact.Icon className='stroke-1' />
-                  <p className='text-center sm:text-left'>{contact.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <section className='mx-auto sm:max-w-6xl px-2 sm:px-0 py-24'>
+          <iframe
+            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31002.69891377523!2d121.04922972354258!3d13.758517629246558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd054ef2dc56b7%3A0xf529972aec981ff9!2sMccd%20Aircare%20Trading!5e0!3m2!1sen!2sph!4v1700634873803!5m2!1sen!2sph'
+            className='w-full h-80'
+            style={{ border: '0' }}
+            loading='lazy'></iframe>
         </section>
       </div>
       <footer
@@ -496,11 +473,7 @@ export default function Home() {
                 At MCCD Air Care Airconditioning Services, we pride ourselves on
                 delivering top-notch air conditioning services. From
                 installation to maintenance, we&apos;ve got the expertise to
-                keep your home or office cool and refreshing. we specialize in
-                professional air conditioning installations. Our team of
-                certified technicians ensures that your new unit is not only
-                installed efficiently but also tailored to meet the specific
-                needs of your space.
+                keep your home or office cool and refreshing.
               </p>
             </div>
             <div className='flex flex-col gap-6'>
@@ -511,7 +484,7 @@ export default function Home() {
                 Gulod Labac, Batangas City, Philippines, 4200
               </p>
             </div>
-            <div className='row-span-2 flex flex-col gap-6'>
+            <div className='flex flex-col gap-6'>
               <h3 className='text-xl uppercase tracking-tight font-semibold'>
                 Quick Links
               </h3>
@@ -534,9 +507,12 @@ export default function Home() {
               </div>
             </div>
             <div className='flex gap-4'>
-              <div className='w-10 h-10 bg-white/20 grid place-items-center rounded-full'>
+              <a
+                href='https://www.facebook.com/AirCare16'
+                target='_blank'
+                className='w-10 h-10 cursor-pointer bg-white/20 grid place-items-center rounded-full'>
                 <Facebook className='stroke-1 text-white/50' />
-              </div>
+              </a>
               <div className='w-10 h-10 bg-white/20 grid place-items-center rounded-full'>
                 <Instagram className='stroke-1 text-white/50' />
               </div>
@@ -546,11 +522,16 @@ export default function Home() {
             </div>
             <div className='flex flex-col gap-6'>
               <h3 className='text-xl uppercase tracking-tight font-semibold'>
-                Call Us
+                Contact Us
               </h3>
-              <p className='text-muted-foreground font-medium'>
-                Cell: +63 998 576 3538
-              </p>
+              <div className='grid gap-2'>
+                <p className='text-muted-foreground font-medium'>
+                  Cell: +63 998 576 3538
+                </p>
+                <p className='text-muted-foreground font-medium'>
+                  Email: aircare116@gmail.com
+                </p>
+              </div>
             </div>
           </div>
         </div>

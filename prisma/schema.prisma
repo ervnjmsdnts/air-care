@@ -75,20 +75,21 @@ enum AppointmentHours {
 }
 
 model Appointment {
-  id            String            @id @unique @default(cuid())
-  user          User?             @relation(fields: [userId], references: [id])
-  product       Inventory         @relation(fields: [productId], references: [id])
-  userId        String?
-  productId     String
-  price         Float
-  quantity      Int?
-  type          AppointmentType
-  status        AppointmentStatus @default(PENDING)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  scheduledDate DateTime?
-  hours         AppointmentHours?
-  Notification  Notification[]
+  id             String            @id @unique @default(cuid())
+  user           User?             @relation(fields: [userId], references: [id])
+  product        Inventory         @relation(fields: [productId], references: [id])
+  userId         String?
+  productId      String
+  price          Float
+  quantity       Int?
+  type           AppointmentType
+  status         AppointmentStatus @default(PENDING)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  scheduledDate  DateTime?
+  isWarrantyUsed Boolean           @default(false)
+  hours          AppointmentHours?
+  Notification   Notification[]
 }
 
 enum NotificationType {
@@ -106,6 +107,13 @@ model Notification {
   type          NotificationType @default(NEW)
   createdAt     DateTime         @default(now())
   appointmentId String?
+}
+
+model AdminNotification {
+  id        String           @id @unique @default(cuid())
+  message   String
+  type      NotificationType @default(NEW)
+  createdAt DateTime         @default(now())
 }
 
 enum SpecialRequestStatus {

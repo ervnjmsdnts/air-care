@@ -162,6 +162,99 @@ function AdminNavItem({ label, href, Icon, children }: AdminRouteType) {
   );
 }
 
+function AdminNotification() {
+  const util = trpc.useContext();
+
+  const { data: notifications, isLoading } =
+    trpc.getAdminNotifications.useQuery();
+  const { mutate: archiveNotification } =
+    trpc.archiveAdminNotification.useMutation({
+      onSuccess: () => {
+        util.getNotifications.invalidate();
+      },
+    });
+
+  const hasNewNotifications = notifications?.some((n) => n.type === 'NEW');
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime_audits')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'AdminNotification',
+        },
+        (payload) => {
+          util.getAdminNotifications.invalidate();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [util]);
+
+  const pathname = usePathname();
+
+  return (
+    <Popover>
+      <PopoverTrigger className='relative'>
+        {hasNewNotifications ? (
+          <span className='flex h-3 w-3 z-10 right-0 absolute'>
+            <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75'></span>
+            <span className='relative inline-flex rounded-full h-3 w-3 bg-primary'></span>
+          </span>
+        ) : null}
+        <Avatar>
+          <AvatarFallback>
+            <Bell
+              className={cn(
+                'h-5 w-5',
+                pathname.includes('inquiry') && 'text-[#1da9c1]',
+              )}
+            />
+          </AvatarFallback>
+        </Avatar>
+      </PopoverTrigger>
+      <PopoverContent className='w-96' align='end'>
+        {notifications && notifications.length !== 0 ? (
+          <div className='grid gap-2'>
+            {notifications.map((notif) => (
+              <div
+                key={notif.id}
+                className={cn('rounded-lg flex gap-4 border-b p-2')}>
+                <div className='flex-grow'>
+                  <p className='text-sm mb-1'>{notif.message}</p>
+                  <p className='text-xs text-zinc-400'>
+                    {dayjs(notif.createdAt).format('MMM DD, YYYY')}
+                  </p>
+                </div>
+                <Button
+                  variant='ghost'
+                  className='p-2 rounded-full'
+                  onClick={() =>
+                    archiveNotification({ notificationId: notif.id })
+                  }>
+                  <Archive className='h-5 w-5 text-zinc-500' />
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : isLoading ? (
+          <div className='grid gap-2'>
+            <Skeleton className='rounded-lg h-10 w-full' />
+          </div>
+        ) : (
+          <div>No notifications</div>
+        )}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function Notification() {
   const util = trpc.useContext();
 
@@ -617,7 +710,7 @@ export default function UserNavbar({
               )}
             </>
           ) : null}
-          {isUserInquiry ? <Notification /> : null}
+          {isUserInquiry ? <Notification /> : <AdminNotification />}
           <UserInfo />
         </div>
       </div>

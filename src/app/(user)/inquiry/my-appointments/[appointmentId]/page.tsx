@@ -3,6 +3,7 @@
 import { trpc } from '@/app/_trpc/client';
 import StatusBadge from '@/components/status-badge';
 import TypeBadge from '@/components/type-badge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -177,7 +178,12 @@ export default function SpecificAppointment({
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Warranty</DialogTitle>
+                      <div className='flex items-center gap-1'>
+                        <DialogTitle>Warranty</DialogTitle>
+                        <Badge>
+                          {appointment.isWarrantyUsed ? 'Used' : 'Valid'}
+                        </Badge>
+                      </div>
                     </DialogHeader>
                     <div className='flex items-center gap-1'>
                       <p className='font-semibold'>Customer: </p>
@@ -213,6 +219,14 @@ export default function SpecificAppointment({
                         <li>5 year warranty on Compressor and Parts</li>
                         <li>1 year warranty on Services</li>
                       </ul>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <p className='font-semibold'>Expiration Date: </p>
+                      <p>
+                        {dayjs(
+                          dayjs(appointment.scheduledDate).add(1, 'year'),
+                        ).format('MMM DD, YYYY')}
+                      </p>
                     </div>
                   </DialogContent>
                 </Dialog>

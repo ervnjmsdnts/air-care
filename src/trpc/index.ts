@@ -234,12 +234,17 @@ export const appRouter = router({
 
       if (!appointment) return new TRPCError({ code: 'BAD_REQUEST' });
 
-      await db.audit.create({
-        data: {
-          label: `User ${ctx.user.name} created an appointment`,
-          userId: ctx.userId,
-        },
-      });
+      await db.$transaction([
+        db.audit.create({
+          data: {
+            label: `User ${ctx.user.name} created an appointment`,
+            userId: ctx.userId,
+          },
+        }),
+        db.adminNotification.create({
+          data: { message: `User ${ctx.user.name} created an appointment` },
+        }),
+      ]);
 
       return { success: true };
     }),
@@ -305,13 +310,6 @@ export const appRouter = router({
 
       const message = statusMessages[appointment.status] || '';
 
-      await db.audit.create({
-        data: {
-          label: `User ${ctx.user.name} changed status of ${appointment.product.name} to ${input.status}`,
-          userId: ctx.userId,
-        },
-      });
-
       if (
         appointment.quantity &&
         appointment.type === 'PURCHASE' &&
@@ -323,26 +321,53 @@ export const appRouter = router({
 
         if (!currentProduct) return new TRPCError({ code: 'NOT_FOUND' });
 
-        await db.inventory.update({
-          where: { id: appointment.productId },
-          data: { quantity: currentProduct.quantity - appointment.quantity },
-        });
+        await db.$transaction([
+          db.inventory.update({
+            where: { id: appointment.productId },
+            data: { quantity: currentProduct.quantity - appointment.quantity },
+          }),
+          db.audit.create({
+            data: {
+              label: `Deducted ${appointment.quantity} from ${appointment.product.name} product`,
+              userId: ctx.userId,
+            },
+          }),
+          db.adminNotification.create({
+            data: {
+              message: `Deducted ${appointment.quantity} from ${appointment.product.name} product`,
+            },
+          }),
+        ]);
 
-        await db.audit.create({
-          data: {
-            label: `Deducted ${appointment.quantity} from ${appointment.product.name} product`,
-            userId: ctx.userId,
-          },
-        });
+        if (currentProduct.quantity <= 3) {
+          await db.adminNotification.create({
+            data: {
+              message: `Warning: ${currentProduct.name} has low quantity`,
+            },
+          });
+        }
       }
 
-      await db.notification.create({
-        data: {
-          userId: appointment.userId!,
-          message,
-          appointmentId: appointment.id,
-        },
-      });
+      await db.$transaction([
+        db.audit.create({
+          data: {
+            label: `User ${ctx.user.name} changed status of ${appointment.product.name} to ${input.status}`,
+            userId: ctx.userId,
+          },
+        }),
+        db.notification.create({
+          data: {
+            userId: appointment.userId!,
+            message,
+            appointmentId: appointment.id,
+          },
+        }),
+        db.adminNotification.create({
+          data: {
+            message: `User ${ctx.user.name} changed status of ${appointment.product.name} to ${input.status}`,
+          },
+        }),
+      ]);
 
       return { success: true };
     }),
@@ -364,12 +389,19 @@ export const appRouter = router({
         },
       });
 
-      await db.audit.create({
-        data: {
-          label: `User ${ctx.user.name} added a scheduled date on their appointment`,
-          userId: ctx.userId,
-        },
-      });
+      await db.$transaction([
+        db.audit.create({
+          data: {
+            label: `User ${ctx.user.name} added a scheduled date on their appointment`,
+            userId: ctx.userId,
+          },
+        }),
+        db.adminNotification.create({
+          data: {
+            message: `User ${ctx.user.name} added a scheduled date on their appointment`,
+          },
+        }),
+      ]);
 
       return { success: true };
     }),
@@ -424,6 +456,28 @@ export const appRouter = router({
 
     return notifications;
   }),
+  getAdminNotifications: publicProcedure.query(async () => {
+    const notifications = await db.adminNotification.findMany({
+      where: { type: 'NEW' },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return notifications;
+  }),
+
+  archiveAdminNotification: publicProcedure
+    .input(
+      z.object({
+        notificationId: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await db.adminNotification.update({
+        where: { id: input.notificationId },
+        data: { type: 'ARCHIVED' },
+      });
+    }),
+
   archiveNotification: privateProcedure
     .input(
       z.object({
@@ -447,17 +501,21 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      console.log({ input });
       await db.specialRequest.create({
         data: { ...input, userId: ctx.userId },
       });
 
-      await db.audit.create({
-        data: {
-          label: `User ${ctx.user.name} added a special request`,
-          userId: ctx.userId,
-        },
-      });
+      await db.$transaction([
+        db.audit.create({
+          data: {
+            label: `User ${ctx.user.name} added a special request`,
+            userId: ctx.userId,
+          },
+        }),
+        db.adminNotification.create({
+          data: { message: `User ${ctx.user.name} added a special request` },
+        }),
+      ]);
     }),
 
   getSpecialRequests: publicProcedure.query(async () => {
@@ -507,6 +565,15 @@ export const appRouter = router({
       });
 
       return { success: true };
+    }),
+
+  updateWarrant: publicProcedure
+    .input(z.object({ appointmentId: z.string() }))
+    .mutation(async ({ input }) => {
+      await db.appointment.update({
+        where: { id: input.appointmentId },
+        data: { isWarrantyUsed: true },
+      });
     }),
 });
 

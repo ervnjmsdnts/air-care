@@ -24,7 +24,7 @@ export const idSchema = z.object({
 export const createUserSchema = z
   .object({
     email: z.string().email().min(1, { message: 'Field is required' }),
-    password: z.string().min(6, { message: 'Minimum of 6 characters' }),
+    password: z.string().min(8, { message: 'Minimum of 8 characters' }),
     address: z.string().min(1, { message: 'Field is required' }),
     phoneNumber: z.string().min(1, { message: 'Field is required' }),
     name: z.string().min(1, { message: 'Field is required' }),
@@ -58,7 +58,7 @@ export const statusSchema = z.object({
 export const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, 'Field is required'),
-    newPassword: z.string().min(6, { message: 'Minimum of 6 characters' }),
+    newPassword: z.string().min(8, { message: 'Minimum of 8 characters' }),
     confirmPassword: z.string().min(1, 'Field is required'),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

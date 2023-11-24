@@ -16,6 +16,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Edit } from 'lucide-react';
+import UpdateWarranty from './(components)/update-warranty';
 
 export const historyColumns: ColumnDef<
   Appointment & { user: User | null; product: Inventory }
@@ -105,7 +112,14 @@ export const historyColumns: ColumnDef<
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Warranty</DialogTitle>
+              <div className='flex items-center gap-1'>
+                <DialogTitle>Warranty</DialogTitle>
+                <Badge>{row.original.isWarrantyUsed ? 'Used' : 'Valid'}</Badge>
+                <UpdateWarranty
+                  isWarrantyUsed={row.original.isWarrantyUsed}
+                  appointmentId={row.original.id}
+                />
+              </div>
             </DialogHeader>
             <div className='flex items-center gap-1'>
               <p className='font-semibold'>Customer: </p>
@@ -137,6 +151,14 @@ export const historyColumns: ColumnDef<
                 <li>5 year warranty on Compressor and Parts</li>
                 <li>1 year warranty on Services</li>
               </ul>
+            </div>
+            <div className='flex items-center gap-1'>
+              <p className='font-semibold'>Expiration Date: </p>
+              <p>
+                {dayjs(dayjs(row.original.scheduledDate).add(1, 'year')).format(
+                  'MMM DD, YYYY',
+                )}
+              </p>
             </div>
           </DialogContent>
         </Dialog>
