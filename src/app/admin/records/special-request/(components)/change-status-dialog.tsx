@@ -21,7 +21,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const schema = z.object({
-  status: z.enum(['PENDING', 'APPROVED', 'DENIED']),
+  status: z.enum(['PENDING', 'APPROVED', 'DENIED', 'DONE']),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -72,6 +72,7 @@ export default function ChangeStatusDialog({
                     <SelectItem value='PENDING'>Pending</SelectItem>
                     <SelectItem value='APPROVED'>Approved</SelectItem>
                     <SelectItem value='DENIED'>Denied</SelectItem>
+                    <SelectItem value='DONE'>Done</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

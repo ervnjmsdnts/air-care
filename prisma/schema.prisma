@@ -121,6 +121,7 @@ enum SpecialRequestStatus {
   PENDING
   APPROVED
   DENIED
+  DONE
 }
 
 model SpecialRequest {

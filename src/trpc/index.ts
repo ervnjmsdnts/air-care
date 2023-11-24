@@ -586,7 +586,7 @@ export const appRouter = router({
   updateSpecialRequest: privateProcedure
     .input(
       z.object({
-        status: z.enum(['PENDING', 'APPROVED', 'DENIED']),
+        status: z.enum(['PENDING', 'APPROVED', 'DENIED', 'DONE']),
         id: z.string(),
       }),
     )
@@ -602,6 +602,7 @@ export const appRouter = router({
         APPROVED: 'Great news! Your request has been approved.',
         DENIED:
           "We're sorry, but your request has been denied. Please contact us for further assistance.",
+        DONE: 'Your special request has completed being processed',
       };
 
       const message = statusMessages[request.status] || '';
