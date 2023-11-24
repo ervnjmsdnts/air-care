@@ -15,6 +15,8 @@ import {
   updateUserSchema,
 } from './schema';
 import { AppointmentStatus } from '@prisma/client';
+import VerificationEmail from '@/email/verification-email';
+import { resend } from '@/lib/resend';
 
 export const appRouter = router({
   // Auth
@@ -32,6 +34,14 @@ export const appRouter = router({
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Invalid Credentials',
+        });
+      }
+
+      if (!user.isVerified) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message:
+            'The email address is not verified.\nIf you have not received an email please click on the button.',
         });
       }
 
@@ -76,7 +86,54 @@ export const appRouter = router({
         },
       });
 
+      await resend.sendEmail({
+        from: 'verify-email@mccd.cloudns.org',
+        to: user.email,
+        subject: 'MCCD Air Care: Verification Email',
+        react: VerificationEmail({
+          name: user.name,
+          userId: user.id,
+        }),
+      });
+
       return user;
+    }),
+
+  sendVerificationEmail: publicProcedure
+    .input(z.object({ email: z.string() }))
+    .mutation(async ({ input }) => {
+      const user = await db.user.findFirst({ where: { email: input.email } });
+
+      if (!user || !user.id) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+      }
+
+      await resend.sendEmail({
+        from: 'verify-email@mccd.cloudns.org',
+        to: user.email,
+        subject: 'MCCD Air Care: Verification Email',
+        react: VerificationEmail({
+          name: user.name,
+          userId: user.id,
+        }),
+      });
+    }),
+
+  verifyEmail: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const user = await db.user.findFirst({ where: { id: input.userId } });
+
+      if (!user || !user.id) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+      }
+
+      await db.user.update({
+        where: { id: user.id },
+        data: { isVerified: true },
+      });
+
+      return { success: true };
     }),
 
   // User

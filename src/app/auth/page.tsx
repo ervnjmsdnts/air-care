@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -42,13 +41,6 @@ export default function Auth() {
               </p>
             </div>
           </div>
-          {/* <Image
-            src='/images/auth.jpg'
-            width={400}
-            height={400}
-            alt='auth'
-            className='w-[600px]'
-          /> */}
         </div>
         <div className='bg-accent flex justify-center items-center'>
           {isSignup ? (
