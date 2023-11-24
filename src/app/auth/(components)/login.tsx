@@ -95,7 +95,11 @@ export default function Login({ action }: { action: () => void }) {
                 {...form.register('password')}
                 error={form.formState.errors.password}
               />
-              <Button variant='outline' size='icon' onClick={togglePassword}>
+              <Button
+                type='button'
+                variant='outline'
+                size='icon'
+                onClick={togglePassword}>
                 {showPassword ? (
                   <EyeOff className='w-5 h-5 stroke-1' />
                 ) : (

@@ -139,7 +139,11 @@ export default function SignUp({ action }: { action: () => void }) {
                   type={showPassword ? 'text' : 'password'}
                   {...form.register('password')}
                 />
-                <Button variant='outline' size='icon' onClick={togglePassword}>
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='icon'
+                  onClick={togglePassword}>
                   {showPassword ? (
                     <EyeOff className='w-5 h-5 stroke-1' />
                   ) : (
@@ -165,6 +169,7 @@ export default function SignUp({ action }: { action: () => void }) {
                   {...form.register('confirmPassword')}
                 />
                 <Button
+                  type='button'
                   variant='outline'
                   size='icon'
                   onClick={toggleConfirmPassword}>
