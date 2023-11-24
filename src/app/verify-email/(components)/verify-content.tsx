@@ -13,16 +13,16 @@ export default function VerifyContent({ userId }: { userId: string }) {
     }, 3000); // 3000 milliseconds = 3 seconds
   };
 
-  // const { isLoading } = trpc.verifyEmail.useQuery(
-  //   {
-  //     userId,
-  //   },
-  //   { onSuccess: () => handleRedirect() },
-  // );
+  const { isLoading } = trpc.verifyEmail.useQuery(
+    {
+      userId,
+    },
+    { onSuccess: () => handleRedirect() },
+  );
 
   return (
     <div>
-      {true ? (
+      {isLoading ? (
         <p className='text-2xl flex items-end gap-1'>
           Verifying Email Adress
           <span className='h-1 w-1 mb-2 bg-black rounded-full animate-pulse [animation-delay:-0.3s]'></span>
