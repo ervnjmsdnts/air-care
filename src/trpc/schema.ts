@@ -21,12 +21,18 @@ export const idSchema = z.object({
   id: z.string(),
 });
 
+const numbersRegex = /^\d+$/;
+
 export const createUserSchema = z
   .object({
     email: z.string().email().min(1, { message: 'Field is required' }),
     password: z.string().min(8, { message: 'Minimum of 8 characters' }),
     address: z.string().min(1, { message: 'Field is required' }),
-    phoneNumber: z.string().min(1, { message: 'Field is required' }),
+    phoneNumber: z
+      .string()
+      .regex(numbersRegex, 'Invalid phone number')
+      .min(11, { message: 'Invalid phone number' })
+      .max(11, { message: 'Invalid phone number' }),
     name: z.string().min(1, { message: 'Field is required' }),
     confirmPassword: z.string().min(1, { message: 'Field is required' }),
   })
