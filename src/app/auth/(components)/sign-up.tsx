@@ -87,6 +87,7 @@ export default function SignUp({ action }: { action: () => void }) {
             <div>
               <Input
                 id='phoneNumber'
+                maxLength={11}
                 {...form.register('phoneNumber')}
                 error={errors.phoneNumber}
               />

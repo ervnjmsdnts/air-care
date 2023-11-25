@@ -43,11 +43,9 @@ export default function TermsConditionsDialog() {
             <div className='ml-4'>
               <p>
                 <span className='font-semibold'>2.1 Rescheduling: </span>
-                You must go through the scheduling process again and submit a
-                payment screenshot, such as a Gcash Receipt, PayMaya Receipt, or
-                Bank Transfer Receipt, etc. Once the appointment is confirmed
-                and finalized, the rescheduling process cannot be canceled, as
-                there is no refund available for this procedure.
+                You must go through the scheduling process again once the
+                appointment is confirmed and finalized, the rescheduling process
+                cannot be canceled.
               </p>
             </div>
           </div>
