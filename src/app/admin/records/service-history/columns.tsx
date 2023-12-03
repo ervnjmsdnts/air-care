@@ -17,11 +17,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Edit } from 'lucide-react';
 import UpdateWarranty from './(components)/update-warranty';
 
 export const historyColumns: ColumnDef<
@@ -37,7 +32,10 @@ export const historyColumns: ColumnDef<
       return row.original.user?.name.toLowerCase().includes(value);
     },
     cell: ({ row }) => {
-      if (!row.original.userId) return <p className='font-bold'>Anonymous</p>;
+      if (row.original.isManual && row.original.name)
+        return <p className='font-bold'>{row.original.name}</p>;
+      if (!row.original.userId && !row.original.name && !row.original.isManual)
+        return <p className='font-bold'>Anonymous</p>;
       return (
         <UserPop
           email={row.original.user!.email}
@@ -58,9 +56,10 @@ export const historyColumns: ColumnDef<
   {
     accessorKey: 'scheduledDate',
     header: 'End Date',
-    cell: ({ row }) => (
-      <p>{dayjs(row.original.scheduledDate).format('MMM DD, YYYY')}</p>
-    ),
+    cell: ({ row }) => {
+      if (!row.original.scheduledDate) return <p>No Scheduled Date</p>;
+      return <p>{dayjs(row.original.scheduledDate).format('MMM DD, YYYY')}</p>;
+    },
   },
   {
     accessorKey: 'product.name',
@@ -123,15 +122,33 @@ export const historyColumns: ColumnDef<
             </DialogHeader>
             <div className='flex items-center gap-1'>
               <p className='font-semibold'>Customer: </p>
-              <p>{row.original.user!.name || 'N/A'}</p>
+              <p>
+                {row.original.isManual
+                  ? row.original.name
+                  : row.original.user
+                  ? row.original.user.name
+                  : 'N/A'}
+              </p>
             </div>
             <div className='flex items-center gap-1'>
               <p className='font-semibold'>Address: </p>
-              <p>{row.original.user!.address || 'N/A'}</p>
+              <p>
+                {row.original.isManual
+                  ? row.original.address
+                  : row.original.user
+                  ? row.original.user.address
+                  : 'N/A'}
+              </p>
             </div>
             <div className='flex items-center gap-1'>
               <p className='font-semibold'>Contact Number: </p>
-              <p>{row.original.user!.phoneNumber || 'N/A'}</p>
+              <p>
+                {row.original.isManual
+                  ? row.original.contactNumber
+                  : row.original.user
+                  ? row.original.user.phoneNumber
+                  : 'N/A'}
+              </p>
             </div>
             <div className='flex items-center gap-1'>
               <p className='font-semibold'>Item Purchased: </p>

@@ -198,8 +198,6 @@ export default function Inquiry() {
     return new Date(dateString);
   };
 
-  console.log({ products });
-
   return (
     <div className='max-w-6xl pb-4 mx-auto'>
       {products && products.length !== 0 ? (

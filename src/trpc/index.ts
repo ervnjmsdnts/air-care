@@ -478,6 +478,11 @@ export const appRouter = router({
       const appointment = await db.appointment.create({
         data: {
           scheduledDate: new Date(),
+          name: input.name,
+          address: input.address,
+          contactNumber: input.contactNumber,
+          email: input.email,
+          isManual: true,
           productId: input.productId,
           userId: null,
           type: input.type,

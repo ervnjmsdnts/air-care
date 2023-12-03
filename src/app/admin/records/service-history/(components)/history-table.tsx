@@ -43,6 +43,7 @@ import { trpc } from '@/app/_trpc/client';
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import { CSVLink } from 'react-csv';
+import { Separator } from '@/components/ui/separator';
 
 export default function HistoryTable({
   appointments,
@@ -58,7 +59,9 @@ export default function HistoryTable({
       appointments.map((appointment) => ({
         Client: appointment.user?.name,
         'Start Date': dayjs(appointment.createdAt).format('MMM DD, YYYY'),
-        'End Date': dayjs(appointment.scheduledDate).format('MMM DD, YYYY'),
+        'End Date': appointment.scheduledDate
+          ? dayjs(appointment.scheduledDate).format('MMM DD, YYYY')
+          : 'No Scheduled Date',
         Product: appointment.product.name,
         Quantity: appointment.quantity,
         Type: appointment.type,
@@ -100,14 +103,18 @@ export default function HistoryTable({
     quantity?: number,
   ) => {
     const product = products?.find((p) => p.id === productId);
-    if (type === 'CLEANING') {
-      return product!.cleanPrice;
-    } else if (type === 'INSTALLATION') {
-      return product!.installPrice;
-    } else if (type === 'REPAIR') {
-      return product!.repairPrice;
-    } else if (type === 'PURCHASE') {
-      return product!.buyPrice! * quantity!;
+    if (product) {
+      if (type === 'CLEANING') {
+        return product.cleanPrice;
+      } else if (type === 'INSTALLATION') {
+        return product.installPrice;
+      } else if (type === 'REPAIR') {
+        return product.repairPrice;
+      } else if (type === 'PURCHASE') {
+        return product.buyPrice! * quantity!;
+      } else {
+        return 0;
+      }
     } else {
       return 0;
     }
@@ -128,140 +135,175 @@ export default function HistoryTable({
           <DialogTrigger asChild>
             <Button className=''>Manual Entry</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className='max-w-3xl'>
             <DialogHeader>
               <DialogTitle>Manual Entry</DialogTitle>
             </DialogHeader>
-            <div className='grid gap-3'>
-              <div className='grid gap-2'>
-                <Label>Product</Label>
-                <Controller
-                  name='productId'
-                  control={form.control}
-                  render={({ field }) => {
-                    return (
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant='outline'
-                            role='combobox'
-                            aria-expanded={open}
-                            className='w-full justify-between'>
-                            {field.value
-                              ? comboDetails?.find(
-                                  (comboDetail) =>
-                                    comboDetail.value === field.value,
-                                )?.label
-                              : 'Select product...'}
-                            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className='w-full p-0'>
-                          <Command>
-                            <CommandInput placeholder='Search product...' />
-                            <CommandEmpty>No product found.</CommandEmpty>
-                            <CommandGroup>
-                              {comboDetails?.map((comboDetail) => (
-                                <CommandItem
-                                  key={comboDetail.value}
-                                  value={comboDetail.value}
-                                  onSelect={() => {
-                                    form.setValue(
-                                      'productId',
-                                      comboDetail.value,
-                                    );
-                                  }}>
-                                  <Check
-                                    className={cn(
-                                      'mr-2 h-4 w-4',
-                                      field.value === comboDetail.value
-                                        ? 'opacity-100'
-                                        : 'opacity-0',
-                                    )}
-                                  />
-                                  {comboDetail.label}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    );
-                  }}
-                />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='service'>Service Type</Label>
-                <Controller
-                  control={form.control}
-                  name='type'
-                  render={({ field }) => (
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        form.setValue('type', value as AppointmentType);
-                      }}>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select status' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value='INSTALLATION'>
-                            Installation
-                          </SelectItem>
-                          <SelectItem value='REPAIR'>Repair</SelectItem>
-                          <SelectItem value='PURCHASE'>Purchase</SelectItem>
-                          <SelectItem value='CLEANING'>Cleaning</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-              {typeWatch === 'PURCHASE' ? (
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='flex flex-col gap-3'>
+                <h3 className='font-semibold'>Customer Information</h3>
                 <div className='grid gap-2'>
-                  <Label htmlFor='quantity'>Quantity</Label>
+                  <Label>Name</Label>
                   <Input
-                    id='quantity'
-                    type='number'
-                    defaultValue={undefined}
-                    {...form.register('quantity', { valueAsNumber: true })}
+                    {...form.register('name')}
+                    error={form.formState.errors.name}
                   />
                 </div>
-              ) : null}
-              <div className='grid gap-2'>
-                <Label htmlFor='price'>Price</Label>
-                <Controller
-                  control={form.control}
-                  name='price'
-                  defaultValue={calculatePrice(
-                    typeWatch,
-                    productWatch,
-                    quantityWatch,
-                  )}
-                  render={({ field }) => (
-                    <Input
-                      disabled
-                      id='price'
-                      type='number'
-                      value={calculatePrice(
-                        typeWatch,
-                        productWatch,
-                        quantityWatch,
-                      )}
-                    />
-                  )}
-                />
+                <div className='grid gap-2'>
+                  <Label>Address</Label>
+                  <Input
+                    {...form.register('address')}
+                    error={form.formState.errors.address}
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label>Contact Number</Label>
+                  <Input
+                    maxLength={11}
+                    {...form.register('contactNumber')}
+                    error={form.formState.errors.contactNumber}
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label>Email Address</Label>
+                  <Input
+                    {...form.register('email')}
+                    error={form.formState.errors.email}
+                  />
+                </div>
               </div>
-              <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
-                {isLoading ? (
-                  <Loader2 className='h-4 w-4 animate-spin' />
-                ) : (
-                  'Save'
-                )}
-              </Button>
+              <div className='flex flex-col gap-3'>
+                <h3 className='font-semibold'>Product Information</h3>
+                <div className='grid gap-2'>
+                  <Label>Product</Label>
+                  <Controller
+                    name='productId'
+                    control={form.control}
+                    render={({ field }) => {
+                      return (
+                        <Popover open={open} onOpenChange={setOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant='outline'
+                              role='combobox'
+                              aria-expanded={open}
+                              className='w-full justify-between'>
+                              {field.value
+                                ? comboDetails?.find(
+                                    (comboDetail) =>
+                                      comboDetail.value === field.value,
+                                  )?.label
+                                : 'Select product...'}
+                              <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className='w-full p-0'>
+                            <Command>
+                              <CommandInput placeholder='Search product...' />
+                              <CommandEmpty>No product found.</CommandEmpty>
+                              <CommandGroup>
+                                {comboDetails?.map((comboDetail) => (
+                                  <CommandItem
+                                    key={comboDetail.value}
+                                    value={comboDetail.value}
+                                    onSelect={() => {
+                                      form.setValue(
+                                        'productId',
+                                        comboDetail.value,
+                                      );
+                                    }}>
+                                    <Check
+                                      className={cn(
+                                        'mr-2 h-4 w-4',
+                                        field.value === comboDetail.value
+                                          ? 'opacity-100'
+                                          : 'opacity-0',
+                                      )}
+                                    />
+                                    {comboDetail.label}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      );
+                    }}
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <Label htmlFor='service'>Service Type</Label>
+                  <Controller
+                    control={form.control}
+                    name='type'
+                    render={({ field }) => (
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue('type', value as AppointmentType);
+                        }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Select status' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value='INSTALLATION'>
+                              Installation
+                            </SelectItem>
+                            <SelectItem value='REPAIR'>Repair</SelectItem>
+                            <SelectItem value='PURCHASE'>Purchase</SelectItem>
+                            <SelectItem value='CLEANING'>Cleaning</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                {typeWatch === 'PURCHASE' ? (
+                  <div className='grid gap-2'>
+                    <Label htmlFor='quantity'>Quantity</Label>
+                    <Input
+                      id='quantity'
+                      type='number'
+                      defaultValue={undefined}
+                      {...form.register('quantity', { valueAsNumber: true })}
+                    />
+                  </div>
+                ) : null}
+                <div className='grid gap-2'>
+                  <Label htmlFor='price'>Price</Label>
+                  <Controller
+                    control={form.control}
+                    name='price'
+                    defaultValue={calculatePrice(
+                      typeWatch,
+                      productWatch,
+                      quantityWatch,
+                    )}
+                    render={({ field }) => (
+                      <Input
+                        disabled
+                        id='price'
+                        type='number'
+                        value={calculatePrice(
+                          typeWatch,
+                          productWatch,
+                          quantityWatch,
+                        )}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
             </div>
+            <Button disabled={isLoading} onClick={form.handleSubmit(submit)}>
+              {isLoading ? (
+                <Loader2 className='h-4 w-4 animate-spin' />
+              ) : (
+                'Save'
+              )}
+            </Button>
           </DialogContent>
         </Dialog>
         <Button asChild>

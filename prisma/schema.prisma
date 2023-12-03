@@ -79,6 +79,11 @@ model Appointment {
   id             String            @id @unique @default(cuid())
   user           User?             @relation(fields: [userId], references: [id])
   product        Inventory         @relation(fields: [productId], references: [id])
+  isManual       Boolean           @default(false)
+  name           String?
+  address        String?
+  contactNumber  String?
+  email          String?
   userId         String?
   productId      String
   price          Float

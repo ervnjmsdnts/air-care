@@ -74,6 +74,14 @@ export const changePasswordSchema = z
 
 export const manualEntrySchema = z.object({
   productId: z.string(),
+  name: z.string().min(1, 'Field is required'),
+  address: z.string().min(1, 'Field is required'),
+  contactNumber: z
+    .string()
+    .regex(numbersRegex, 'Invalid phone number')
+    .min(11, { message: 'Invalid phone number' })
+    .max(11, { message: 'Invalid phone number' }),
+  email: z.string().optional(),
   type: z.enum(['CLEANING', 'PURCHASE', 'INSTALLATION', 'REPAIR']),
   quantity: z.any().optional(),
   price: z.number(),
