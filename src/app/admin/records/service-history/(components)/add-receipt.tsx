@@ -83,7 +83,7 @@ export default function AddReceipt({
 
   const submit = async (data: Schema) => {
     setIsLoading(true);
-    if (file) {
+    if (file && file.length > 0 && file[0]) {
       const res = await startUpload(file);
 
       if (!res) {
