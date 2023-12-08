@@ -2,7 +2,13 @@
 
 import { DataTable } from '@/components/ui/data-table';
 import { historyColumns } from '../columns';
-import { Appointment, AppointmentType, Inventory, User } from '@prisma/client';
+import {
+  Appointment,
+  AppointmentType,
+  Inventory,
+  Receipt,
+  User,
+} from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -48,7 +54,11 @@ import { Separator } from '@/components/ui/separator';
 export default function HistoryTable({
   appointments,
 }: {
-  appointments: (Appointment & { user: User | null; product: Inventory })[];
+  appointments: (Appointment & {
+    user: User | null;
+    product: Inventory;
+    receipt: Receipt | null;
+  })[];
 }) {
   const [open, setOpen] = useState(false);
 

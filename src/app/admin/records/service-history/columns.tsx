@@ -22,7 +22,11 @@ import AddReceipt from './(components)/add-receipt';
 import ViewReceipt from './(components)/view-receipt';
 
 export const historyColumns: ColumnDef<
-  Appointment & { user: User | null; product: Inventory; receipt: Receipt }
+  Appointment & {
+    user: User | null;
+    product: Inventory;
+    receipt: Receipt | null;
+  }
 >[] = [
   {
     accessorKey: 'user',
