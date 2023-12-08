@@ -10,13 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  parseISO,
-  startOfMonth,
-} from 'date-fns';
+import { toPhp, truncateString } from '@/lib/utils';
+import { eachDayOfInterval, endOfMonth, format, startOfMonth } from 'date-fns';
 import { useEffect, useState } from 'react';
 import {
   CartesianGrid,
@@ -26,7 +21,6 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis,
 } from 'recharts';
 
 const months = [
@@ -44,11 +38,51 @@ const months = [
   { value: '12', label: 'December' },
 ];
 
+const CustomTooltip = ({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: any;
+}) => {
+  if (active && payload && payload.length) {
+    const dataPoint = payload[0];
+    console.log(dataPoint.payload.items);
+    return (
+      <div className='p-4 bg-white border text-sm max-w-md'>
+        <p>
+          <strong>Date: </strong>
+          {format(new Date(dataPoint.payload.date), 'PP')}
+        </p>
+        <p>
+          <strong>Items: </strong>
+          {dataPoint.payload.items.length}
+        </p>
+        <div className='grid font-bold grid-cols-3 border-b gap-2'>
+          <p>Name</p>
+          <p>Quantity</p>
+          <p>Price</p>
+        </div>
+        {dataPoint.payload.items.map((item: any, index: number) => (
+          <div className='grid grid-cols-3 border-b gap-2' key={index}>
+            <p className='border-r'>{truncateString(item.product.name, 30)}</p>
+            <p className='border-r'>{item.quantity}</p>
+            <p>{toPhp(item.price)}</p>
+          </div>
+        ))}
+        <p>
+          <strong>Total Sales: </strong> {toPhp(dataPoint.payload.sales)}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 export default function SalesChart() {
   const { data: doneAppointments } = trpc.getDoneAppointments.useQuery();
-  const [selectedMonth, setSelectedMonth] = useState(
-    format(new Date(), 'MM'), // Set the default to the current month
-  );
+  const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'MM'));
   const [salesData, setSalesData] = useState<any>([]);
   const currentYear = new Date().getFullYear();
   useEffect(() => {
@@ -64,18 +98,23 @@ export default function SalesChart() {
       end: selectedMonthEnd,
     });
 
-    // Map the days in the month to the format expected by Recharts
     const formattedData = daysInMonth.map((day) => {
       const dayFormatted = format(day, 'yyyy-MM-dd');
-      const saleForDay = doneAppointments?.find(
+      const saleForDay = doneAppointments?.filter(
         (appointment) =>
-          format(parseISO(appointment.createdAt), 'yyyy-MM-dd') ===
-          dayFormatted,
+          format(
+            new Date(appointment.scheduledDate || appointment.createdAt),
+            'yyyy-MM-dd',
+          ) === dayFormatted,
       );
 
+      const priceOfDay = saleForDay?.reduce((acc, app) => acc + app.price, 0);
+
       return {
+        date: dayFormatted,
+        items: saleForDay ? saleForDay : [],
         day: format(new Date(dayFormatted), 'dd'),
-        sales: saleForDay ? saleForDay.price : 0,
+        sales: priceOfDay ? priceOfDay : 0,
       };
     });
 
@@ -105,7 +144,7 @@ export default function SalesChart() {
         <LineChart data={salesData}>
           <CartesianGrid stroke='#ccc' />
           <XAxis dataKey='day' />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line type='monotone' dataKey='sales' stroke='#8884d8' />
         </LineChart>

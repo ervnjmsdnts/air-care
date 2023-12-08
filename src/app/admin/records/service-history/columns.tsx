@@ -5,7 +5,7 @@ import UserPop from '@/components/user-pop';
 import { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
-import { Appointment, Inventory, User } from '@prisma/client';
+import { Appointment, Inventory, Receipt, User } from '@prisma/client';
 import dayjs from 'dayjs';
 import TypeBadge from '@/components/type-badge';
 import { toPhp } from '@/lib/utils';
@@ -18,9 +18,11 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import UpdateWarranty from './(components)/update-warranty';
+import AddReceipt from './(components)/add-receipt';
+import ViewReceipt from './(components)/view-receipt';
 
 export const historyColumns: ColumnDef<
-  Appointment & { user: User | null; product: Inventory }
+  Appointment & { user: User | null; product: Inventory; receipt: Receipt }
 >[] = [
   {
     accessorKey: 'user',
@@ -176,6 +178,13 @@ export const historyColumns: ColumnDef<
                   'MMM DD, YYYY',
                 )}
               </p>
+            </div>
+            <div className='flex justify-end'>
+              {row.original.receipt && row.original.receipt.id ? (
+                <ViewReceipt receipt={row.original.receipt} />
+              ) : (
+                <AddReceipt appointmentId={row.original.id} />
+              )}
             </div>
           </DialogContent>
         </Dialog>

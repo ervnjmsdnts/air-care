@@ -467,7 +467,7 @@ export const appRouter = router({
     const doneAppointments = await db.appointment.findMany({
       where: { status: 'DONE' },
       orderBy: { updatedAt: 'desc' },
-      include: { user: true, product: true },
+      include: { user: true, product: true, receipt: true },
     });
 
     return doneAppointments;
@@ -636,6 +636,39 @@ export const appRouter = router({
       await db.appointment.update({
         where: { id: input.appointmentId },
         data: { isWarrantyUsed: true },
+      });
+    }),
+
+  addReceipt: publicProcedure
+    .input(
+      z.object({
+        appointmentId: z.string(),
+        paymentType: z.enum(['CASH', 'CHEQUE']),
+        receiptNumber: z.number(),
+        receivedFrom: z.string(),
+        amount: z.number(),
+        for: z.string(),
+        paymentAmount: z.number(),
+        recievedBy: z.string(),
+        url: z.string().optional(),
+        key: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      console.log({ input });
+      await db.receipt.create({
+        data: {
+          amount: input.amount,
+          for: input.for,
+          paymentAmount: input.paymentAmount,
+          paymentType: input.paymentType,
+          receiptNumber: input.receiptNumber,
+          receivedBy: input.recievedBy,
+          receivedFrom: input.receivedFrom,
+          appointmentId: input.appointmentId,
+          key: input.key,
+          url: input.url,
+        },
       });
     }),
 });
