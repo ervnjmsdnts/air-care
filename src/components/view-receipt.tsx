@@ -6,7 +6,6 @@ import { Receipt } from '@prisma/client';
 import { format } from 'date-fns';
 
 export default function ViewReceipt({ receipt }: { receipt: Receipt }) {
-  console.log(receipt);
   return (
     <Dialog>
       <DialogTrigger asChild>

@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import ViewReceipt from '@/components/view-receipt';
 import { cn, toPhp } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Appointment, AppointmentHours, AppointmentType } from '@prisma/client';
@@ -87,8 +88,8 @@ export default function SpecificAppointment({
     if ((type === 'INSTALLATION' || type === 'PURCHASE') && scheduledDate) {
       const existingAppointment = appointments.find(
         (appointment) =>
-          appointment.scheduledDate &&
-          appointment.scheduledDate.getTime() === scheduledDate.getTime() &&
+          appointment?.scheduledDate &&
+          appointment?.scheduledDate?.getTime() === scheduledDate?.getTime() &&
           appointment.hours === hours,
       );
 
@@ -227,6 +228,17 @@ export default function SpecificAppointment({
                           dayjs(appointment.scheduledDate).add(1, 'year'),
                         ).format('MMM DD, YYYY')}
                       </p>
+                    </div>
+
+                    <div className='flex justify-end'>
+                      {appointment.receipt ? (
+                        <ViewReceipt
+                          receipt={{
+                            ...appointment.receipt,
+                            createdAt: new Date(appointment.createdAt),
+                          }}
+                        />
+                      ) : null}
                     </div>
                   </DialogContent>
                 </Dialog>

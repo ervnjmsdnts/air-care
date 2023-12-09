@@ -338,7 +338,7 @@ export const appRouter = router({
     .query(async ({ input }) => {
       const appointment = await db.appointment.findFirst({
         where: { id: input.id },
-        include: { product: true, user: true },
+        include: { product: true, user: true, receipt: true },
       });
 
       return appointment;
@@ -655,7 +655,6 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
       await db.receipt.create({
         data: {
           amount: input.amount,

@@ -19,7 +19,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import UpdateWarranty from './(components)/update-warranty';
 import AddReceipt from './(components)/add-receipt';
-import ViewReceipt from './(components)/view-receipt';
+import ViewReceipt from '@/components/view-receipt';
 
 export const historyColumns: ColumnDef<
   Appointment & {
