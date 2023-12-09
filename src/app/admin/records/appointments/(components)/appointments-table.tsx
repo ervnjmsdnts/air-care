@@ -52,8 +52,8 @@ export default function AppiontmentTable({
           updatedAt: new Date(a.updatedAt),
           user: {
             ...a.user!,
-            createdAt: new Date(a.user!.createdAt),
-            updatedAt: new Date(a.user!.updatedAt),
+            createdAt: new Date(a.user ? a.user.createdAt : a.createdAt),
+            updatedAt: new Date(a.user ? a.user.updatedAt : a.updatedAt),
           },
         }))}
         hasFilterInput

@@ -23,7 +23,7 @@ function Appointment({
   user,
 }: {
   createdAt: Date;
-  location: string;
+  location: string | undefined;
   productName: string;
   type: AppointmentType;
   user: User;
@@ -40,9 +40,6 @@ function Appointment({
           <p className='font-medium text-secondary-foreground'>
             {dayjs(createdAt).format('hh:mm A')}
           </p>
-          {/* <p className='font-medium text-muted-foreground truncate'>
-            {user.address}
-          </p> */}
         </div>
         <div className='text-sm'>
           <p className='font-medium text-secondary-foreground'>
@@ -108,17 +105,25 @@ export default function LatestAppointments() {
       <CardContent className='flex flex-col gap-2 overflow-y-auto h-0 flex-grow'>
         {appointments && appointments.length !== 0 ? (
           <>
-            {appointments?.map((appointment) => (
+            {appointments.map((appointment) => (
               <Appointment
                 key={appointment.id}
                 createdAt={new Date(appointment.createdAt)}
-                location={appointment.user!.address}
+                location={appointment.user?.address}
                 productName={appointment.product.name}
                 type={appointment.type}
                 user={{
                   ...appointment.user!,
-                  createdAt: new Date(appointment.user!.createdAt),
-                  updatedAt: new Date(appointment.user!.updatedAt),
+                  createdAt: new Date(
+                    appointment.user
+                      ? appointment.user.createdAt
+                      : appointment.createdAt,
+                  ),
+                  updatedAt: new Date(
+                    appointment.user
+                      ? appointment.user.updatedAt
+                      : appointment.updatedAt,
+                  ),
                 }}
               />
             ))}
