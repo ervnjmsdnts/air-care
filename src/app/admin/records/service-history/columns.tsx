@@ -35,7 +35,12 @@ export const historyColumns: ColumnDef<
     ),
     filterFn: (row, _, value): any => {
       if (value === undefined || !value) return false;
-      return row.original.user?.name.toLowerCase().includes(value);
+      console.log(row.original);
+      return row.original.user?.name
+        ? row.original.user.name.toLowerCase().includes(value)
+        : row.original.name
+        ? row.original.name.toLowerCase().includes(value)
+        : null;
     },
     cell: ({ row }) => {
       if (row.original.isManual && row.original.name)

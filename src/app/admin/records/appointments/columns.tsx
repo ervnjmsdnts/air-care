@@ -15,7 +15,7 @@ import UserPop from '@/components/user-pop';
 import { Appointment, User } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { MoreHorizontal, Pencil } from 'lucide-react';
 import ChangeStatusDialog from './(components)/change-status-dialog';
 import { toPhp } from '@/lib/utils';
 
@@ -27,7 +27,11 @@ export const appointmentColumns: ColumnDef<Appointment & { user: User }>[] = [
     ),
     filterFn: (row, _, value): any => {
       if (value === undefined || !value) return false;
-      return row.original.user?.name.toLowerCase().includes(value);
+      return row.original.user?.name
+        ? row.original.user.name.toLowerCase().includes(value)
+        : row.original.name
+        ? row.original.name.toLowerCase().includes(value)
+        : null;
     },
     cell: ({ row }) => (
       <UserPop
