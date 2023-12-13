@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { toPhp } from '@/lib/utils';
 import { Receipt } from '@prisma/client';
 import { format } from 'date-fns';
+import Logo from './logo';
 
 export default function ViewReceipt({ receipt }: { receipt: Receipt }) {
   return (
@@ -12,7 +13,8 @@ export default function ViewReceipt({ receipt }: { receipt: Receipt }) {
         <Button>View Receipt</Button>
       </DialogTrigger>
       <DialogContent className='max-w-3xl'>
-        <div className='flex mt-4 justify-between items-start'>
+        <div className='flex mt-4 relative justify-between items-start'>
+          <Logo className='absolute -z-10 right-0 -top-10 blur-sm' />
           <h2 className='font-semibold text-lg'>Receipt</h2>
           <div className='text-sm'>
             <p>Receipt Number: {receipt.receiptNumber}</p>

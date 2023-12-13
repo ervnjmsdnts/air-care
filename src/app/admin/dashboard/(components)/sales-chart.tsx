@@ -47,9 +47,8 @@ const CustomTooltip = ({
 }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0];
-    console.log(dataPoint.payload.items);
     return (
-      <div className='p-4 bg-white border text-sm max-w-md'>
+      <div className='p-4 bg-white border text-sm max-w-7xl'>
         <p>
           <strong>Date: </strong>
           {format(new Date(dataPoint.payload.date), 'PP')}
@@ -58,16 +57,24 @@ const CustomTooltip = ({
           <strong>Items: </strong>
           {dataPoint.payload.items.length}
         </p>
-        <div className='grid font-bold grid-cols-3 border-b gap-2'>
+        <div className='grid font-bold grid-cols-6 border-b gap-2'>
           <p>Name</p>
           <p>Quantity</p>
           <p>Price</p>
+          <p>Customer</p>
+          <p>Email</p>
+          <p>Contact Number</p>
         </div>
         {dataPoint.payload.items.map((item: any, index: number) => (
-          <div className='grid grid-cols-3 border-b gap-2' key={index}>
+          <div className='grid grid-cols-6 border-b gap-2' key={index}>
             <p className='border-r'>{truncateString(item.product.name, 30)}</p>
             <p className='border-r'>{item.quantity}</p>
-            <p>{toPhp(item.price)}</p>
+            <p className='border-r'>{toPhp(item.price)}</p>
+            <p className='border-r'>{item.user ? item.user.name : item.name}</p>
+            <p className='border-r'>
+              {item.user ? item.user.email : item.email}
+            </p>
+            <p>{item.user ? item.user.contactNumber : item.contactNumber}</p>
           </div>
         ))}
         <p>
@@ -146,7 +153,16 @@ export default function SalesChart() {
           <XAxis dataKey='day' />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Line type='monotone' dataKey='sales' stroke='#8884d8' />
+          <Line
+            dot={{
+              onClick: () => {
+                alert('try');
+              },
+            }}
+            type='monotone'
+            dataKey='sales'
+            stroke='#8884d8'
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

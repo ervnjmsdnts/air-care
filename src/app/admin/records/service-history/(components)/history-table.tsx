@@ -46,10 +46,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { trpc } from '@/app/_trpc/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
 import { CSVLink } from 'react-csv';
-import { Separator } from '@/components/ui/separator';
 
 export default function HistoryTable({
   appointments,
@@ -63,6 +62,10 @@ export default function HistoryTable({
   const [open, setOpen] = useState(false);
 
   const { data: products } = trpc.getValidProducts.useQuery();
+
+  const searchParams = useSearchParams();
+
+  const search = searchParams.get('search');
 
   const csvData = useMemo(
     () =>
@@ -339,6 +342,7 @@ export default function HistoryTable({
             updatedAt: new Date(a.product.updatedAt),
           },
         }))}
+        search={search as string | undefined}
         hasFilterInput
         filterInputColumn='user'
         filterPlaceholder='Search clients...'

@@ -4,11 +4,16 @@ import { trpc } from '@/app/_trpc/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { useUploadThing } from '@/lib/uploadthing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Info, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -87,7 +92,24 @@ export default function SpecialRequest() {
 
   return (
     <div className='max-w-2xl mx-auto'>
-      <h1 className='text-3xl font-semibold'>Special Request</h1>
+      <div className='flex items-center gap-2'>
+        <h1 className='text-3xl font-semibold'>Special Request</h1>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button className='rounded-full' size='icon'>
+              <Info className='' />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className='w-80'>
+            <p className='text-sm'>
+              Enables users to submit a specific service requests, such as
+              requesting the installation, sudden cancellation, cleaning
+              services, or warranty-related assistance and returning of
+              products.
+            </p>
+          </PopoverContent>
+        </Popover>
+      </div>
       <form
         onSubmit={form.handleSubmit(submit)}
         className='flex flex-col gap-2 pt-4'>

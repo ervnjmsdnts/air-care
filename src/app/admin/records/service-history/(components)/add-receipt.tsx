@@ -48,11 +48,24 @@ const receiptNumber = generateRandomReceiptNumber(8);
 
 export default function AddReceipt({
   appointmentId,
+  customer,
+  price,
 }: {
   appointmentId: string;
+  customer: string | undefined;
+  price: number;
 }) {
   const today = format(new Date(), 'MMM dd, yyyy');
-  const form = useForm<Schema>({ resolver: zodResolver(schema) });
+  const form = useForm<Schema>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      receivedFrom: customer,
+      amount: price,
+      for: 'MCCD AirCare Trading Services',
+      paymentAmount: price,
+      receivedBy: 'Secretary',
+    },
+  });
   const [file, setFile] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);

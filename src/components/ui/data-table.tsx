@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from './input';
 import {
   DropdownMenu,
@@ -54,6 +54,7 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder?: string;
   filterInputColumn?: string;
   pageSize?: number;
+  search?: string;
 }
 
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -115,6 +116,7 @@ export function DataTable<TData, TValue>({
   hasFilterInput = false,
   filterInputColumn,
   filterPlaceholder,
+  search,
   pageSize = 10,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -132,13 +134,21 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: pageSize } },
+    initialState: {
+      pagination: { pageSize: pageSize },
+    },
     state: {
       sorting,
       columnFilters,
       columnVisibility,
     },
   });
+
+  useEffect(() => {
+    if (search) {
+      setColumnFilters([{ id: 'user', value: search }]);
+    }
+  }, [search]);
 
   return (
     <div className='flex flex-col h-full'>

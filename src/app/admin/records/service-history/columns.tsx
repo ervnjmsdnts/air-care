@@ -35,11 +35,10 @@ export const historyColumns: ColumnDef<
     ),
     filterFn: (row, _, value): any => {
       if (value === undefined || !value) return false;
-      console.log(row.original);
       return row.original.user?.name
-        ? row.original.user.name.toLowerCase().includes(value)
+        ? row.original.user.name.toLowerCase().includes(value.toLowerCase())
         : row.original.name
-        ? row.original.name.toLowerCase().includes(value)
+        ? row.original.name.toLowerCase().includes(value.toLowerCase())
         : null;
     },
     cell: ({ row }) => {
@@ -192,7 +191,15 @@ export const historyColumns: ColumnDef<
               {row.original.receipt && row.original.receipt.id ? (
                 <ViewReceipt receipt={row.original.receipt} />
               ) : (
-                <AddReceipt appointmentId={row.original.id} />
+                <AddReceipt
+                  appointmentId={row.original.id}
+                  customer={
+                    row.original.name
+                      ? row.original.name
+                      : row.original.user?.name
+                  }
+                  price={row.original.price}
+                />
               )}
             </div>
           </DialogContent>
