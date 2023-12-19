@@ -30,7 +30,7 @@
     --ring: 212 48% 26%;
     --radius: 0.3rem;
   }
- 
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -53,7 +53,7 @@
     --ring: 224.3 76.3% 48%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -63,5 +63,15 @@
   }
   body {
     @apply bg-background text-foreground h-full w-full;
+  }
+}
+
+.printStyle {
+  padding: 20px;
+}
+
+@media print {
+  @page {
+    size: landscape;
   }
 }

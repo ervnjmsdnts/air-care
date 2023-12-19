@@ -24,11 +24,11 @@ export default function UserPop({
       <PopoverTrigger asChild className='cursor-pointer'>
         {children}
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className='w-80'>
         <div className='flex flex-col'>
           <p className='font-medium'>{name}</p>
-          <p className='text-muted-foreground'>{email}</p>
-          <p className='text-muted-foreground text-sm'>{phoneNumber}</p>
+          <p className='text-muted-foreground text-sm'>{email}</p>
+          <p className='text-muted-foreground text-xs'>{phoneNumber}</p>
           <Separator className='my-2' />
           <div
             onClick={() =>

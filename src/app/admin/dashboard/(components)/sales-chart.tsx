@@ -1,6 +1,8 @@
 'use client';
 
 import { trpc } from '@/app/_trpc/client';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -12,7 +14,9 @@ import {
 } from '@/components/ui/select';
 import { toPhp, truncateString } from '@/lib/utils';
 import { eachDayOfInterval, endOfMonth, format, startOfMonth } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { Printer } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import ReactPrint from 'react-to-print';
 import {
   CartesianGrid,
   Legend,
@@ -48,7 +52,7 @@ const CustomTooltip = ({
   if (active && payload && payload.length) {
     const dataPoint = payload[0];
     return (
-      <div className='p-4 bg-white border text-sm max-w-7xl'>
+      <div className='p-4 bg-white border text-sm max-w-xl'>
         <p>
           <strong>Date: </strong>
           {format(new Date(dataPoint.payload.date), 'PP')}
@@ -57,24 +61,16 @@ const CustomTooltip = ({
           <strong>Items: </strong>
           {dataPoint.payload.items.length}
         </p>
-        <div className='grid font-bold grid-cols-6 border-b gap-2'>
+        <div className='grid font-bold grid-cols-3 border-b gap-2'>
           <p>Name</p>
           <p>Quantity</p>
           <p>Price</p>
-          <p>Customer</p>
-          <p>Email</p>
-          <p>Contact Number</p>
         </div>
         {dataPoint.payload.items.map((item: any, index: number) => (
-          <div className='grid grid-cols-6 border-b gap-2' key={index}>
+          <div className='grid grid-cols-3 border-b gap-2' key={index}>
             <p className='border-r'>{truncateString(item.product.name, 30)}</p>
             <p className='border-r'>{item.quantity}</p>
-            <p className='border-r'>{toPhp(item.price)}</p>
-            <p className='border-r'>{item.user ? item.user.name : item.name}</p>
-            <p className='border-r'>
-              {item.user ? item.user.email : item.email}
-            </p>
-            <p>{item.user ? item.user.contactNumber : item.contactNumber}</p>
+            <p className=''>{toPhp(item.price)}</p>
           </div>
         ))}
         <p>
@@ -86,6 +82,89 @@ const CustomTooltip = ({
 
   return null;
 };
+
+function LabelAsPoint({
+  x,
+  y,
+  data,
+  index,
+}: {
+  x?: number;
+  y?: number;
+  data: any;
+  index?: number;
+}) {
+  const sales = data[index!];
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <circle
+          fill='transparent'
+          className='hover:fill-[#8884d8] cursor-pointer hover:stroke-white hover:stroke-[0.2em]'
+          r={8}
+          cx={x}
+          cy={y}
+        />
+      </DialogTrigger>
+      <DialogContent className='max-w-7xl'>
+        <div className='flex flex-col gap-2'>
+          <ReactPrint
+            bodyClass='printStyle'
+            content={() => ref.current}
+            trigger={() => (
+              <Button className='self-start gap-2' variant='outline'>
+                <Printer className='w-4 h-4' />
+                Print
+              </Button>
+            )}
+          />
+          <div ref={ref} className='p-4 bg-white text-sm'>
+            <p>
+              <strong>Date: </strong>
+              {format(new Date(sales.date), 'PP')}
+            </p>
+            <p>
+              <strong>Items: </strong>
+              {sales.items.length}
+            </p>
+            <div className='grid font-bold grid-cols-6 border-b gap-2'>
+              <p>Name</p>
+              <p>Quantity</p>
+              <p>Price</p>
+              <p>Customer</p>
+              <p>Email</p>
+              <p>Contact Number</p>
+            </div>
+            {sales.items.map((item: any, index: number) => (
+              <div className='grid grid-cols-6 border-b gap-2' key={index}>
+                <p className='border-r'>
+                  {truncateString(item.product.name, 30)}
+                </p>
+                <p className='border-r'>{item.quantity}</p>
+                <p className='border-r'>{toPhp(item.price)}</p>
+                <p className='border-r'>
+                  {item.user ? item.user.name : item.name}
+                </p>
+                <p className='border-r break-all'>
+                  {item.user ? item.user.email : item.email}
+                </p>
+                <p>
+                  {item.user ? item.user.contactNumber : item.contactNumber}
+                </p>
+              </div>
+            ))}
+            <p>
+              <strong>Total Sales: </strong> {toPhp(sales.sales)}
+            </p>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function SalesChart() {
   const { data: doneAppointments } = trpc.getDoneAppointments.useQuery();
@@ -154,11 +233,8 @@ export default function SalesChart() {
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line
-            dot={{
-              onClick: () => {
-                alert('try');
-              },
-            }}
+            label={<LabelAsPoint data={salesData} />}
+            activeDot={false}
             type='monotone'
             dataKey='sales'
             stroke='#8884d8'

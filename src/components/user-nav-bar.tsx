@@ -219,7 +219,7 @@ function AdminNotification() {
           </AvatarFallback>
         </Avatar>
       </PopoverTrigger>
-      <PopoverContent className='w-96' align='end'>
+      <PopoverContent className='w-96 max-h-80 overflow-y-auto' align='end'>
         {notifications && notifications.length !== 0 ? (
           <div className='grid gap-2'>
             {notifications.map((notif) => (
@@ -312,7 +312,7 @@ function Notification() {
           </AvatarFallback>
         </Avatar>
       </PopoverTrigger>
-      <PopoverContent className='w-96' align='end'>
+      <PopoverContent className='w-96 max-h-80 overflow-y-auto' align='end'>
         {notifications && notifications.length !== 0 ? (
           <div className='grid gap-2'>
             {notifications.map((notif) => (
