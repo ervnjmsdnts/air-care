@@ -111,6 +111,9 @@ export default function Login({ action }: { action: () => void }) {
           <Button disabled={isLoading}>
             {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Login'}
           </Button>
+          <Button variant='link' type='button' className='self-start p-0'>
+            Forgot password
+          </Button>
           <span className='text-center text-sm'>
             Don&apos;t have an account?{' '}
             <Button

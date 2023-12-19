@@ -17,6 +17,7 @@ import {
 import { AppointmentStatus } from '@prisma/client';
 import VerificationEmail from '@/email/verification-email';
 import { resend } from '@/lib/resend';
+import ForgotPasswordEmail from '@/email/forgot-password-email';
 
 export const appRouter = router({
   // Auth
@@ -116,6 +117,38 @@ export const appRouter = router({
           name: user.name,
           userId: user.id,
         }),
+      });
+    }),
+
+  forgotPassword: publicProcedure
+    .input(z.object({ email: z.string() }))
+    .mutation(async ({ input }) => {
+      const user = await db.user.findUnique({ where: { email: input.email } });
+
+      if (!user || !user.id) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+      }
+
+      await resend.sendEmail({
+        from: 'forgot-password@mccd.cloudns.org',
+        to: user.email,
+        subject: 'MCCD Air Care: Forgot Password',
+        react: ForgotPasswordEmail({ userId: user.id }),
+      });
+    }),
+
+  resetPassword: publicProcedure
+    .input(z.object({ userId: z.string(), password: z.string() }))
+    .mutation(async ({ input }) => {
+      const user = await db.user.findFirst({ where: { id: input.userId } });
+
+      if (!user || !user.id) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+      }
+
+      await db.user.update({
+        where: { id: user.id },
+        data: { password: input.password },
       });
     }),
 

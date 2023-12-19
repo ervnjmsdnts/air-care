@@ -16,16 +16,10 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://mccd-air-care.vercel.app`
   : 'http://localhost:3000';
 
-export default function VerificationEmail({
-  name,
-  userId,
-}: {
-  name: string;
-  userId: string;
-}) {
-  const previewText = 'Verify Email Address';
+export default function ForgotPasswordEmail({ userId }: { userId: string }) {
+  const previewText = 'Forgot Password';
 
-  const verifyLink = `${baseUrl}/verify-email/${userId}`;
+  const verifyLink = `${baseUrl}/reset-password/${userId}`;
 
   return (
     <Html>
@@ -42,14 +36,11 @@ export default function VerificationEmail({
             <Heading className='text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0'>
               <strong>{previewText}</strong>
             </Heading>
-            <Text className='text-black text-[14px] leading-[24px]'>
-              Hello {name},
-            </Text>
             <Section className='text-center mt-[32px] mb-[32px]'>
               <Button
                 className='bg-[#1da9c1] px-8 py-2 rounded text-white text-[12px] font-semibold no-underline text-center'
                 href={verifyLink}>
-                Verify Email
+                Reset Password
               </Button>
             </Section>
           </Container>

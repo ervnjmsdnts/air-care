@@ -25,8 +25,6 @@ export default function SpecialRequestTable({
     [requests],
   );
 
-  console.log(csvData);
-
   return (
     <div className='flex flex-col h-full gap-2'>
       <div className='flex justify-end'>
