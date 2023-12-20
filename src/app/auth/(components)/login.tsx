@@ -18,11 +18,14 @@ import { trpc } from '@/app/_trpc/client';
 import { LoginSchema, loginSchema } from '@/trpc/schema';
 import { useState } from 'react';
 import { ToastAction } from '@/components/ui/toast';
+import { useRouter } from 'next/navigation';
 
 export default function Login({ action }: { action: () => void }) {
   const form = useForm<LoginSchema>({ resolver: zodResolver(loginSchema) });
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
 
   const { mutate: createAudit } = trpc.createAudit.useMutation();
   const { mutate: sendVerificationEmail } =
@@ -111,7 +114,11 @@ export default function Login({ action }: { action: () => void }) {
           <Button disabled={isLoading}>
             {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Login'}
           </Button>
-          <Button variant='link' type='button' className='self-start p-0'>
+          <Button
+            onClick={() => router.push('/forgot-password')}
+            variant='link'
+            type='button'
+            className='self-start p-0'>
             Forgot password
           </Button>
           <span className='text-center text-sm'>
