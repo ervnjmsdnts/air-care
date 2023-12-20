@@ -6,6 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -187,26 +196,50 @@ function Product({ product }: { product: Inventory }) {
 
 export default function Inquiry() {
   const { data: products, isLoading } = trpc.getValidProducts.useQuery();
+  const [filter, setFilter] = useState<'LOW' | 'HIGH' | undefined>(undefined);
   const parseDate = (dateString: string) => {
     return new Date(dateString);
   };
 
+  const filteredProducts =
+    filter === 'LOW'
+      ? products?.slice().sort((a, b) => a.buyPrice - b.buyPrice)
+      : filter === 'HIGH'
+      ? products?.slice().sort((a, b) => b.buyPrice - a.buyPrice)
+      : products;
+
   return (
     <div className='max-w-6xl pb-4 mx-auto'>
-      {products && products.length !== 0 ? (
-        <div className='grid grid-cols-1 sm:grid-cols-4 gap-8'>
-          {products?.map((product) => (
-            <>
-              <Product
-                product={{
-                  ...product,
-                  createdAt: parseDate(product.createdAt),
-                  updatedAt: parseDate(product.updatedAt),
-                }}
-                key={product.id}
-              />
-            </>
-          ))}
+      {filteredProducts && filteredProducts.length !== 0 ? (
+        <div className='flex flex-col gap-4'>
+          <Select
+            defaultValue={filter as string | undefined}
+            onValueChange={setFilter as (value: string) => void}>
+            <SelectTrigger className='max-w-[180px] self-end mr-4'>
+              <SelectValue placeholder='Select filter' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Filter</SelectLabel>
+                <SelectItem value='LOW'>Price: Low to High</SelectItem>
+                <SelectItem value='HIGH'>Price: High to Low</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <div className='grid grid-cols-1 sm:grid-cols-4 gap-8'>
+            {filteredProducts.map((product) => (
+              <>
+                <Product
+                  product={{
+                    ...product,
+                    createdAt: parseDate(product.createdAt),
+                    updatedAt: parseDate(product.updatedAt),
+                  }}
+                  key={product.id}
+                />
+              </>
+            ))}
+          </div>
         </div>
       ) : isLoading ? (
         <div className='grid grid-cols-4 gap-8'>
