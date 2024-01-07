@@ -73,9 +73,13 @@ const CustomTooltip = ({
             <p className=''>{toPhp(item.price)}</p>
           </div>
         ))}
-        <p>
-          <strong>Total Sales: </strong> {toPhp(dataPoint.payload.sales)}
-        </p>
+        <div className='grid grid-cols-3 gap-2'>
+          <p>
+            <strong>Total Sales: </strong>
+          </p>
+          <div />
+          <p>{toPhp(dataPoint.payload.sales)}</p>
+        </div>
       </div>
     );
   }

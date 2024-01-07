@@ -222,7 +222,7 @@ export default function SpecificAppointment({
                       </ul>
                     </div>
                     <div className='flex items-center gap-1'>
-                      <p className='font-semibold'>Expiration Date: </p>
+                      <p className='font-semibold'>End of Service Warranty: </p>
                       <p>
                         {dayjs(
                           dayjs(appointment.scheduledDate).add(1, 'year'),

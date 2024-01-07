@@ -49,15 +49,15 @@ export const inventoryColumns: ColumnDef<Inventory>[] = [
     ),
   },
   {
-    accessorKey: 'name',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Name' />
-    ),
-  },
-  {
     accessorKey: 'brand',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Brand' />
+    ),
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Name' />
     ),
   },
   {

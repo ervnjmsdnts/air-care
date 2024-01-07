@@ -180,7 +180,7 @@ export const historyColumns: ColumnDef<
               </ul>
             </div>
             <div className='flex items-center gap-1'>
-              <p className='font-semibold'>Expiration Date: </p>
+              <p className='font-semibold'>End of Service Warranty: </p>
               <p>
                 {dayjs(dayjs(row.original.scheduledDate).add(1, 'year')).format(
                   'MMM DD, YYYY',
